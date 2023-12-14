@@ -1,3 +1,4 @@
+use super::scan;
 use super::Token;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -305,6 +306,14 @@ pub fn parse(input: &Vec<Token>) -> Result<Program, String> {
     for token in input.iter() {
         builder.consume(token)?;
     }
-    dbg!("{}", builder.clone());
     builder.build()
+}
+
+pub fn debug(input: &str) -> Result<String, String> {
+    let tokens = scan(input);
+    let pgm = parse(&tokens).unwrap();
+    dbg!("{}", pgm);
+    println!("TODO: remove unimplemented()");
+    println!("TODO: implement consume_state_building_def");
+    Ok("".to_string())
 }

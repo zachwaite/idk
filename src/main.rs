@@ -9,11 +9,11 @@ use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::path::Path;
-use parser::zzz;
+use parser::debug;
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    ZZZ,
+    Debug,
 }
 
 #[derive(Parser, Debug)]
@@ -55,9 +55,9 @@ fn write_output(output: &str, target: &str) -> Result<(), Box<dyn Error>> {
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
     match args.command {
-        Command::ZZZ => {
+        Command::Debug => {
             let input = read_input(args.input.as_str())?;
-            let output = zzz(&input)?;
+            let output = debug(&input)?;
             write_output(&output, args.output.as_str())?;
         }
     }
