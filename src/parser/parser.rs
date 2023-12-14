@@ -92,10 +92,10 @@ struct RawBuilder {
 impl RawBuilder {
     fn new(input: Token) -> Self {
         match input {
-            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) => Self {
+            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_)| Token::Semicolon(_) => Self {
                 tokens: vec![input],
             },
-            _ => unimplemented!(),
+            _ => unimplemented!(), // TODO: builders should return Option
         }
     }
 }
@@ -117,7 +117,7 @@ impl DefBuilder {
                 semicolon: None,
                 tokens: vec![begsr.clone()],
             },
-            _ => unimplemented!(),
+            _ => unimplemented!(), // TODO: builders should return Option
         }
     }
 }
@@ -145,7 +145,7 @@ impl CallBuilder {
                 subname: None,
                 tokens: vec![exsr.clone()],
             },
-            _ => unimplemented!(),
+            _ => unimplemented!(), // TODO: builders should return Option
         }
     }
 }
@@ -178,119 +178,122 @@ impl ProgramBuilder {
         }
     }
 
-    fn consume(&mut self, token: &Token) -> Result<(), String> {
-        match self.state {
-            ProgramState::Neutral => {
-                match token {
-                    Token::Begsr(_) => {
-                        self.state = ProgramState::BuildingDef;
-                        self.def_builder = Some(DefBuilder::new(token.clone()));
-                    }
-                    Token::Exsr(_) => {
-                        self.state = ProgramState::BuildingCall;
-                        self.call_builder = Some(CallBuilder::new(token.clone()));
-                    }
-                    Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) => {
-                        self.state = ProgramState::BuildingRaw;
-                        self.raw_builder = Some(RawBuilder::new(token.clone()));
-                    }
-                    _ => unimplemented!(),
-                }
+    fn consume_state_neutral(&mut self, token: &Token) -> Result<(), String> {
+        match token {
+            Token::Begsr(_) => {
+                self.state = ProgramState::BuildingDef;
+                self.def_builder = Some(DefBuilder::new(token.clone()));
                 Ok(())
             }
-            ProgramState::BuildingRaw => {
-                match &mut self.raw_builder {
-                    Some(builder) => {
-                        match token {
-                            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) => {
-                                builder.tokens.append(&mut vec![token.clone()]);
-                                Ok(())
-                            }
-                            _ => {
-                                let mut raw: String = "".to_string();
-                                for t in builder.tokens.iter() {
-                                    raw.push_str(t.unwrap());
-                                }
-                                let chunk = ProgramChunk::Raw(raw);
-                                self.program.chunks.append(&mut vec![chunk]);
-                                self.raw_builder = None;
-                                self.state = ProgramState::Neutral;
-                                self.consume(token); // so the NeutralHandler hits
-                                Ok(())
-                            }
-                        }
-                    }
-                    None => unimplemented!(),
-                }
+            Token::Exsr(_) => {
+                self.state = ProgramState::BuildingCall;
+                self.call_builder = Some(CallBuilder::new(token.clone()));
+                Ok(())
             }
-            ProgramState::BuildingCall => match &mut self.call_builder {
-                Some(builder) => match builder.state {
-                    CallBuilderState::Exsr => match token {
-                        Token::Whitespace(_) => {
-                            builder.tokens.append(&mut vec![token.clone()]);
-                            builder.state = CallBuilderState::Space;
-                            Ok(())
-                        }
-                        _ => Err(">>>>>>>>>>>>>>>>>>>>>>ERROR".to_string()),
-                    },
-                    CallBuilderState::Space => match token {
-                        Token::Whitespace(_) => {
-                            builder.tokens.append(&mut vec![token.clone()]);
-                            Ok(())
-                        }
-                        Token::Raw(s) => {
-                            builder.tokens.append(&mut vec![token.clone()]);
-                            builder.state = CallBuilderState::Identifier;
-                            builder.subname = Some(s.clone());
-                            Ok(())
-                        }
-                        _ => {
-                            unimplemented!()
-                        }
-                    },
-                    CallBuilderState::Identifier => match token {
-                        Token::Whitespace(_) => {
-                            builder.tokens.append(&mut vec![token.clone()]);
-                            Ok(())
-                        }
-                        Token::Semicolon(_) => {
-                            builder.tokens.append(&mut vec![token.clone()]);
-                            let mut raw: String = "".to_string();
-                            for token in builder.tokens.iter() {
-                                raw.push_str(&token.unwrap());
-                            }
-                            match &builder.subname {
-                                Some(s) => {
-                                    let id = Identifier { raw: s.clone() };
-                                    let call = SubroutineCall {
-                                        id: id.clone(),
-                                        raw,
-                                    };
-                                    let chunk = ProgramChunk::SubroutineCall(id, call);
-                                    self.program.chunks.append(&mut vec![chunk]);
-                                    self.call_builder = None;
-                                    self.state = ProgramState::Neutral;
-                                }
-                                None => unimplemented!(),
-                            }
-                            Ok(())
-                        }
-                        _ => unimplemented!(),
-                    },
-                    _ => unimplemented!(),
-                },
-                None => unimplemented!(),
+            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) | Token::Semicolon(_) => {
+                self.state = ProgramState::BuildingRaw;
+                self.raw_builder = Some(RawBuilder::new(token.clone()));
+                Ok(())
+            }
+            Token::Endsr(_) => Err(format!("Syntax error: Encounterd Endsr without Begsr")),
+        }
+    }
+
+    fn consume_state_building_raw(&mut self, token: &Token) -> Result<(), String> {
+        let builder = self.raw_builder.as_mut().unwrap();
+        match token {
+            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) => {
+                builder.tokens.append(&mut vec![token.clone()]);
+                Ok(())
+            }
+            _ => {
+                let mut raw: String = "".to_string();
+                for t in builder.tokens.iter() {
+                    raw.push_str(t.unwrap());
+                }
+                let chunk = ProgramChunk::Raw(raw);
+                self.program.chunks.append(&mut vec![chunk]);
+                self.raw_builder = None;
+                self.state = ProgramState::Neutral;
+                self.consume(token); // so the NeutralHandler hits
+                Ok(())
+            }
+        }
+    }
+
+    fn consume_state_building_call(&mut self, token: &Token) -> Result<(), String> {
+        let builder = self.call_builder.as_mut().unwrap();
+        match builder.state {
+            CallBuilderState::Exsr => match token {
+                Token::Whitespace(_) => {
+                    builder.tokens.append(&mut vec![token.clone()]);
+                    builder.state = CallBuilderState::Space;
+                    Ok(())
+                }
+                _ => Err(format!("Syntax error: Expected Whitespace, then Identifier"))
             },
-            ProgramState::BuildingDef => {
-                match &mut self.def_builder {
-                    Some(builder) => {
-                        // match builder.state {
-                        // }
-                        Ok(())
-                    }
-                    None => unimplemented!(),
+            CallBuilderState::Space => match token {
+                Token::Whitespace(_) => {
+                    builder.tokens.append(&mut vec![token.clone()]);
+                    Ok(())
                 }
-            }
+                Token::Raw(s) => {
+                    builder.tokens.append(&mut vec![token.clone()]);
+                    builder.state = CallBuilderState::Identifier;
+                    builder.subname = Some(s.clone());
+                    Ok(())
+                }
+                Token::Semicolon(_) => {
+                    Err(format!("Syntax error: Semicolon encountered before Identifier"))
+                }
+                Token::Exsr(_) | Token::Begsr(_) | Token::Endsr(_) => {
+                    Err(format!("Syntax error: Keyword cannot be used as Identifier"))
+                }
+                Token::Newline(_) => {
+                    Err(format!("Syntax error: Unexpected Newline"))
+                }
+
+            },
+            CallBuilderState::Identifier => match token {
+                Token::Whitespace(_) => {
+                    builder.tokens.append(&mut vec![token.clone()]);
+                    Ok(())
+                },
+                Token::Semicolon(_) => {
+                    builder.tokens.append(&mut vec![token.clone()]);
+                    let mut raw: String = "".to_string();
+                    for token in builder.tokens.iter() {
+                        raw.push_str(&token.unwrap());
+                    }
+                    let s = builder.subname.as_mut().unwrap();
+                    let id = Identifier { raw: s.clone() };
+                    let call = SubroutineCall {
+                        id: id.clone(),
+                        raw,
+                    };
+                    let chunk = ProgramChunk::SubroutineCall(id, call);
+                    self.program.chunks.append(&mut vec![chunk]);
+                    self.call_builder = None;
+                    self.state = ProgramState::Neutral;
+                    Ok(())
+                },
+                _ => Err(format!("Programming error: unreachable destination. Only Whitespace or Semicolons allowed after Identifier.")),
+            },
+            CallBuilderState::Semicolon => Err(format!("Programming error: unreachable destination. The builder should be dropped as soon as the semicolon is consumed.")),
+        }
+    }
+
+    fn consume_state_building_def(&mut self, token: &Token) -> Result<(), String> {
+        let &mut _ = self.def_builder.as_mut().unwrap();
+        Ok(())
+    }
+
+    fn consume(&mut self, token: &Token) -> Result<(), String> {
+        match self.state {
+            ProgramState::Neutral => self.consume_state_neutral(token),
+            ProgramState::BuildingRaw => self.consume_state_building_raw(token),
+            ProgramState::BuildingCall => self.consume_state_building_call(token),
+            ProgramState::BuildingDef => self.consume_state_building_def(token),
         }
     }
 
