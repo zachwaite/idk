@@ -1,3 +1,5 @@
+use std::io::Chain;
+
 #[derive(Debug, Clone)]
 pub enum Token {
     Semicolon(String),
@@ -31,26 +33,20 @@ fn find_token(fragment: &str) -> Option<Token> {
         "begsr" => Some(Token::Begsr(fragment.to_string())),
         "endsr" => Some(Token::Endsr(fragment.to_string())),
         "exsr" => Some(Token::Exsr(fragment.to_string())),
-        _ => None
+        _ => None,
     }
 }
 
-fn find_token_candidate(fragment: &str) -> Option<()> {
-    let candidates = vec![
-        ";",
-        " ",
-        "\n",
-        "begsr",
-        "endsr",
-        "exsr",
-    ];
+fn token_candidate_exists(fragment: &str) -> bool {
+    let candidates = vec![";", " ", "\n", "begsr", "endsr", "exsr"];
+    let mut out: bool = false;
     for c in candidates {
         let frag = fragment.to_lowercase();
         if c.starts_with(&frag) {
-            return Some(())
+            out = true;
         }
     }
-    None
+    out
 }
 
 pub fn scan(input_string: &str) -> Vec<Token> {
@@ -74,18 +70,14 @@ pub fn scan(input_string: &str) -> Vec<Token> {
                 out.append(&mut vec![token]);
                 buf = vec![];
                 true
-            },
+            }
             None => {
-                match find_token_candidate(&fragment) {
-                    Some(()) => {
-                        // pass
-                        true
-                    },
-                    None => {
-                        rawbuf.append(&mut buf);
-                        buf = vec![];
-                        true
-                    }
+                if token_candidate_exists(&fragment) {
+                    true
+                } else {
+                    rawbuf.append(&mut buf);
+                    buf = vec![];
+                    true
                 }
             }
         };
