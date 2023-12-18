@@ -90,12 +90,14 @@ struct RawBuilder {
 }
 
 impl RawBuilder {
-    fn new(input: Token) -> Self {
+    fn try_new(input: Token) -> Result<Self, String> {
         match input {
-            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_)| Token::Semicolon(_) => Self {
+            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_)| Token::Semicolon(_) => Ok(Self {
                 tokens: vec![input],
-            },
-            _ => unimplemented!(), // TODO: builders should return Option
+            }),
+            Token::Begsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Begsr token")),
+            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Endsr token")),
+            Token::Exsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Exsr token")),
         }
     }
 }
@@ -109,15 +111,20 @@ struct DefBuilder {
 }
 
 impl DefBuilder {
-    fn new(begsr: Token) -> Self {
+    fn try_new(begsr: Token) -> Result<Self, String> {
         match &begsr {
-            Token::Begsr(s) => Self {
+            Token::Begsr(s) => Ok(Self {
                 begsr: s.clone(),
                 subname: None,
                 semicolon: None,
                 tokens: vec![begsr.clone()],
-            },
-            _ => unimplemented!(), // TODO: builders should return Option
+            }),
+            Token::Raw(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Raw token")),
+            Token::Newline(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Newline token")),
+            Token::Whitespace(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Whitespace token")) ,
+            Token::Semicolon(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Semicolon token")),
+            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Endsr token")),
+            Token::Exsr(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Exsr token")),
         }
     }
 }
@@ -138,14 +145,19 @@ struct CallBuilder {
 }
 
 impl CallBuilder {
-    fn new(exsr: Token) -> Self {
+    fn try_new(exsr: Token) -> Result<Self, String> {
         match &exsr {
-            Token::Exsr(s) => Self {
+            Token::Exsr(s) => Ok(Self {
                 state: CallBuilderState::Exsr,
                 subname: None,
                 tokens: vec![exsr.clone()],
-            },
-            _ => unimplemented!(), // TODO: builders should return Option
+            }),
+            Token::Raw(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Raw token")),
+            Token::Newline(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Newline token")),
+            Token::Whitespace(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Whitespace token")) ,
+            Token::Semicolon(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Semicolon token")),
+            Token::Begsr(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Begsr token")),
+            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Endsr token")),
         }
     }
 }
@@ -182,17 +194,17 @@ impl ProgramBuilder {
         match token {
             Token::Begsr(_) => {
                 self.state = ProgramState::BuildingDef;
-                self.def_builder = Some(DefBuilder::new(token.clone()));
+                self.def_builder = Some(DefBuilder::try_new(token.clone())?);
                 Ok(())
             }
             Token::Exsr(_) => {
                 self.state = ProgramState::BuildingCall;
-                self.call_builder = Some(CallBuilder::new(token.clone()));
+                self.call_builder = Some(CallBuilder::try_new(token.clone())?);
                 Ok(())
             }
             Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) | Token::Semicolon(_) => {
                 self.state = ProgramState::BuildingRaw;
-                self.raw_builder = Some(RawBuilder::new(token.clone()));
+                self.raw_builder = Some(RawBuilder::try_new(token.clone())?);
                 Ok(())
             }
             Token::Endsr(_) => Err(format!("Syntax error: Encounterd Endsr without Begsr")),
@@ -316,7 +328,7 @@ pub fn debug(input: &str) -> Result<String, String> {
     let tokens = scan(input);
     let pgm = parse(&tokens).unwrap();
     dbg!("{}", pgm);
-    println!("TODO: remove unimplemented()");
     println!("TODO: implement consume_state_building_def");
+    println!("TODO: add custom errors. Maybe thiserror?");
     Ok("".to_string())
 }
