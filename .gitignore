@@ -1,4 +1,5 @@
 /target
 *.swp
+nocommit**
 *.nocommit
 Cargo.lock
