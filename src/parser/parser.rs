@@ -92,12 +92,20 @@ struct RawBuilder {
 impl RawBuilder {
     fn try_new(input: Token) -> Result<Self, String> {
         match input {
-            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_)| Token::Semicolon(_) => Ok(Self {
-                tokens: vec![input],
-            }),
-            Token::Begsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Begsr token")),
-            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Endsr token")),
-            Token::Exsr(_) => Err(format!("Parse error: Attempted to construct RawBuilder from Exsr token")),
+            Token::Raw(_) | Token::Newline(_) | Token::Whitespace(_) | Token::Semicolon(_) => {
+                Ok(Self {
+                    tokens: vec![input],
+                })
+            }
+            Token::Begsr(_) => Err(format!(
+                "Parse error: Attempted to construct RawBuilder from Begsr token"
+            )),
+            Token::Endsr(_) => Err(format!(
+                "Parse error: Attempted to construct RawBuilder from Endsr token"
+            )),
+            Token::Exsr(_) => Err(format!(
+                "Parse error: Attempted to construct RawBuilder from Exsr token"
+            )),
         }
     }
 }
@@ -119,12 +127,24 @@ impl DefBuilder {
                 semicolon: None,
                 tokens: vec![begsr.clone()],
             }),
-            Token::Raw(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Raw token")),
-            Token::Newline(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Newline token")),
-            Token::Whitespace(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Whitespace token")) ,
-            Token::Semicolon(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Semicolon token")),
-            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Endsr token")),
-            Token::Exsr(_) => Err(format!("Parse error: Attempted to construct DefBuilder from Exsr token")),
+            Token::Raw(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Raw token"
+            )),
+            Token::Newline(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Newline token"
+            )),
+            Token::Whitespace(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Whitespace token"
+            )),
+            Token::Semicolon(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Semicolon token"
+            )),
+            Token::Endsr(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Endsr token"
+            )),
+            Token::Exsr(_) => Err(format!(
+                "Parse error: Attempted to construct DefBuilder from Exsr token"
+            )),
         }
     }
 }
@@ -152,12 +172,24 @@ impl CallBuilder {
                 subname: None,
                 tokens: vec![exsr.clone()],
             }),
-            Token::Raw(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Raw token")),
-            Token::Newline(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Newline token")),
-            Token::Whitespace(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Whitespace token")) ,
-            Token::Semicolon(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Semicolon token")),
-            Token::Begsr(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Begsr token")),
-            Token::Endsr(_) => Err(format!("Parse error: Attempted to construct CallBuilder from Endsr token")),
+            Token::Raw(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Raw token"
+            )),
+            Token::Newline(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Newline token"
+            )),
+            Token::Whitespace(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Whitespace token"
+            )),
+            Token::Semicolon(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Semicolon token"
+            )),
+            Token::Begsr(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Begsr token"
+            )),
+            Token::Endsr(_) => Err(format!(
+                "Parse error: Attempted to construct CallBuilder from Endsr token"
+            )),
         }
     }
 }
