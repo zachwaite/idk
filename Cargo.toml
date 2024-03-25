@@ -1,0 +1,22 @@
+[workspace]
+resolver = "2"
+
+members = [
+  "crates/pfdds-lexer", # lib
+  # "crates/pfdds-parser",     # lib
+  # "crates/lfdds-parser",     # lib
+  # "crates/dspf-parser",      # lib
+  # "crates/rpgle-parser",     # lib
+  # "crates/rpgle-cst",        # lib
+]
+
+[workspace.package]
+rust-version = "1.76"
+edition = "2021"
+license = "MIT"
+authors = ["Zach Waite<zach@waiteperspectives.com>"]
+
+[workspace.dependencies]
+anyhow = "1.0.81"
+thiserror = "1.0.58"
+clap = { version = "4.5.3", features = ["derive"] }
