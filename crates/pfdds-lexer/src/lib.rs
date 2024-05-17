@@ -32,6 +32,53 @@ pub enum CommentType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+pub enum NameType {
+    RecordFormat,
+    Field,
+    Key,
+    SelectOmit,
+}
+
+impl fmt::Display for NameType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let s = match self {
+            Self::RecordFormat => format!("RecordFormat"),
+            Self::Field => format!("Field"),
+            Self::Key => format!("Key"),
+            Self::SelectOmit => format!("SelectOmit"),
+        };
+        write!(f, "{}", s)
+    }
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum ReferenceType {
+    Reference,
+    NotReference,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum LengthType {
+    Length,
+    NoLength,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum DataType {
+    NotSpecified,
+    PackedDecimal,
+    ZonedDecimal,
+    Binary,
+    FloatingPoint,
+    Character,
+    Hexadecimal,
+    Date,
+    Time,
+    Timestamp,
+    BinaryCharacter,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenKind {
     // error
     Idk(LexerException),
@@ -43,8 +90,14 @@ pub enum TokenKind {
     Sequence,
     FormType,
     Comment(CommentType),
-    // Condition, NA for physical files
+    Condition, // NA for physical files
     SpecType(SpecType),
+    NameType(NameType),
+    Reserved,
+    Name,
+    ReferenceType(ReferenceType),
+    Length(LengthType),
+    DataType(DataType),
     // // identifiers and literals
     // Ident,
     // Int,
@@ -90,6 +143,13 @@ impl fmt::Display for TokenKind {
             TokenKind::FormType => format!("FormType"),
             TokenKind::Comment(_) => format!("Comment"),
             TokenKind::SpecType(_) => format!("SpecType"),
+            TokenKind::Condition => format!("Condition"),
+            TokenKind::NameType(_) => format!("NameType"),
+            TokenKind::Reserved => format!("Reserved"),
+            TokenKind::Name => format!("Name"),
+            TokenKind::ReferenceType(_) => format!("ReferenceType"),
+            TokenKind::Length(_) => format!("LengthType"),
+            TokenKind::DataType(_) => format!("DataType"),
         };
         write!(f, "{}", s)
     }
@@ -381,12 +441,444 @@ impl Lexer {
         }
     }
 
+    fn read_condition(&self) -> Result<Token, IllegalLexerState> {
+        let c = 16;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        if end_col == c {
+            Ok(Token::new(TokenKind::Condition, &txt, span))
+        } else {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            Ok(tok)
+        }
+    }
+
+    fn read_name_type(&self) -> Result<Token, IllegalLexerState> {
+        let c = 17;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = NameType::Field;
+                Ok(Token::new(TokenKind::NameType(typ), &txt, span))
+            }
+            ['R'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = NameType::RecordFormat;
+                Ok(Token::new(TokenKind::NameType(typ), &txt, span))
+            }
+            ['K'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = NameType::Key;
+                Ok(Token::new(TokenKind::NameType(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::IncompletePositionalEntry;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
+        }
+    }
+
+    fn read_reserved(&self) -> Result<Token, IllegalLexerState> {
+        let c = 18;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                Ok(Token::new(TokenKind::Reserved, &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::IncompletePositionalEntry;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
+        }
+    }
+
+    fn read_name(&self) -> Result<Token, IllegalLexerState> {
+        let c = 28;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        if end_col == c {
+            Ok(Token::new(TokenKind::Name, &txt, span))
+        } else {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            Ok(tok)
+        }
+    }
+
+    fn read_reference_type(&self) -> Result<Token, IllegalLexerState> {
+        let c = 29;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = ReferenceType::NotReference;
+                Ok(Token::new(TokenKind::ReferenceType(typ), &txt, span))
+            }
+            ['R'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = ReferenceType::NotReference;
+                Ok(Token::new(TokenKind::ReferenceType(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::IncompletePositionalEntry;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
+        }
+    }
+
+    fn read_length(&self) -> Result<Token, IllegalLexerState> {
+        let c = 34;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' ', ' ', ' ', ' ', ' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = LengthType::NoLength;
+                Ok(Token::new(TokenKind::Length(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = LengthType::NoLength;
+                Ok(Token::new(TokenKind::Length(typ), &txt, span))
+            }
+        }
+    }
+
+    fn read_data_type(&self) -> Result<Token, IllegalLexerState> {
+        let c = 35;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::NotSpecified;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['P'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::PackedDecimal;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['S'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::ZonedDecimal;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['B'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Binary;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['F'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::FloatingPoint;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['A'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Character;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['H'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Hexadecimal;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['L'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Date;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['T'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Time;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['Z'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::Timestamp;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            ['5'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DataType::BinaryCharacter;
+                Ok(Token::new(TokenKind::DataType(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::IncompletePositionalEntry;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
+        }
+    }
+
     pub fn next_token(&self) -> Result<Token, IllegalLexerState> {
         let col = self.state.borrow().position.col;
         match col {
             0 => self.read_sequence(),
             5 => self.read_form_type(),
             6 => self.read_comment(),
+            7 => self.read_condition(),
+            16 => self.read_name_type(),
+            17 => self.read_reserved(),
+            18 => self.read_name(),
+            28 => self.read_reference_type(),
+            29 => self.read_length(),
+            34 => self.read_data_type(),
             // 45 => self.read_funcs(),
             _ => Err(IllegalLexerState::NotImplemented),
         }
@@ -562,6 +1054,106 @@ mod tests {
                     start_col: 6,
                     end_row: 4,
                     end_col: 80,
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start_row: 5,
+                    start_col: 0,
+                    end_row: 5,
+                    end_col: 5,
+                },
+            ),
+            Token::new(
+                TokenKind::FormType,
+                "A",
+                Span {
+                    start_row: 5,
+                    start_col: 5,
+                    end_row: 5,
+                    end_col: 6,
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::NoComment),
+                " ",
+                Span {
+                    start_row: 5,
+                    start_col: 6,
+                    end_row: 5,
+                    end_col: 7,
+                },
+            ),
+            Token::new(
+                TokenKind::Condition,
+                "         ",
+                Span {
+                    start_row: 5,
+                    start_col: 7,
+                    end_row: 5,
+                    end_col: 16,
+                },
+            ),
+            Token::new(
+                TokenKind::NameType(NameType::RecordFormat),
+                "R",
+                Span {
+                    start_row: 5,
+                    start_col: 16,
+                    end_row: 5,
+                    end_col: 17,
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start_row: 5,
+                    start_col: 17,
+                    end_row: 5,
+                    end_col: 18,
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                "BORNFMT   ",
+                Span {
+                    start_row: 5,
+                    start_col: 18,
+                    end_row: 5,
+                    end_col: 28,
+                },
+            ),
+            Token::new(
+                TokenKind::ReferenceType(ReferenceType::NotReference),
+                " ",
+                Span {
+                    start_row: 5,
+                    start_col: 28,
+                    end_row: 5,
+                    end_col: 29,
+                },
+            ),
+            Token::new(
+                TokenKind::Length(LengthType::NoLength),
+                "     ",
+                Span {
+                    start_row: 5,
+                    start_col: 29,
+                    end_row: 5,
+                    end_col: 34,
+                },
+            ),
+            Token::new(
+                TokenKind::DataType(DataType::NotSpecified),
+                " ",
+                Span {
+                    start_row: 5,
+                    start_col: 34,
+                    end_row: 5,
+                    end_col: 35,
                 },
             ),
         ];
