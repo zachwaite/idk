@@ -15,7 +15,20 @@ pub enum IllegalLexerState {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum LexerException {
     IncompletePositionalEntry,
+    UnknownFormType,
     UnknownCommentPrefix,
+    UnknownNameType,
+    UnknownReservedValue,
+    UnknownReferenceType,
+    UnknownDataType,
+    UnknownUsageType,
+    NotImplemented,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FormType {
+    Blank,
+    A,
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
@@ -79,6 +92,21 @@ pub enum DataType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+pub enum DecimalType {
+    NoDecimal,
+    Decimal,
+    DecimalOverride,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum UsageType {
+    Blank,       // Blank = B or nothing if not a field row
+    InputOutput, // B
+    Input,       // I
+    Neither,     // N
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenKind {
     // error
     Idk(LexerException),
@@ -88,7 +116,7 @@ pub enum TokenKind {
 
     // positional tokens
     Sequence,
-    FormType,
+    FormType(FormType),
     Comment(CommentType),
     Condition, // NA for physical files
     SpecType(SpecType),
@@ -98,6 +126,11 @@ pub enum TokenKind {
     ReferenceType(ReferenceType),
     Length(LengthType),
     DataType(DataType),
+    Decimal(DecimalType),
+    Usage(UsageType),
+    Location,
+    PlusContinuation,
+    MinusContinuation,
     // // identifiers and literals
     // Ident,
     // Int,
@@ -140,7 +173,7 @@ impl fmt::Display for TokenKind {
             Self::Idk(_) => format!("Idk"),
             Self::Eof => format!("Eof"),
             TokenKind::Sequence => format!("Sequence"),
-            TokenKind::FormType => format!("FormType"),
+            TokenKind::FormType(_) => format!("FormType"),
             TokenKind::Comment(_) => format!("Comment"),
             TokenKind::SpecType(_) => format!("SpecType"),
             TokenKind::Condition => format!("Condition"),
@@ -150,6 +183,11 @@ impl fmt::Display for TokenKind {
             TokenKind::ReferenceType(_) => format!("ReferenceType"),
             TokenKind::Length(_) => format!("LengthType"),
             TokenKind::DataType(_) => format!("DataType"),
+            TokenKind::Decimal(_) => format!("Decimal"),
+            TokenKind::Usage(_) => format!("Usage"),
+            TokenKind::Location => format!("Location"),
+            TokenKind::PlusContinuation => format!("PlusContinuation"),
+            TokenKind::MinusContinuation => format!("MinusContinuation"),
         };
         write!(f, "{}", s)
     }
@@ -371,12 +409,49 @@ impl Lexer {
             end_col,
         };
         let txt = self.text_at(span);
-        if end_col == c {
-            Ok(Token::new(TokenKind::FormType, &txt, span))
-        } else {
+        // guard
+        if end_col != c {
             let ex = LexerException::IncompletePositionalEntry;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
-            Ok(tok)
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = FormType::Blank;
+                Ok(Token::new(TokenKind::FormType(typ), &txt, span))
+            }
+            ['A'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = FormType::A;
+                Ok(Token::new(TokenKind::FormType(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::UnknownFormType;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
         }
     }
 
@@ -526,7 +601,7 @@ impl Lexer {
                     end_col,
                 };
                 let txt = self.text_at(span);
-                let ex = LexerException::IncompletePositionalEntry;
+                let ex = LexerException::UnknownNameType;
                 let tok = Token::new(TokenKind::Idk(ex), &txt, span);
                 return Ok(tok);
             }
@@ -573,7 +648,7 @@ impl Lexer {
                     end_col,
                 };
                 let txt = self.text_at(span);
-                let ex = LexerException::IncompletePositionalEntry;
+                let ex = LexerException::UnknownReservedValue;
                 let tok = Token::new(TokenKind::Idk(ex), &txt, span);
                 return Ok(tok);
             }
@@ -654,7 +729,7 @@ impl Lexer {
                     end_col,
                 };
                 let txt = self.text_at(span);
-                let ex = LexerException::IncompletePositionalEntry;
+                let ex = LexerException::UnknownReferenceType;
                 let tok = Token::new(TokenKind::Idk(ex), &txt, span);
                 return Ok(tok);
             }
@@ -702,7 +777,7 @@ impl Lexer {
                     end_col,
                 };
                 let txt = self.text_at(span);
-                let typ = LengthType::NoLength;
+                let typ = LengthType::Length;
                 Ok(Token::new(TokenKind::Length(typ), &txt, span))
             }
         }
@@ -859,10 +934,175 @@ impl Lexer {
                     end_col,
                 };
                 let txt = self.text_at(span);
-                let ex = LexerException::IncompletePositionalEntry;
+                let ex = LexerException::UnknownDataType;
                 let tok = Token::new(TokenKind::Idk(ex), &txt, span);
                 return Ok(tok);
             }
+        }
+    }
+
+    fn read_decimal(&self) -> Result<Token, IllegalLexerState> {
+        let c = 37;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            ['+', _] | ['-', _] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DecimalType::DecimalOverride;
+                Ok(Token::new(TokenKind::Decimal(typ), &txt, span))
+            }
+            [' ', ' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DecimalType::NoDecimal;
+                Ok(Token::new(TokenKind::Decimal(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = DecimalType::Decimal;
+                Ok(Token::new(TokenKind::Decimal(typ), &txt, span))
+            }
+        }
+    }
+
+    fn read_usage(&self) -> Result<Token, IllegalLexerState> {
+        let c = 38;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        // guard
+        if end_col != c {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            return Ok(tok);
+        }
+        let start_pos = Position::index_at(row, start_col);
+        let end_pos = Position::index_at(row, end_col);
+        match self.input[start_pos..end_pos] {
+            [' '] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = UsageType::Blank;
+                Ok(Token::new(TokenKind::Usage(typ), &txt, span))
+            }
+            ['I'] => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let typ = UsageType::Input;
+                Ok(Token::new(TokenKind::Usage(typ), &txt, span))
+            }
+            _ => {
+                let span = Span {
+                    start_row: row,
+                    start_col,
+                    end_row: row,
+                    end_col,
+                };
+                let txt = self.text_at(span);
+                let ex = LexerException::UnknownUsageType;
+                let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+                return Ok(tok);
+            }
+        }
+    }
+
+    fn read_location(&self) -> Result<Token, IllegalLexerState> {
+        let c = 44;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        if end_col == c {
+            Ok(Token::new(TokenKind::Location, &txt, span))
+        } else {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            Ok(tok)
+        }
+    }
+
+    fn read_keyword_entries(&self) -> Result<Token, IllegalLexerState> {
+        let c = 80;
+        let start_col = self.state.borrow().position.col;
+        let row = self.state.borrow().position.row;
+        self.read_until_column(c)?;
+        let end_col = self.state.borrow().position.col;
+        let span = Span {
+            start_row: row,
+            start_col,
+            end_row: row,
+            end_col,
+        };
+        let txt = self.text_at(span);
+        if end_col == c {
+            // TODO: implement
+            let ex = LexerException::NotImplemented;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            self.read_until_next_line()?;
+            Ok(tok)
+        } else {
+            let ex = LexerException::IncompletePositionalEntry;
+            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+            Ok(tok)
         }
     }
 
@@ -879,7 +1119,10 @@ impl Lexer {
             28 => self.read_reference_type(),
             29 => self.read_length(),
             34 => self.read_data_type(),
-            // 45 => self.read_funcs(),
+            35 => self.read_decimal(),
+            37 => self.read_usage(),
+            38 => self.read_location(),
+            44 => self.read_keyword_entries(),
             _ => Err(IllegalLexerState::NotImplemented),
         }
     }
@@ -899,13 +1142,11 @@ mod tests {
      A**************************************************************************
      A          R BORNFMT                   TEXT('Cow Born Fmt')                
      A            ID             8  0       TEXT('Database ID')                 
-     A            EID            8  0       TEXT('Event ID')                    
      A            BNAME          8          TEXT('Barn Name')                   
-     A            BDAT           8  0       TEXT('Birth Date')                  
-     A* PRIMARY KEY                                                             
      A          K ID                                                            
 "#[1..];
         let expected: Vec<Token> = vec![
+            // row 0
             Token::new(
                 TokenKind::Sequence,
                 "00001",
@@ -917,7 +1158,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 0,
@@ -936,6 +1177,7 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            // row 1
             Token::new(
                 TokenKind::Sequence,
                 "00002",
@@ -947,7 +1189,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 1,
@@ -966,6 +1208,7 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            // row 2
             Token::new(
                 TokenKind::Sequence,
                 "     ",
@@ -977,7 +1220,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 2,
@@ -996,6 +1239,7 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            // row 4
             Token::new(
                 TokenKind::Sequence,
                 "     ",
@@ -1007,7 +1251,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 3,
@@ -1026,6 +1270,7 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            // row 4
             Token::new(
                 TokenKind::Sequence,
                 "     ",
@@ -1037,7 +1282,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 4,
@@ -1056,6 +1301,7 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            // row 5
             Token::new(
                 TokenKind::Sequence,
                 "     ",
@@ -1067,7 +1313,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType,
+                TokenKind::FormType(FormType::A),
                 "A",
                 Span {
                     start_row: 5,
@@ -1154,6 +1400,469 @@ mod tests {
                     start_col: 34,
                     end_row: 5,
                     end_col: 35,
+                },
+            ),
+            Token::new(
+                TokenKind::Decimal(DecimalType::NoDecimal),
+                "  ",
+                Span {
+                    start_row: 5,
+                    start_col: 35,
+                    end_row: 5,
+                    end_col: 37,
+                },
+            ),
+            Token::new(
+                TokenKind::Usage(UsageType::Blank),
+                " ",
+                Span {
+                    start_row: 5,
+                    start_col: 37,
+                    end_row: 5,
+                    end_col: 38,
+                },
+            ),
+            Token::new(
+                TokenKind::Location,
+                "      ",
+                Span {
+                    start_row: 5,
+                    start_col: 38,
+                    end_row: 5,
+                    end_col: 44,
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "TEXT('Cow Born Fmt')                ",
+                Span {
+                    start_row: 5,
+                    start_col: 44,
+                    end_row: 5,
+                    end_col: 80,
+                },
+            ),
+            // row 6
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start_row: 6,
+                    start_col: 0,
+                    end_row: 6,
+                    end_col: 5,
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::A),
+                "A",
+                Span {
+                    start_row: 6,
+                    start_col: 5,
+                    end_row: 6,
+                    end_col: 6,
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::NoComment),
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 6,
+                    end_row: 6,
+                    end_col: 7,
+                },
+            ),
+            Token::new(
+                TokenKind::Condition,
+                "         ",
+                Span {
+                    start_row: 6,
+                    start_col: 7,
+                    end_row: 6,
+                    end_col: 16,
+                },
+            ),
+            Token::new(
+                TokenKind::NameType(NameType::Field),
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 16,
+                    end_row: 6,
+                    end_col: 17,
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 17,
+                    end_row: 6,
+                    end_col: 18,
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                "ID        ",
+                Span {
+                    start_row: 6,
+                    start_col: 18,
+                    end_row: 6,
+                    end_col: 28,
+                },
+            ),
+            Token::new(
+                TokenKind::ReferenceType(ReferenceType::NotReference),
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 28,
+                    end_row: 6,
+                    end_col: 29,
+                },
+            ),
+            Token::new(
+                TokenKind::Length(LengthType::Length),
+                "    8",
+                Span {
+                    start_row: 6,
+                    start_col: 29,
+                    end_row: 6,
+                    end_col: 34,
+                },
+            ),
+            Token::new(
+                TokenKind::DataType(DataType::NotSpecified),
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 34,
+                    end_row: 6,
+                    end_col: 35,
+                },
+            ),
+            Token::new(
+                TokenKind::Decimal(DecimalType::Decimal),
+                " 0",
+                Span {
+                    start_row: 6,
+                    start_col: 35,
+                    end_row: 6,
+                    end_col: 37,
+                },
+            ),
+            Token::new(
+                TokenKind::Usage(UsageType::Blank),
+                " ",
+                Span {
+                    start_row: 6,
+                    start_col: 37,
+                    end_row: 6,
+                    end_col: 38,
+                },
+            ),
+            Token::new(
+                TokenKind::Location,
+                "      ",
+                Span {
+                    start_row: 6,
+                    start_col: 38,
+                    end_row: 6,
+                    end_col: 44,
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "TEXT('Database ID')                 ",
+                Span {
+                    start_row: 6,
+                    start_col: 44,
+                    end_row: 6,
+                    end_col: 80,
+                },
+            ),
+            // row 7
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start_row: 7,
+                    start_col: 0,
+                    end_row: 7,
+                    end_col: 5,
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::A),
+                "A",
+                Span {
+                    start_row: 7,
+                    start_col: 5,
+                    end_row: 7,
+                    end_col: 6,
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::NoComment),
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 6,
+                    end_row: 7,
+                    end_col: 7,
+                },
+            ),
+            Token::new(
+                TokenKind::Condition,
+                "         ",
+                Span {
+                    start_row: 7,
+                    start_col: 7,
+                    end_row: 7,
+                    end_col: 16,
+                },
+            ),
+            Token::new(
+                TokenKind::NameType(NameType::Field),
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 16,
+                    end_row: 7,
+                    end_col: 17,
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 17,
+                    end_row: 7,
+                    end_col: 18,
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                "BNAME     ",
+                Span {
+                    start_row: 7,
+                    start_col: 18,
+                    end_row: 7,
+                    end_col: 28,
+                },
+            ),
+            Token::new(
+                TokenKind::ReferenceType(ReferenceType::NotReference),
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 28,
+                    end_row: 7,
+                    end_col: 29,
+                },
+            ),
+            Token::new(
+                TokenKind::Length(LengthType::Length),
+                "    8",
+                Span {
+                    start_row: 7,
+                    start_col: 29,
+                    end_row: 7,
+                    end_col: 34,
+                },
+            ),
+            Token::new(
+                TokenKind::DataType(DataType::NotSpecified),
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 34,
+                    end_row: 7,
+                    end_col: 35,
+                },
+            ),
+            Token::new(
+                TokenKind::Decimal(DecimalType::NoDecimal),
+                "  ",
+                Span {
+                    start_row: 7,
+                    start_col: 35,
+                    end_row: 7,
+                    end_col: 37,
+                },
+            ),
+            Token::new(
+                TokenKind::Usage(UsageType::Blank),
+                " ",
+                Span {
+                    start_row: 7,
+                    start_col: 37,
+                    end_row: 7,
+                    end_col: 38,
+                },
+            ),
+            Token::new(
+                TokenKind::Location,
+                "      ",
+                Span {
+                    start_row: 7,
+                    start_col: 38,
+                    end_row: 7,
+                    end_col: 44,
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "TEXT('Barn Name')                   ",
+                Span {
+                    start_row: 7,
+                    start_col: 44,
+                    end_row: 7,
+                    end_col: 80,
+                },
+            ),
+            // row 8
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start_row: 8,
+                    start_col: 0,
+                    end_row: 8,
+                    end_col: 5,
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::A),
+                "A",
+                Span {
+                    start_row: 8,
+                    start_col: 5,
+                    end_row: 8,
+                    end_col: 6,
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::NoComment),
+                " ",
+                Span {
+                    start_row: 8,
+                    start_col: 6,
+                    end_row: 8,
+                    end_col: 7,
+                },
+            ),
+            Token::new(
+                TokenKind::Condition,
+                "         ",
+                Span {
+                    start_row: 8,
+                    start_col: 7,
+                    end_row: 8,
+                    end_col: 16,
+                },
+            ),
+            Token::new(
+                TokenKind::NameType(NameType::Key),
+                "K",
+                Span {
+                    start_row: 8,
+                    start_col: 16,
+                    end_row: 8,
+                    end_col: 17,
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start_row: 8,
+                    start_col: 17,
+                    end_row: 8,
+                    end_col: 18,
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                "ID        ",
+                Span {
+                    start_row: 8,
+                    start_col: 18,
+                    end_row: 8,
+                    end_col: 28,
+                },
+            ),
+            Token::new(
+                TokenKind::ReferenceType(ReferenceType::NotReference),
+                " ",
+                Span {
+                    start_row: 8,
+                    start_col: 28,
+                    end_row: 8,
+                    end_col: 29,
+                },
+            ),
+            Token::new(
+                TokenKind::Length(LengthType::NoLength),
+                "     ",
+                Span {
+                    start_row: 8,
+                    start_col: 29,
+                    end_row: 8,
+                    end_col: 34,
+                },
+            ),
+            Token::new(
+                TokenKind::DataType(DataType::NotSpecified),
+                " ",
+                Span {
+                    start_row: 8,
+                    start_col: 34,
+                    end_row: 8,
+                    end_col: 35,
+                },
+            ),
+            Token::new(
+                TokenKind::Decimal(DecimalType::NoDecimal),
+                "  ",
+                Span {
+                    start_row: 8,
+                    start_col: 35,
+                    end_row: 8,
+                    end_col: 37,
+                },
+            ),
+            Token::new(
+                TokenKind::Usage(UsageType::Blank),
+                " ",
+                Span {
+                    start_row: 8,
+                    start_col: 37,
+                    end_row: 8,
+                    end_col: 38,
+                },
+            ),
+            Token::new(
+                TokenKind::Location,
+                "      ",
+                Span {
+                    start_row: 8,
+                    start_col: 38,
+                    end_row: 8,
+                    end_col: 44,
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                    ",
+                Span {
+                    start_row: 8,
+                    start_col: 44,
+                    end_row: 8,
+                    end_col: 80,
                 },
             ),
         ];
