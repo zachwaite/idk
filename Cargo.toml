@@ -3,7 +3,7 @@ resolver = "2"
 
 members = [
   "crates/pfdds-lexer", # lib
-  # "crates/pfdds-parser",     # lib
+  "crates/pfdds-parser",     # lib
   # "crates/lfdds-parser",     # lib
   # "crates/dspf-parser",      # lib
   # "crates/rpgle-parser",     # lib
