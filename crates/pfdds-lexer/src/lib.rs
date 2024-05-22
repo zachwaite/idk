@@ -113,6 +113,7 @@ pub enum TokenKind {
 
     // end
     Eof,
+    Eol,
 
     // positional tokens
     Sequence,
@@ -172,6 +173,7 @@ impl fmt::Display for TokenKind {
         let s: String = match self {
             Self::Idk(_) => format!("Idk"),
             Self::Eof => format!("Eof"),
+            Self::Eol => format!("Eol"),
             TokenKind::Sequence => format!("Sequence"),
             TokenKind::FormType(_) => format!("FormType"),
             TokenKind::Comment(_) => format!("Comment"),
@@ -211,11 +213,68 @@ impl fmt::Display for Span {
     }
 }
 
+impl Span {
+    pub fn empty() -> Self {
+        Self {
+            start_row: 0,
+            start_col: 0,
+            end_row: 0,
+            end_col: 0,
+        }
+    }
+
+    pub fn to_cover_both(span1: Self, span2: Self) -> Self {
+        let (start_row, start_col) = if span1.start_row < span2.start_row {
+            (span1.start_row, span1.start_col)
+        } else if span1.start_row == span2.start_row {
+            if span1.start_col <= span2.start_col {
+                (span1.start_row, span1.start_col)
+            } else {
+                (span2.start_row, span2.start_col)
+            }
+        } else {
+            (span2.start_row, span2.start_col)
+        };
+        let (end_row, end_col) = if span1.end_row > span2.end_row {
+            (span1.end_row, span1.end_col)
+        } else if span1.end_row == span2.end_row {
+            if span1.end_col >= span2.end_col {
+                (span1.end_row, span1.end_col)
+            } else {
+                (span2.end_row, span2.end_col)
+            }
+        } else {
+            (span2.end_row, span2.end_col)
+        };
+        Self {
+            start_row,
+            start_col,
+            end_row,
+            end_col,
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct Token {
     pub kind: TokenKind,
     pub text: String,
     pub span: Span,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub struct TokenMeta {
+    pub kind: TokenKind,
+    pub span: Span,
+}
+
+impl From<&Token> for TokenMeta {
+    fn from(t: &Token) -> Self {
+        Self {
+            kind: t.kind,
+            span: t.span,
+        }
+    }
 }
 
 impl fmt::Display for Token {
@@ -299,12 +358,12 @@ impl fmt::Display for LexerState {
 }
 
 pub struct Lexer {
-    state: RefCell<LexerState>,
-    input: Vec<char>,
+    pub state: RefCell<LexerState>,
+    pub input: Vec<char>,
 }
 
 impl Lexer {
-    fn new(input: &str) -> Self {
+    pub fn new(input: &str) -> Self {
         let position = Position::new();
         let mut read_position = Position::new();
         read_position.advance();
@@ -338,7 +397,7 @@ impl Lexer {
         self.input.get(self.position() + n)
     }
 
-    fn peek_char(&self) -> Option<&char> {
+    fn peek(&self) -> Option<&char> {
         self.peek_n(1)
     }
 
@@ -364,11 +423,8 @@ impl Lexer {
         Ok(())
     }
 
-    fn read_until_next_line(&self) -> Result<(), IllegalLexerState> {
-        // read until the cursor is at beginning of the next line
-        let current_line = self.state.borrow().position.row;
-        let next_line = current_line + 1;
-        while self.ch().is_some() && self.state.borrow().position.row < next_line {
+    fn read_until_end_of_line(&self) -> Result<(), IllegalLexerState> {
+        while !matches!(self.ch(), Some('\n')) {
             self.read_char()?;
         }
         Ok(())
@@ -499,7 +555,7 @@ impl Lexer {
                 };
                 let txt = self.text_at(span);
                 let comment = CommentType::LineComment;
-                self.read_until_next_line()?;
+                self.read_until_end_of_line()?;
                 Ok(Token::new(TokenKind::Comment(comment), &txt, span))
             }
             _ => {
@@ -1097,7 +1153,7 @@ impl Lexer {
             // TODO: implement
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
-            self.read_until_next_line()?;
+            self.read_until_end_of_line()?;
             Ok(tok)
         } else {
             let ex = LexerException::IncompletePositionalEntry;
@@ -1106,7 +1162,26 @@ impl Lexer {
         }
     }
 
+    fn read_newline(&self) -> Result<Token, IllegalLexerState> {
+        let row = self.state.borrow().position.row;
+        let span = Span {
+            start_row: row,
+            start_col: 80,
+            end_row: row,
+            end_col: 81,
+        };
+        let txt = "\n";
+        let tok = Token::new(TokenKind::Eol, txt, span);
+        self.read_char()?; // ok - we guard in next_token()
+        Ok(tok)
+    }
+
     pub fn next_token(&self) -> Result<Token, IllegalLexerState> {
+        // guard for eof
+        if self.peek().is_none() {
+            return Ok(Token::new(TokenKind::Eof, "", Span::empty()));
+        }
+
         let col = self.state.borrow().position.col;
         match col {
             0 => self.read_sequence(),
@@ -1123,6 +1198,7 @@ impl Lexer {
             37 => self.read_usage(),
             38 => self.read_location(),
             44 => self.read_keyword_entries(),
+            80 => self.read_newline(),
             _ => Err(IllegalLexerState::NotImplemented),
         }
     }
@@ -1177,6 +1253,16 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 0,
+                    start_col: 80,
+                    end_row: 0,
+                    end_col: 81,
+                },
+            ),
             // row 1
             Token::new(
                 TokenKind::Sequence,
@@ -1206,6 +1292,16 @@ mod tests {
                     start_col: 6,
                     end_row: 1,
                     end_col: 80,
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 1,
+                    start_col: 80,
+                    end_row: 1,
+                    end_col: 81,
                 },
             ),
             // row 2
@@ -1239,6 +1335,16 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 2,
+                    start_col: 80,
+                    end_row: 2,
+                    end_col: 81,
+                },
+            ),
             // row 4
             Token::new(
                 TokenKind::Sequence,
@@ -1270,6 +1376,16 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 3,
+                    start_col: 80,
+                    end_row: 3,
+                    end_col: 81,
+                },
+            ),
             // row 4
             Token::new(
                 TokenKind::Sequence,
@@ -1299,6 +1415,16 @@ mod tests {
                     start_col: 6,
                     end_row: 4,
                     end_col: 80,
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 4,
+                    start_col: 80,
+                    end_row: 4,
+                    end_col: 81,
                 },
             ),
             // row 5
@@ -1442,6 +1568,16 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 5,
+                    start_col: 80,
+                    end_row: 5,
+                    end_col: 81,
+                },
+            ),
             // row 6
             Token::new(
                 TokenKind::Sequence,
@@ -1581,6 +1717,16 @@ mod tests {
                     start_col: 44,
                     end_row: 6,
                     end_col: 80,
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 6,
+                    start_col: 80,
+                    end_row: 6,
+                    end_col: 81,
                 },
             ),
             // row 7
@@ -1724,6 +1870,16 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start_row: 7,
+                    start_col: 80,
+                    end_row: 7,
+                    end_col: 81,
+                },
+            ),
             // row 8
             Token::new(
                 TokenKind::Sequence,
@@ -1865,13 +2021,14 @@ mod tests {
                     end_col: 80,
                 },
             ),
+            Token::new(TokenKind::Eof, "", Span::empty()),
         ];
         let lexer = Lexer::new(input);
         for pair in expected.into_iter().enumerate() {
+            println!("{}", lexer.state.borrow().position);
             let idx = pair.0.to_string();
             let expected_token = pair.1;
             let observed_token = lexer.next_token().unwrap();
-            println!("{}", lexer.state.borrow().position);
             assert_eq!(observed_token, expected_token, "test #{}", idx);
         }
     }
