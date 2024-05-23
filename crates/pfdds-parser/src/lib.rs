@@ -1,6 +1,8 @@
 mod cst;
 
-use cst::{Comment, DDSEntry, EntryMeta, Idk, Key, PhysicalFile, RecordFormat};
+use cst::{
+    Comment, DDSEntry, EntryAttributeError, EntryMeta, Field, Idk, Key, PhysicalFile, RecordFormat,
+};
 use pfdds_lexer::{
     CommentType, IllegalLexerState, Lexer, NameType, Span, Token, TokenKind, TokenMeta,
 };
@@ -133,9 +135,10 @@ impl<'a> Parser<'a> {
         meta.push_token(self.pop_active_buffer()?); // sequence
         meta.push_token(self.pop_active_buffer()?); // formtype
         let tok = self.pop_active_buffer()?; // comment
+        meta.push_token(tok.clone());
         let comment = Comment {
             text: tok.text.clone(),
-            meta: EntryMeta::from(tok),
+            meta,
         };
         Ok(comment)
     }
@@ -172,10 +175,13 @@ impl<'a> Parser<'a> {
         meta.push_token(self.pop_active_buffer()?); // usage
         meta.push_token(self.pop_active_buffer()?); // location
         meta.push_token(self.pop_active_buffer()?); // idk/keyword args
-        let record_format = RecordFormat {
-            name: tok.text.trim().to_string(),
-            meta,
+        let name = match tok.text.trim() {
+            "" => Err(EntryAttributeError::MissingRequiredAttribute(
+                "name".to_string(),
+            )),
+            n => Ok(n.to_string()),
         };
+        let record_format = RecordFormat { name, meta };
 
         Ok(record_format)
     }
@@ -212,11 +218,58 @@ impl<'a> Parser<'a> {
         meta.push_token(self.pop_active_buffer()?); // usage
         meta.push_token(self.pop_active_buffer()?); // location
         meta.push_token(self.pop_active_buffer()?); // idk/keyword args
-        let key = Key {
-            name: tok.text.trim().to_string(),
-            meta,
+
+        let name = match tok.text.trim() {
+            "" => Err(EntryAttributeError::MissingRequiredAttribute(
+                "name".to_string(),
+            )),
+            n => Ok(n.to_string()),
         };
+        let key = Key { name, meta };
         Ok(key)
+    }
+
+    pub fn parse_field(&self) -> Result<Field, IllegalParserState> {
+        // you are on a sequence token and have a line comment token in front of you
+        let mut meta = EntryMeta::empty();
+
+        // guard
+        if !matches!(
+            self.peek_n(6),
+            Ok(TokenMeta {
+                kind: TokenKind::Name,
+                ..
+            })
+        ) {
+            return Err(IllegalParserState::MissingRequiredTokenError(
+                TokenKind::Name,
+            ));
+        }
+
+        meta.push_token(self.pop_active_buffer()?); // sequence
+        meta.push_token(self.pop_active_buffer()?); // formtype
+        meta.push_token(self.pop_active_buffer()?); // comment
+        meta.push_token(self.pop_active_buffer()?); // condition
+        meta.push_token(self.pop_active_buffer()?); // nametype
+        meta.push_token(self.pop_active_buffer()?); // reserved
+        let tok = self.pop_active_buffer()?; // name
+        meta.push_token(tok.clone());
+        meta.push_token(self.pop_active_buffer()?); // referencetype
+        meta.push_token(self.pop_active_buffer()?); // lengthtype
+        meta.push_token(self.pop_active_buffer()?); // datatype
+        meta.push_token(self.pop_active_buffer()?); // decimal
+        meta.push_token(self.pop_active_buffer()?); // usage
+        meta.push_token(self.pop_active_buffer()?); // location
+        meta.push_token(self.pop_active_buffer()?); // idk/keyword args
+                                                    //
+        let name = match tok.text.trim() {
+            "" => Err(EntryAttributeError::MissingRequiredAttribute(
+                "name".to_string(),
+            )),
+            n => Ok(n.to_string()),
+        };
+        let field = Field { name, meta };
+        Ok(field)
     }
 
     // parsers - level 1 (DDSEntry)
@@ -266,9 +319,17 @@ impl<'a> Parser<'a> {
             return Ok(DDSEntry::Key(key));
         }
 
-        // check for record format or key
-        // check for name
-        // fall back to idk
+        // field
+        if matches!(
+            self.peek_n(6),
+            Ok(TokenMeta {
+                kind: TokenKind::Name,
+                ..
+            })
+        ) {
+            let field = self.parse_field()?;
+            return Ok(DDSEntry::Field(field));
+        }
 
         // IDK anything else
         self.shrug_and_advance_until(TokenKind::Eol)?;
@@ -321,9 +382,10 @@ mod tests {
         let lexer = Lexer::new(input);
         let parser = Parser::new(&lexer).unwrap();
         let rs = parser.parse_physical_file();
-        match rs {
-            Ok(file) => println!("{}", file),
-            Err(e) => panic!("\nERROR: {}\n", e),
-        }
+        // match &rs {
+        //     Ok(file) => println!("\n\n```dds\n{}\n```\n", file.to_raw_text()),
+        //     Err(e) => panic!("\nERROR: {}\n", e),
+        // }
+        assert_eq!(input, rs.unwrap().to_raw_text())
     }
 }

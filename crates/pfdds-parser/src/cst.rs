@@ -1,6 +1,13 @@
 use core::fmt;
 
 use pfdds_lexer::{Span, Token};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum EntryAttributeError {
+    #[error("Missing Required Attribute: {0}")]
+    MissingRequiredAttribute(String),
+}
 
 #[derive(PartialEq, Clone)]
 pub struct EntryMeta {
@@ -40,6 +47,10 @@ impl EntryMeta {
         self.span = Span::to_cover_both(old_span, t.span);
         self.text.push_str(&t.text);
     }
+
+    pub fn to_raw_text(&self) -> String {
+        return self.text.clone();
+    }
 }
 
 pub struct Idk {
@@ -68,37 +79,56 @@ impl fmt::Display for Comment {
     }
 }
 
-pub struct Field {}
+pub struct Field {
+    pub name: Result<String, EntryAttributeError>,
+    pub meta: EntryMeta,
+}
 impl fmt::Display for Field {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", "TODO")
+        let name = match &self.name {
+            Ok(n) => n.clone(),
+            Err(EntryAttributeError::MissingRequiredAttribute(_)) => "???".to_string(),
+        };
+        let out = format!(
+            "Field(\n    name=`{}`,\n    span={},\n    text=```\n{}\n```,\n)",
+            name, self.meta.span, self.meta.text
+        );
+        write!(f, "{}", out)
     }
 }
 
 pub struct RecordFormat {
-    pub name: String,
+    pub name: Result<String, EntryAttributeError>,
     pub meta: EntryMeta,
 }
 impl fmt::Display for RecordFormat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match &self.name {
+            Ok(n) => n.clone(),
+            Err(EntryAttributeError::MissingRequiredAttribute(_)) => "???".to_string(),
+        };
         let out = format!(
             "RecordFormat(\n    name=`{}`,\n    span={},\n    text=```\n{}\n```,\n)",
-            self.name, self.meta.span, self.meta.text
+            name, self.meta.span, self.meta.text
         );
         write!(f, "{}", out)
     }
 }
 
 pub struct Key {
-    pub name: String,
+    pub name: Result<String, EntryAttributeError>,
     pub meta: EntryMeta,
 }
 
 impl fmt::Display for Key {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match &self.name {
+            Ok(n) => n.clone(),
+            Err(EntryAttributeError::MissingRequiredAttribute(_)) => "???".to_string(),
+        };
         let out = format!(
             "Key(\n    name=`{}`,\n    span={},\n    text=```\n{}\n```,\n)",
-            self.name, self.meta.span, self.meta.text
+            name, self.meta.span, self.meta.text
         );
         write!(f, "{}", out)
     }
@@ -124,6 +154,18 @@ impl fmt::Display for DDSEntry {
     }
 }
 
+impl DDSEntry {
+    pub fn to_raw_text(&self) -> String {
+        match self {
+            DDSEntry::Comment(x) => x.meta.to_raw_text(),
+            DDSEntry::Field(x) => x.meta.to_raw_text(),
+            DDSEntry::RecordFormat(x) => x.meta.to_raw_text(),
+            DDSEntry::Key(x) => x.meta.to_raw_text(),
+            DDSEntry::Idk(x) => x.meta.to_raw_text(),
+        }
+    }
+}
+
 pub struct PhysicalFile {
     pub entries: Vec<DDSEntry>,
 }
@@ -137,5 +179,18 @@ impl fmt::Display for PhysicalFile {
             .collect::<Vec<String>>()
             .join("\n");
         write!(f, "{}", out)
+    }
+}
+
+impl PhysicalFile {
+    pub fn to_raw_text(&self) -> String {
+        let mut out = self
+            .entries
+            .iter()
+            .map(|e| e.to_raw_text())
+            .collect::<Vec<String>>()
+            .join("\n");
+        out.push_str("\n");
+        out
     }
 }
