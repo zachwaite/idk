@@ -1,7 +1,9 @@
 mod cst;
 
-use cst::{Comment, DDSEntry, Idk, ParserException, PhysicalFile};
-use pfdds_lexer::{IllegalLexerState, Lexer, Span, Token, TokenKind, TokenMeta};
+use cst::{Comment, DDSEntry, EntryMeta, Idk, PhysicalFile, RecordFormat};
+use pfdds_lexer::{
+    CommentType, IllegalLexerState, Lexer, NameType, Span, Token, TokenKind, TokenMeta,
+};
 use std::{cell::RefCell, collections::VecDeque};
 use thiserror::Error;
 
@@ -9,13 +11,17 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum IllegalParserState {
     #[error("lexer error")]
-    IllegalLexerState(#[from] IllegalLexerState),
+    IllegalLexerStateError(#[from] IllegalLexerState),
     #[error("empty token buffer")]
-    EmptyTokenBuffer,
+    EmptyTokenBufferError,
     #[error("attempted to access nonexistant token")]
     TokenBufferIndexError,
-    #[error("not implemented")]
-    NotImplemented,
+    #[error("Token for {0} is required and not found")]
+    MissingRequiredTokenError(TokenKind),
+    #[error("DDSEntry parsing must end on EOL or EOF token. Found {0}")]
+    ExpectedEolEofError(TokenKind),
+    #[error("Reached Impossible Destination!")]
+    ImpossibleDestinationError,
 }
 
 pub struct Parser<'a> {
@@ -59,7 +65,7 @@ impl<'a> Parser<'a> {
         }
         match self.active_buffer.borrow_mut().pop_front() {
             Some(tok) => Ok(tok),
-            None => Err(IllegalParserState::EmptyTokenBuffer),
+            None => Err(IllegalParserState::EmptyTokenBufferError),
         }
     }
 
@@ -85,17 +91,11 @@ impl<'a> Parser<'a> {
     }
 
     pub fn flush_idk_buffer(&self) -> Result<Idk, IllegalParserState> {
-        let mut combined_text = String::new();
-        let mut combined_span = Span::empty();
-        for x in self.idk_buffer.borrow_mut().drain(0..) {
-            combined_text.push_str(&x.text);
-            combined_span = Span::to_cover_both(combined_span, x.span);
+        let mut meta = EntryMeta::empty();
+        for t in self.idk_buffer.borrow_mut().drain(0..) {
+            meta.push_token(t);
         }
-        let idk = Idk {
-            exception: ParserException::NotImplemented,
-            text: combined_text,
-            span: combined_span,
-        };
+        let idk = Idk { meta };
         Ok(idk)
     }
 
@@ -111,54 +111,103 @@ impl<'a> Parser<'a> {
         }
         Ok(())
     }
-    pub fn parse_sequence(&self) -> Result<Sequence, Idk> {}
 
-    pub fn parse_comment_entry(&self) -> Result<DDSEntry, IllegalParserState> {
-        let mut combined_text = String::new();
-        let mut combined_span = Span::empty();
-
-        let tok = self.pop_active_buffer()?;
-
-        Err(IllegalParserState::NotImplemented)
-    }
-
-    // parsers
-    pub fn parse_entry(&self) -> Result<Vec<DDSEntry>, IllegalParserState> {
-        let mut out: Vec<DDSEntry> = vec![];
+    // parsers - level 2 (DDSEntry Members)
+    pub fn parse_line_comment(&self) -> Result<Comment, IllegalParserState> {
+        // you are on a sequence token and have a line comment token in front of you
+        let mut meta = EntryMeta::empty();
 
         // guard
-        self.shrug_and_advance_until(TokenKind::Sequence)?;
-        if self.idk_buffer.borrow().len() > 0 {
-            let idk = self.flush_idk_buffer()?;
-            out.push(DDSEntry::Idk(idk));
-        }
-
-        // stopped on sequence
-        // check for comment
-        if matches!(
+        if !matches!(
             self.peek_n(2),
             Ok(TokenMeta {
-                kind: TokenKind::Comment(_),
+                kind: TokenKind::Comment(CommentType::LineComment),
                 ..
             })
         ) {
-            return Ok(vec![self.parse_comment_entry()?]);
+            return Err(IllegalParserState::MissingRequiredTokenError(
+                TokenKind::Comment(CommentType::LineComment),
+            ));
+        }
+
+        meta.push_token(self.pop_active_buffer()?); // sequence
+        meta.push_token(self.pop_active_buffer()?); // formtype
+        let tok = self.pop_active_buffer()?; // comment
+        let comment = Comment {
+            text: tok.text.clone(),
+            meta: EntryMeta::from(tok),
+        };
+        Ok(comment)
+    }
+
+    pub fn parse_record_format(&self) -> Result<RecordFormat, IllegalParserState> {
+        todo!("\n\nIMPLEMENT parse_record_format()\n")
+    }
+
+    // parsers - level 1 (DDSEntry)
+    pub fn parse_entry(&self) -> Result<DDSEntry, IllegalParserState> {
+        // an entry should start with a sequence token and match some peeks
+
+        // ensure you're starting on a sequence and the idk buf is empty
+        self.shrug_and_advance_until(TokenKind::Sequence)?;
+        if self.idk_buffer.borrow().len() > 0 {
+            let idk = self.flush_idk_buffer()?;
+            return Ok(DDSEntry::Idk(idk));
+        }
+
+        // comment
+        if matches!(
+            self.peek_n(2),
+            Ok(TokenMeta {
+                kind: TokenKind::Comment(CommentType::LineComment),
+                ..
+            })
+        ) {
+            let comment = self.parse_line_comment()?;
+            return Ok(DDSEntry::Comment(comment));
+        }
+
+        // recorod format
+        if matches!(
+            self.peek_n(4),
+            Ok(TokenMeta {
+                kind: TokenKind::NameType(NameType::RecordFormat),
+                ..
+            })
+        ) {
+            let record_format = self.parse_record_format()?;
+            return Ok(DDSEntry::RecordFormat(record_format));
         }
 
         // check for record format or key
         // check for name
         // fall back to idk
 
+        // IDK anything else
         self.shrug_and_advance_until(TokenKind::Eol)?;
-        Ok(out)
+        if self.idk_buffer.borrow().len() > 0 {
+            let idk = self.flush_idk_buffer()?;
+            return Ok(DDSEntry::Idk(idk));
+        }
+
+        Err(IllegalParserState::ImpossibleDestinationError)
     }
 
+    // parsers - level 0
     pub fn parse_physical_file(&self) -> Result<PhysicalFile, IllegalParserState> {
         let mut file = PhysicalFile { entries: vec![] };
 
         while self.front_kind()? != TokenKind::Eof {
-            let mut new_entries = self.parse_entry()?;
-            file.entries.extend(new_entries.drain(0..))
+            let new_entry = self.parse_entry()?;
+            file.entries.push(new_entry);
+
+            // guard to ensure you're ending on a newline
+            if self.front_kind()? == TokenKind::Eol {
+                // toss the newline, the display of the PhysicalFile assumes it and joins,
+                self.pop_active_buffer()?;
+            } else if self.front_kind()? != TokenKind::Eof {
+                return Err(IllegalParserState::ExpectedEolEofError(self.front_kind()?));
+            }
         }
 
         Ok(file)
@@ -184,7 +233,10 @@ mod tests {
 "#[1..];
         let lexer = Lexer::new(input);
         let parser = Parser::new(&lexer).unwrap();
-        let file = parser.parse_physical_file().unwrap();
-        println!("{}", file);
+        let rs = parser.parse_physical_file();
+        match rs {
+            Ok(file) => println!("{}", file),
+            Err(e) => panic!("\nERROR: {}\n", e),
+        }
     }
 }

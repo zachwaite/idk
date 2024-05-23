@@ -1,54 +1,69 @@
 use core::fmt;
 
-use pfdds_lexer::Span;
+use pfdds_lexer::{Span, Token};
 
-pub enum IllegalState {
-    NotImplemented,
+#[derive(PartialEq, Clone)]
+pub struct EntryMeta {
+    pub span: Span,
+    pub text: String,
 }
 
-pub enum ParserException {
-    UnexpectedToken,
-    NotImplemented,
-}
-
-impl fmt::Display for ParserException {
+impl fmt::Display for EntryMeta {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let out = match self {
-            Self::UnexpectedToken => format!("UnexpectedToken"),
-            Self::NotImplemented => format!("NotImplemented"),
-        };
-        write!(f, "{}", out)
+        let s = format!(
+            "EntryMeta(\n    span={},\n    text=```\n{}\n```,\n)\n",
+            self.span, self.text
+        );
+        write!(f, "{}", s)
     }
 }
 
-pub struct Idk {
-    pub exception: ParserException,
-    pub text: String,
-    pub span: Span,
-}
-
-impl fmt::Display for Idk {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.exception {
-            ParserException::UnexpectedToken | ParserException::NotImplemented => {
-                let out = format!(
-                    "Idk(\n    exception={}\n    span={}\n    text=```\n{}\n```\n)",
-                    self.exception, self.span, self.text
-                );
-                write!(f, "{}", out)
-            }
+impl From<Token> for EntryMeta {
+    fn from(t: Token) -> Self {
+        Self {
+            text: t.text,
+            span: t.span,
         }
     }
 }
 
+impl EntryMeta {
+    pub fn empty() -> Self {
+        Self {
+            span: Span::empty(),
+            text: String::new(),
+        }
+    }
+
+    pub fn push_token(&mut self, t: Token) {
+        let old_span = self.span;
+        self.span = Span::to_cover_both(old_span, t.span);
+        self.text.push_str(&t.text);
+    }
+}
+
+pub struct Idk {
+    pub meta: EntryMeta,
+}
+
+impl fmt::Display for Idk {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = format!("Idk(\n    meta={}\n)", self.meta);
+        write!(f, "{}", out)
+    }
+}
+
 pub struct Comment {
-    text: String,
-    span: Span,
+    pub text: String,
+    pub meta: EntryMeta,
 }
 
 impl fmt::Display for Comment {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let out = format!("Comment(\ntext={},\nspan={},\n)", self.text, self.span);
+        let out = format!(
+            "Comment(\n    text=`{}`,\n    meta={},\n)",
+            self.text, self.meta
+        );
         write!(f, "{}", out)
     }
 }
@@ -60,10 +75,17 @@ impl fmt::Display for Field {
     }
 }
 
-pub struct RecordFormat {}
+pub struct RecordFormat {
+    name: String,
+    meta: EntryMeta,
+}
 impl fmt::Display for RecordFormat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", "TODO")
+        let out = format!(
+            "RecordFormat(\n    name={},\n    span={},\n    text=```\n{}\n```,\n)",
+            self.name, self.meta.span, self.meta.text
+        );
+        write!(f, "{}", out)
     }
 }
 
