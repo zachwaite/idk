@@ -76,13 +76,13 @@ impl fmt::Display for Field {
 }
 
 pub struct RecordFormat {
-    name: String,
-    meta: EntryMeta,
+    pub name: String,
+    pub meta: EntryMeta,
 }
 impl fmt::Display for RecordFormat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let out = format!(
-            "RecordFormat(\n    name={},\n    span={},\n    text=```\n{}\n```,\n)",
+            "RecordFormat(\n    name=`{}`,\n    span={},\n    text=```\n{}\n```,\n)",
             self.name, self.meta.span, self.meta.text
         );
         write!(f, "{}", out)

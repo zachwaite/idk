@@ -141,7 +141,45 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse_record_format(&self) -> Result<RecordFormat, IllegalParserState> {
-        todo!("\n\nIMPLEMENT parse_record_format()\n")
+        // you are on a sequence token and have a line comment token in front of you
+        let mut meta = EntryMeta::empty();
+
+        // guard
+        if !matches!(
+            self.peek_n(4),
+            Ok(TokenMeta {
+                kind: TokenKind::NameType(NameType::RecordFormat),
+                ..
+            })
+        ) {
+            return Err(IllegalParserState::MissingRequiredTokenError(
+                TokenKind::NameType(NameType::RecordFormat),
+            ));
+        }
+
+        meta.push_token(self.pop_active_buffer()?); // sequence
+        meta.push_token(self.pop_active_buffer()?); // formtype
+        meta.push_token(self.pop_active_buffer()?); // comment
+        meta.push_token(self.pop_active_buffer()?); // condition
+        meta.push_token(self.pop_active_buffer()?); // nametype
+        meta.push_token(self.pop_active_buffer()?); // reserved
+        let tok = self.pop_active_buffer()?; // name
+        meta.push_token(self.pop_active_buffer()?); // referencetype
+        meta.push_token(self.pop_active_buffer()?); // lengthtype
+        meta.push_token(self.pop_active_buffer()?); // datatype
+        meta.push_token(self.pop_active_buffer()?); // decimal
+        meta.push_token(self.pop_active_buffer()?); // usage
+        meta.push_token(self.pop_active_buffer()?); // location
+        meta.push_token(self.pop_active_buffer()?); // idk/keyword args
+        while self.front_kind()? != TokenKind::Eol {
+            println!("{}", self.pop_active_buffer()?);
+        }
+        let record_format = RecordFormat {
+            name: tok.text.trim().to_string(),
+            meta,
+        };
+
+        Ok(record_format)
     }
 
     // parsers - level 1 (DDSEntry)
@@ -167,7 +205,7 @@ impl<'a> Parser<'a> {
             return Ok(DDSEntry::Comment(comment));
         }
 
-        // recorod format
+        // record format
         if matches!(
             self.peek_n(4),
             Ok(TokenMeta {
@@ -178,6 +216,8 @@ impl<'a> Parser<'a> {
             let record_format = self.parse_record_format()?;
             return Ok(DDSEntry::RecordFormat(record_format));
         }
+
+        todo!("\n\nImplement key type\n");
 
         // check for record format or key
         // check for name
