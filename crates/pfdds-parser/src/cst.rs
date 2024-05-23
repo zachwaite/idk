@@ -89,11 +89,18 @@ impl fmt::Display for RecordFormat {
     }
 }
 
-pub struct Key {}
+pub struct Key {
+    pub name: String,
+    pub meta: EntryMeta,
+}
 
 impl fmt::Display for Key {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", "TODO")
+        let out = format!(
+            "Key(\n    name=`{}`,\n    span={},\n    text=```\n{}\n```,\n)",
+            self.name, self.meta.span, self.meta.text
+        );
+        write!(f, "{}", out)
     }
 }
 

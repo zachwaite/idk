@@ -1,6 +1,6 @@
 mod cst;
 
-use cst::{Comment, DDSEntry, EntryMeta, Idk, PhysicalFile, RecordFormat};
+use cst::{Comment, DDSEntry, EntryMeta, Idk, Key, PhysicalFile, RecordFormat};
 use pfdds_lexer::{
     CommentType, IllegalLexerState, Lexer, NameType, Span, Token, TokenKind, TokenMeta,
 };
@@ -164,6 +164,7 @@ impl<'a> Parser<'a> {
         meta.push_token(self.pop_active_buffer()?); // nametype
         meta.push_token(self.pop_active_buffer()?); // reserved
         let tok = self.pop_active_buffer()?; // name
+        meta.push_token(tok.clone());
         meta.push_token(self.pop_active_buffer()?); // referencetype
         meta.push_token(self.pop_active_buffer()?); // lengthtype
         meta.push_token(self.pop_active_buffer()?); // datatype
@@ -171,15 +172,51 @@ impl<'a> Parser<'a> {
         meta.push_token(self.pop_active_buffer()?); // usage
         meta.push_token(self.pop_active_buffer()?); // location
         meta.push_token(self.pop_active_buffer()?); // idk/keyword args
-        while self.front_kind()? != TokenKind::Eol {
-            println!("{}", self.pop_active_buffer()?);
-        }
         let record_format = RecordFormat {
             name: tok.text.trim().to_string(),
             meta,
         };
 
         Ok(record_format)
+    }
+
+    pub fn parse_key(&self) -> Result<Key, IllegalParserState> {
+        // you are on a sequence token and have a line comment token in front of you
+        let mut meta = EntryMeta::empty();
+
+        // guard
+        if !matches!(
+            self.peek_n(4),
+            Ok(TokenMeta {
+                kind: TokenKind::NameType(NameType::Key),
+                ..
+            })
+        ) {
+            return Err(IllegalParserState::MissingRequiredTokenError(
+                TokenKind::NameType(NameType::Key),
+            ));
+        }
+
+        meta.push_token(self.pop_active_buffer()?); // sequence
+        meta.push_token(self.pop_active_buffer()?); // formtype
+        meta.push_token(self.pop_active_buffer()?); // comment
+        meta.push_token(self.pop_active_buffer()?); // condition
+        meta.push_token(self.pop_active_buffer()?); // nametype
+        meta.push_token(self.pop_active_buffer()?); // reserved
+        let tok = self.pop_active_buffer()?; // name
+        meta.push_token(tok.clone());
+        meta.push_token(self.pop_active_buffer()?); // referencetype
+        meta.push_token(self.pop_active_buffer()?); // lengthtype
+        meta.push_token(self.pop_active_buffer()?); // datatype
+        meta.push_token(self.pop_active_buffer()?); // decimal
+        meta.push_token(self.pop_active_buffer()?); // usage
+        meta.push_token(self.pop_active_buffer()?); // location
+        meta.push_token(self.pop_active_buffer()?); // idk/keyword args
+        let key = Key {
+            name: tok.text.trim().to_string(),
+            meta,
+        };
+        Ok(key)
     }
 
     // parsers - level 1 (DDSEntry)
@@ -217,7 +254,17 @@ impl<'a> Parser<'a> {
             return Ok(DDSEntry::RecordFormat(record_format));
         }
 
-        todo!("\n\nImplement key type\n");
+        // key
+        if matches!(
+            self.peek_n(4),
+            Ok(TokenMeta {
+                kind: TokenKind::NameType(NameType::Key),
+                ..
+            })
+        ) {
+            let key = self.parse_key()?;
+            return Ok(DDSEntry::Key(key));
+        }
 
         // check for record format or key
         // check for name
