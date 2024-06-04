@@ -1,6 +1,6 @@
 use crate::core::{
-    ch, read_char, read_until_column, read_until_end_of_line, text_at, CommentType, FormType,
-    IllegalLexerState, Lexer, LexerException, Position, Span, Token, TokenKind,
+    ch, peek_n, read_char, read_until_column, read_until_end_of_line, text_at, CommentType,
+    FormType, IllegalLexerState, Lexer, LexerException, Position, Span, Token, TokenKind,
 };
 
 use crate::{cspec, dspec, fspec, hspec, ispec, ospec, pspec};
@@ -66,6 +66,17 @@ fn read_line_comment(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     }
 }
 
+fn read_idk_tail(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
+    let start = lexer.state.borrow().position;
+    read_until_end_of_line(lexer)?;
+    let ex = LexerException::NotImplemented;
+    let end = lexer.state.borrow().position;
+    let span = Span { start, end };
+    let txt = text_at(lexer, span);
+    let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+    return Ok(tok);
+}
+
 fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
     let end = Position::new(start.row, 101, start.idx + 1);
@@ -78,23 +89,23 @@ fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 
 pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let col = lexer.state.borrow().position.col;
-    match col {
-        0 => read_sequence(lexer),
-        5 => match ch(lexer) {
-            Some('H') => hspec::next_token(lexer),
-            Some('F') => fspec::next_token(lexer),
-            Some('D') => dspec::next_token(lexer),
-            Some('I') => ispec::next_token(lexer),
-            Some('C') => cspec::next_token(lexer),
-            Some('O') => ospec::next_token(lexer),
-            Some('P') => pspec::next_token(lexer),
-            Some(' ') => read_empty_form_type(lexer),
-            None => Ok(Token::new(TokenKind::Eof, "", Span::empty())),
-            _ => Err(IllegalLexerState::ImpossibleDestination),
-        },
-        6 => read_line_comment(lexer),
-        100 => read_newline(lexer),
-        _ => Err(IllegalLexerState::ImpossibleDestination),
+    let peek5 = peek_n(lexer, 5);
+    match (col, peek5) {
+        // peek and dispatch spec-specific if possible
+        (0, Some('H')) => hspec::next_token(lexer),
+        (0, Some('F')) => fspec::next_token(lexer),
+        (0, Some('D')) => dspec::next_token(lexer),
+        (0, Some('I')) => ispec::next_token(lexer),
+        (0, Some('C')) => cspec::next_token(lexer),
+        (0, Some('O')) => ospec::next_token(lexer),
+        (0, Some('P')) => pspec::next_token(lexer),
+        // fallback: look for a line comment
+        (0, Some(' ')) => read_sequence(lexer),
+        (5, _) => read_empty_form_type(lexer),
+        (6, _) => read_line_comment(lexer),
+        (100, _) => read_newline(lexer),
+        // finally: idk
+        (_, _) => read_idk_tail(lexer),
     }
 }
 
