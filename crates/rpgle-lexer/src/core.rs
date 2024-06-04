@@ -28,6 +28,7 @@ pub enum CommentType {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum FormType {
     Empty,
+    Control,
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]

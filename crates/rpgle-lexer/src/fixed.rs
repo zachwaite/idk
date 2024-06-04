@@ -179,7 +179,7 @@ mod tests {
         ];
         let lexer = new_lexer(input);
         for pair in expected.into_iter().enumerate() {
-            println!("`{}` {}", pair.1.kind, lexer.state.borrow().position);
+            // println!("`{}` {}", pair.1.kind, lexer.state.borrow().position);
             let idx = pair.0.to_string();
             let expected_token = pair.1;
             let observed_token = next_token(&lexer).unwrap();

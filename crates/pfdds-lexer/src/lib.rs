@@ -2025,7 +2025,7 @@ mod tests {
         ];
         let lexer = Lexer::new(input);
         for pair in expected.into_iter().enumerate() {
-            println!("{}", lexer.state.borrow().position);
+            // println!("{}", lexer.state.borrow().position);
             let idx = pair.0.to_string();
             let expected_token = pair.1;
             let observed_token = lexer.next_token().unwrap();
