@@ -2,13 +2,18 @@
 resolver = "2"
 
 members = [
-  "crates/pfdds-lexer", # lib
-  "crates/pfdds-parser",     # lib
+  "crates/pfdds-lexer",        # lib
+  "crates/pfdds-parser",       # lib
+  # "crates/lfdds-lexer",      # lib
   # "crates/lfdds-parser",     # lib
+  # "crates/dspf-lexer",       # lib
   # "crates/dspf-parser",      # lib
+  "crates/rpgle-lexer",      # lib
   # "crates/rpgle-parser",     # lib
-  # "crates/rpgle-cst",        # lib
-]
+  # "crates/idklib",           # lib - core domain
+  # "crates/idk",              # cli for idklib
+  # "crates/idk-lsp",          # language server
+  ]
 
 [workspace.package]
 rust-version = "1.76"
