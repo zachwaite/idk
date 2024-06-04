@@ -1,6 +1,6 @@
 use crate::core::{
-    ch, read_until_column, text_at, FormType, IllegalLexerState, Lexer, LexerException, Span,
-    Token, TokenKind,
+    ch, read_until_column, read_until_end_of_line, text_at, FormType, IllegalLexerState, Lexer,
+    LexerException, Span, Token, TokenKind,
 };
 
 fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -41,14 +41,23 @@ fn read_form_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     }
 }
 
+fn read_keywords(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
+    let start = lexer.state.borrow().position;
+    read_until_end_of_line(lexer)?;
+    let end = lexer.state.borrow().position;
+    let span = Span { start, end };
+    let txt = text_at(lexer, span);
+    let ex = LexerException::NotImplemented;
+    let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+    Ok(tok)
+}
+
 pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let col = lexer.state.borrow().position.col;
-
     match col {
         0 => read_sequence(lexer),
         5 => read_form_type(lexer),
-        // 6 => read_line_comment(lexer),
-        // 100 => read_newline(lexer),
+        6 => read_keywords(lexer),
         _ => Err(IllegalLexerState::ImpossibleDestination),
     }
 }
@@ -89,10 +98,18 @@ mod tests {
                     end: Position::new(0, 6, 6),
                 },
             ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " OPTION(*nodebugio:*srcstmt)                                                                  ",
+                Span {
+                    start: Position::new(0, 6, 6),
+                    end: Position::new(0, 100, 100),
+                },
+            ),
         ];
         let lexer = new_lexer(input);
         for pair in expected.into_iter().enumerate() {
-            println!("`{}` {}", pair.1.kind, lexer.state.borrow().position);
+            // println!("`{}` {}", pair.1.kind, lexer.state.borrow().position);
             let idx = pair.0.to_string();
             let expected_token = pair.1;
             let observed_token = next_token(&lexer).unwrap();
