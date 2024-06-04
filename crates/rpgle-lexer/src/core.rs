@@ -32,6 +32,42 @@ pub enum FormType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FileType {
+    Input,
+    Output,
+    Update,
+    Combined,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FileDesignation {
+    Output,
+    Primary,
+    Secondary,
+    RecordAddress,
+    Table,
+    FullProcedural,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FileAdditionType {
+    NoAdd,
+    Add,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FileSequenceType {
+    Ascending,
+    Descending,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum FileFormatType {
+    ProgramDescribed,
+    ExternallyDescribed,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenKind {
     // error
     Idk(LexerException),
@@ -48,6 +84,12 @@ pub enum TokenKind {
     Sequence,
     Comment(CommentType),
     FormType(FormType),
+    Name,
+    FileType(FileType),
+    FileDesignation(FileDesignation),
+    FileAddition(FileAdditionType),
+    FileSequence(FileSequenceType),
+    FileFormat(FileFormatType),
 }
 
 impl fmt::Display for TokenKind {
@@ -62,6 +104,12 @@ impl fmt::Display for TokenKind {
             Self::Sequence => format!("Sequence"),
             Self::Comment(_) => format!("Comment"),
             Self::FormType(_) => format!("FormType"),
+            Self::Name => format!("Name"),
+            Self::FileType(_) => format!("FileType"),
+            Self::FileDesignation(_) => format!("FileDesignation"),
+            Self::FileAddition(_) => format!("FileAddition"),
+            Self::FileSequence(_) => format!("FileSequence"),
+            Self::FileFormat(_) => format!("FileFormatType"),
         };
         write!(f, "{}", s)
     }
