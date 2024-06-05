@@ -245,6 +245,7 @@ impl Token {
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum LexerMode {
     Init,
+    Idk,
     FullFree,
     Free,
     HSpec,
@@ -261,6 +262,7 @@ impl fmt::Display for LexerMode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
             Self::Init => format!("Init"),
+            Self::Idk => format!("Idk"),
             Self::FullFree => format!("FullFree"),
             Self::Free => format!("Free"),
             Self::HSpec => format!("HSpec"),

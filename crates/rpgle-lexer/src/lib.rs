@@ -5,6 +5,7 @@ mod free;
 mod fspec;
 mod full_free;
 mod hspec;
+mod idk;
 mod ispec;
 mod line_comment;
 mod ospec;
@@ -50,19 +51,19 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, 0, _, Some(' '), Some('*')) => LexerMode::LineComment,
         (mode, 1.., _, _, _) => mode,
         (a, b, c, d, e) => {
-            let msg = format!(
-                "{}, {}, {}, {}, {}",
-                a,
-                b,
-                c.unwrap(),
-                d.unwrap(),
-                e.unwrap()
-            );
-            println!("{}", msg);
-            LexerMode::Init
+            // let msg = format!(
+            //     "{}, {}, {}, {}, {}",
+            //     a,
+            //     b,
+            //     c.unwrap(),
+            //     d.unwrap(),
+            //     e.unwrap()
+            // );
+            // println!("{}", msg);
+            LexerMode::Idk
         }
     };
-    println!("{}", new_mode);
+    // println!("{}", new_mode);
 
     // dispatch lexer
     let rs = match (col, new_mode) {
@@ -78,6 +79,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, LexerMode::CSpec) => cspec::next_token(lexer),
         (_, LexerMode::OSpec) => ospec::next_token(lexer),
         (_, LexerMode::PSpec) => pspec::next_token(lexer),
+        (_, LexerMode::Idk) => idk::next_token(lexer),
     };
     lexer.state.borrow_mut().mode = new_mode;
     rs
@@ -99,36 +101,6 @@ mod tests {
       * create bornevt record, using eid from cowevt                                                
      H OPTION(*nodebugio:*srcstmt)                                                                  
      FCowEvt    UF A E           K DISK                                                             
-     FBornEvt   UF A E           K DISK                                                             
-     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        
-     F**********************************************************************************************
-     D**********************************************************************************************
-     D LastId          S              8  0                                                          
-     C**********************************************************************************************
-      /free                                                                                         
-       // Look up LastId                                                                            
-       // Since CowEvtL1 is sorted by id descending,                                                
-       // the `id` of the first row would be the LastId                                             
-       SetLL *Loval CowEvtL2;                                                                       
-       If Not %Eof;                                                                                 
-         Read CowEvtL2;                                                                             
-         LastId = Vid;                                                                              
-       Else;                                                                                        
-        LastId = 1;                                                                                 
-       Endif;                                                                                       
-                                                                                                    
-       // create the new cowevt                                                                     
-       Id = LastId + 1;                                                                             
-       Edat = 20240101;                                                                             
-       Etim = 125959;                                                                               
-       Etyp = 'BORN';                                                                               
-       Write EVTFMT;                                                                                
-                                                                                                    
-       // create the related bornevt                                                                
-       EID = Id;                                                                                    
-       BNAME = 'BESSE';                                                                             
-       BDAT = 20240101;                                                                             
-       Write BORNFMT;                                                                               
                                                                                                     
        *inlr = *on;                                                                                 
                                                                                                     
@@ -242,126 +214,190 @@ mod tests {
                     end: Position::new(3, 5, 308),
                 },
             ),
-            // Token::new(
-            //     TokenKind::FormType(FormType::Control),
-            //     "F",
-            //     Span {
-            //         start: Position::new(0, 5, 5),
-            //         end: Position::new(0, 6, 6),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Name,
-            //     "CowEvt    ",
-            //     Span {
-            //         start: Position::new(0, 6, 6),
-            //         end: Position::new(0, 16, 16),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::FileType(FileType::Update),
-            //     "U",
-            //     Span {
-            //         start: Position::new(0, 16, 16),
-            //         end: Position::new(0, 17, 17),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::FileDesignation(FileDesignation::FullProcedural),
-            //     "F",
-            //     Span {
-            //         start: Position::new(0, 17, 17),
-            //         end: Position::new(0, 18, 18),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     " ",
-            //     Span {
-            //         start: Position::new(0, 18, 18),
-            //         end: Position::new(0, 19, 19),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::FileAddition(FileAdditionType::Add),
-            //     "A",
-            //     Span {
-            //         start: Position::new(0, 19, 19),
-            //         end: Position::new(0, 20, 20),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::FileSequence(FileSequenceType::Ascending),
-            //     " ",
-            //     Span {
-            //         start: Position::new(0, 20, 20),
-            //         end: Position::new(0, 21, 21),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::FileFormat(FileFormatType::ExternallyDescribed),
-            //     "E",
-            //     Span {
-            //         start: Position::new(0, 21, 21),
-            //         end: Position::new(0, 22, 22),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     "     ",
-            //     Span {
-            //         start: Position::new(0, 22, 22),
-            //         end: Position::new(0, 27, 27),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     " ",
-            //     Span {
-            //         start: Position::new(0, 27, 27),
-            //         end: Position::new(0, 28, 28),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     "     ",
-            //     Span {
-            //         start: Position::new(0, 28, 28),
-            //         end: Position::new(0, 33, 33),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     "K",
-            //     Span {
-            //         start: Position::new(0, 33, 33),
-            //         end: Position::new(0, 34, 34),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     " ",
-            //     Span {
-            //         start: Position::new(0, 34, 34),
-            //         end: Position::new(0, 35, 35),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     "DISK   ",
-            //     Span {
-            //         start: Position::new(0, 35, 35),
-            //         end: Position::new(0, 42, 42),
-            //     },
-            // ),
-            // Token::new(
-            //     TokenKind::Idk(LexerException::NotImplemented),
-            //     " ",
-            //     Span {
-            //         start: Position::new(0, 42, 42),
-            //         end: Position::new(0, 43, 43),
-            //     },
-            // ),
+            Token::new(
+                TokenKind::FormType(FormType::Control),
+                "F",
+                Span {
+                    start: Position::new(3, 5, 308),
+                    end: Position::new(3, 6, 309),
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                "CowEvt    ",
+                Span {
+                    start: Position::new(3, 6, 309),
+                    end: Position::new(3, 16, 319),
+                },
+            ),
+            Token::new(
+                TokenKind::FileType(FileType::Update),
+                "U",
+                Span {
+                    start: Position::new(3, 16, 319),
+                    end: Position::new(3, 17, 320),
+                },
+            ),
+            Token::new(
+                TokenKind::FileDesignation(FileDesignation::FullProcedural),
+                "F",
+                Span {
+                    start: Position::new(3, 17, 320),
+                    end: Position::new(3, 18, 321),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(3, 18, 321),
+                    end: Position::new(3, 19, 322),
+                },
+            ),
+            Token::new(
+                TokenKind::FileAddition(FileAdditionType::Add),
+                "A",
+                Span {
+                    start: Position::new(3, 19, 322),
+                    end: Position::new(3, 20, 323),
+                },
+            ),
+            Token::new(
+                TokenKind::FileSequence(FileSequenceType::Ascending),
+                " ",
+                Span {
+                    start: Position::new(3, 20, 323),
+                    end: Position::new(3, 21, 324),
+                },
+            ),
+            Token::new(
+                TokenKind::FileFormat(FileFormatType::ExternallyDescribed),
+                "E",
+                Span {
+                    start: Position::new(3, 21, 324),
+                    end: Position::new(3, 22, 325),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "     ",
+                Span {
+                    start: Position::new(3, 22, 325),
+                    end: Position::new(3, 27, 330),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(3, 27, 330),
+                    end: Position::new(3, 28, 331),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "     ",
+                Span {
+                    start: Position::new(3, 28, 331),
+                    end: Position::new(3, 33, 336),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "K",
+                Span {
+                    start: Position::new(3, 33, 336),
+                    end: Position::new(3, 34, 337),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(3, 34, 337),
+                    end: Position::new(3, 35, 338),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "DISK   ",
+                Span {
+                    start: Position::new(3, 35, 338),
+                    end: Position::new(3, 42, 345),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(3, 42, 345),
+                    end: Position::new(3, 43, 346),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                         ",
+                Span {
+                    start: Position::new(3, 43, 346),
+                    end: Position::new(3, 100, 403),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(3, 100, 403),
+                    end: Position::new(3, 101, 404),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                                                                    ",
+                Span {
+                    start: Position::new(4, 0, 404),
+                    end: Position::new(4, 100, 504),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(4, 100, 504),
+                    end: Position::new(4, 101, 505),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "       *inlr = *on;                                                                                 ",
+                Span {
+                    start: Position::new(5, 0, 505),
+                    end: Position::new(5, 100, 605),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(5, 100, 605),
+                    end: Position::new(5, 101, 606),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                                                                    ",
+                Span {
+                    start: Position::new(6, 0, 606),
+                    end: Position::new(6, 100, 706),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(6, 100, 706),
+                    end: Position::new(6, 101, 707),
+                },
+            ),
         ];
         let lexer = new_lexer(input);
         for pair in expected.into_iter().enumerate() {
