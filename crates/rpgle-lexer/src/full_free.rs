@@ -1,6 +1,6 @@
 use crate::core::{
-    read_until_end_of_file, text_at, IllegalLexerState, Lexer, LexerException, Position, Span,
-    Token, TokenKind,
+    read_until_end_of_file, text_at, IllegalLexerState, Lexer, LexerException, LexerMode, Position,
+    Span, Token, TokenKind,
 };
 
 pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -38,7 +38,7 @@ mod tests {
         )];
         let lexer = new_lexer(input);
         for pair in expected.into_iter().enumerate() {
-            println!("{}", lexer.state.borrow().position);
+            // println!("{}", lexer.state.borrow().position);
             let idx = pair.0.to_string();
             let expected_token = pair.1;
             let observed_token = next_token(&lexer).unwrap();

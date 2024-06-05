@@ -117,16 +117,16 @@ impl fmt::Display for TokenKind {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Position {
-    pub idx: usize,
     pub row: usize,
     pub col: usize,
+    pub idx: usize,
 }
 
 impl fmt::Display for Position {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let s = format!(
-            "Position {{index: {}, row: {}, col: {}}}",
-            self.idx, self.row, self.col,
+            "Position {{row: {}, col: {}, index: {}}}",
+            self.row, self.col, self.idx
         );
         write!(f, "{}", s)
     }
@@ -135,9 +135,9 @@ impl fmt::Display for Position {
 impl Position {
     pub fn empty() -> Self {
         Self {
-            idx: 0,
             row: 0,
             col: 0,
+            idx: 0,
         }
     }
 
@@ -247,7 +247,33 @@ pub enum LexerMode {
     Init,
     FullFree,
     Free,
-    Fixed,
+    HSpec,
+    FSpec,
+    ISpec,
+    OSpec,
+    PSpec,
+    CSpec,
+    DSpec,
+    LineComment,
+}
+
+impl fmt::Display for LexerMode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Self::Init => format!("Init"),
+            Self::FullFree => format!("FullFree"),
+            Self::Free => format!("Free"),
+            Self::HSpec => format!("HSpec"),
+            Self::FSpec => format!("FSpec"),
+            Self::ISpec => format!("ISpec"),
+            Self::OSpec => format!("OSpec"),
+            Self::PSpec => format!("PSpec"),
+            Self::CSpec => format!("CSpec"),
+            Self::DSpec => format!("DSpec"),
+            Self::LineComment => format!("LineComment"),
+        };
+        write!(f, "{}", s)
+    }
 }
 
 pub struct LexerState {
@@ -341,10 +367,5 @@ pub fn new_lexer(input: &str) -> Lexer {
         input: input.chars().into_iter().collect::<Vec<char>>(),
         state: RefCell::new(state),
     };
-    if let Some('*') = peek(&lex) {
-        lex.state.borrow_mut().mode = LexerMode::FullFree;
-    } else {
-        lex.state.borrow_mut().mode = LexerMode::Fixed;
-    }
     return lex;
 }

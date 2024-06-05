@@ -1,6 +1,6 @@
 use crate::core::{
     ch, read_until_column, read_until_end_of_line, text_at, FormType, IllegalLexerState, Lexer,
-    LexerException, Span, Token, TokenKind,
+    LexerException, LexerMode, Span, Token, TokenKind,
 };
 
 fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {

@@ -1,7 +1,10 @@
-use crate::core::{
-    ch, read_until_column, read_until_end_of_line, text_at, FileAdditionType, FileDesignation,
-    FileFormatType, FileSequenceType, FileType, FormType, IllegalLexerState, Lexer, LexerException,
-    Span, Token, TokenKind,
+use crate::{
+    core::{
+        ch, read_until_column, read_until_end_of_line, text_at, FileAdditionType, FileDesignation,
+        FileFormatType, FileSequenceType, FileType, FormType, IllegalLexerState, Lexer,
+        LexerException, Span, Token, TokenKind,
+    },
+    LexerMode,
 };
 
 fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
