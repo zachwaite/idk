@@ -13,6 +13,7 @@ members = [
   # "crates/idklib",           # lib - core domain
   # "crates/idk",              # cli for idklib
   # "crates/idk-lsp",          # language server
+  "crates/idk-nvim",           # nvim-oxi plugin
   ]
 
 [workspace.package]
@@ -28,3 +29,4 @@ clap = { version = "4.5.3", features = ["derive"] }
 indoc = "2.0.5"
 log = "0.4.21"
 env_logger = "0.11.3"
+nvim-oxi = { git="https://github.com/zachwaite/nvim-oxi.git", features=["neovim-0-9"]}

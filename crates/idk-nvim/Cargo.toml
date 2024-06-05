@@ -1,0 +1,22 @@
+[package]
+name = "idk-nvim"
+version = "0.0.0"
+description = "TBD"
+
+rust-version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+thiserror.workspace = true
+log.workspace = true
+env_logger.workspace = true
+nvim-oxi.workspace = true
+rpgle-lexer = { path="../rpgle-lexer" }
+
+[dev-dependencies]
+indoc.workspace = true
