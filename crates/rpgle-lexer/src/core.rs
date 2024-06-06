@@ -29,6 +29,13 @@ pub enum CommentType {
 pub enum FormType {
     Empty,
     Control,
+    File,
+    Definition,
+    Input,
+    Calculation,
+    Output,
+    Procedure,
+    Idk,
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]

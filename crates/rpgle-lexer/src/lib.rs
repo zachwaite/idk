@@ -41,6 +41,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let table = (mode, col, cur, peek5, peek6);
     let new_mode = match table {
         (LexerMode::Init, 0, Some('*'), _, _) => LexerMode::FullFree,
+        (_, 0, _, _, Some('*')) => LexerMode::LineComment,
         (_, 0, _, Some('H'), _) => LexerMode::HSpec,
         (_, 0, _, Some('F'), _) => LexerMode::FSpec,
         (_, 0, _, Some('D'), _) => LexerMode::DSpec,
@@ -48,7 +49,6 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, 0, _, Some('C'), _) => LexerMode::CSpec,
         (_, 0, _, Some('O'), _) => LexerMode::OSpec,
         (_, 0, _, Some('P'), _) => LexerMode::PSpec,
-        (_, 0, _, Some(' '), Some('*')) => LexerMode::LineComment,
         (mode, 1.., _, _, _) => mode,
         (a, b, c, d, e) => {
             // let msg = format!(
@@ -104,8 +104,7 @@ mod tests {
                                                                                                     
        *inlr = *on;                                                                                 
                                                                                                     
-                                                                                                    
-                                                                                                    
+     F**********************************************************************************************
                                                                                                     
 "#[1..];
         let expected: Vec<Token> = vec![
@@ -396,6 +395,38 @@ mod tests {
                 Span {
                     start: Position::new(6, 100, 706),
                     end: Position::new(6, 101, 707),
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(7, 0, 707),
+                    end: Position::new(7, 5, 712),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::File),
+                "F",
+                Span {
+                    start: Position::new(7, 5, 712),
+                    end: Position::new(7, 6, 713),
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::LineComment),
+                "**********************************************************************************************",
+                Span {
+                    start: Position::new(7, 6, 713),
+                    end: Position::new(7, 100, 807),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(7, 100, 807),
+                    end: Position::new(7, 101, 808),
                 },
             ),
         ];
