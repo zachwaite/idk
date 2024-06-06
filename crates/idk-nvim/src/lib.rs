@@ -2,6 +2,18 @@ use nvim_oxi::{self as oxi};
 use rpgle_lexer::{new_lexer, next_token, TokenKind};
 use std::fmt;
 
+fn get_hl_group(kind: &TokenKind) -> String {
+    match kind {
+        TokenKind::FullFree | TokenKind::Free | TokenKind::EndFree => {
+            "@keyword.directive".to_string()
+        }
+        TokenKind::Comment(_) => "@comment".to_string(),
+        TokenKind::FormType(_) => "@keyword.directive".to_string(),
+        TokenKind::Name => "@tag".to_string(),
+        _ => "Normal".to_string(),
+    }
+}
+
 struct HighlightMeta {
     start_row: usize,
     start_col: usize,
@@ -29,13 +41,6 @@ impl HighlightMeta {
             end_col: ec,
             hl_group: hl_group.to_string(),
         }
-    }
-}
-
-fn get_hl_group(kind: &TokenKind) -> String {
-    match kind {
-        TokenKind::FullFree | TokenKind::Free | TokenKind::EndFree => "Keyword".to_string(),
-        _ => "Normal".to_string(),
     }
 }
 
@@ -88,22 +93,24 @@ impl Highlighter {
             front_kind = tok.kind;
         }
         let mut counter = 0;
-        while front_kind != TokenKind::Eof && counter < 10 {
+        while front_kind != TokenKind::Eof && counter < 130 {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;
                     oxi::print!("{}\n", front_kind);
                     let grp = get_hl_group(&tok.kind);
-                    let meta = HighlightMeta::new(
-                        tok.span.start.row,
-                        tok.span.start.col,
-                        tok.span.end.row,
-                        tok.span.end.col,
-                        &grp,
-                    );
-                    self.highlight(&meta)?;
+                    if grp != "Normal" {
+                        let meta = HighlightMeta::new(
+                            tok.span.start.row,
+                            tok.span.start.col,
+                            tok.span.end.row,
+                            tok.span.end.col,
+                            &grp,
+                        );
+                        self.highlight(&meta)?;
+                        oxi::print!("{}\n", counter);
+                    }
                     counter += 1;
-                    oxi::print!("{}\n", counter);
                 }
                 Err(e) => {
                     oxi::print!("{}\n", e);
