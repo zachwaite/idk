@@ -23,17 +23,13 @@ fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_form_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 6;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
-        (6, Some('F')) => Ok(Token::new(
-            TokenKind::FormType(FormType::Control),
-            &txt,
-            span,
-        )),
+    match (end.col, maybe) {
+        (6, Some('F')) => Ok(Token::new(TokenKind::FormType(FormType::File), &txt, span)),
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -61,12 +57,12 @@ fn read_name(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 17;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (17, Some('I')) => Ok(Token::new(TokenKind::FileType(FileType::Input), &txt, span)),
         (17, Some('O')) => Ok(Token::new(
             TokenKind::FileType(FileType::Output),
@@ -94,12 +90,12 @@ fn read_file_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_designation(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 18;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (18, Some(' ')) => Ok(Token::new(
             TokenKind::FileDesignation(FileDesignation::Output),
             &txt,
@@ -141,13 +137,13 @@ fn read_file_designation(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_end_of_file(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 19;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -159,12 +155,12 @@ fn read_end_of_file(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_addition(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 20;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (20, Some('A')) => Ok(Token::new(
             TokenKind::FileAddition(FileAdditionType::Add),
             &txt,
@@ -186,12 +182,12 @@ fn read_file_addition(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 21;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (21, Some(' ')) => Ok(Token::new(
             TokenKind::FileSequence(FileSequenceType::Ascending),
             &txt,
@@ -218,12 +214,12 @@ fn read_file_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_format(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 22;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (22, Some('F')) => Ok(Token::new(
             TokenKind::FileFormat(FileFormatType::ProgramDescribed),
             &txt,
@@ -245,13 +241,13 @@ fn read_file_format(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_record_length(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 27;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -263,13 +259,13 @@ fn read_record_length(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_limits_processing(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 28;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -281,13 +277,13 @@ fn read_limits_processing(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_record_address_length(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 33;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -299,13 +295,13 @@ fn read_record_address_length(lexer: &Lexer) -> Result<Token, IllegalLexerState>
 fn read_record_address_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 34;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -317,13 +313,13 @@ fn read_record_address_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_file_organization(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 35;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -335,13 +331,13 @@ fn read_file_organization(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_device(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 42;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -353,13 +349,13 @@ fn read_device(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_reserved(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 43;
     let start = lexer.state.borrow().position;
-    let maybe_f = ch(lexer);
+    let maybe = ch(lexer);
     read_until_column(lexer, c)?;
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
     // TDE
-    match (end.col, maybe_f) {
+    match (end.col, maybe) {
         (_, _) => {
             let ex = LexerException::NotImplemented;
             let tok = Token::new(TokenKind::Idk(ex), &txt, span);
@@ -431,7 +427,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType(FormType::Control),
+                TokenKind::FormType(FormType::File),
                 "F",
                 Span {
                     start: Position::new(0, 5, 5),

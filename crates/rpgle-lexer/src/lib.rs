@@ -214,7 +214,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::FormType(FormType::Control),
+                TokenKind::FormType(FormType::File),
                 "F",
                 Span {
                     start: Position::new(3, 5, 308),
