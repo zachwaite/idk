@@ -1,5 +1,6 @@
 use nvim_oxi::{self as oxi};
 use rpgle_lexer::{new_lexer, next_token, TokenKind};
+use std::env;
 use std::fmt;
 
 fn get_hl_group(kind: &TokenKind) -> String {
@@ -109,7 +110,9 @@ impl Highlighter {
                             tok.span.end.col,
                             &grp,
                         );
-                        oxi::print!("{} {}\n", front_kind, &meta);
+                        if env::var("DEBUG").is_ok() {
+                            oxi::print!("{} {}\n", front_kind, &meta);
+                        }
                         self.highlight(&meta)?;
                     }
                     counter += 1;
