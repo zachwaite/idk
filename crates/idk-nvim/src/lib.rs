@@ -8,8 +8,11 @@ fn get_hl_group(kind: &TokenKind) -> String {
             "@keyword.directive".to_string()
         }
         TokenKind::Comment(_) => "@comment".to_string(),
-        TokenKind::FormType(_) => "@keyword.directive".to_string(),
-        TokenKind::Name => "@tag".to_string(),
+        TokenKind::FormType(_) => "Function".to_string(),
+        TokenKind::Name => "Identifier".to_string(),
+        TokenKind::FileType(_) => "@keyword.storage".to_string(),
+        TokenKind::FileDesignation(_) => "@keyword.directive".to_string(),
+
         _ => "Normal".to_string(),
     }
 }
@@ -51,8 +54,6 @@ struct Highlighter {
 
 impl Highlighter {
     fn highlight(&mut self, meta: &HighlightMeta) -> oxi::Result<()> {
-        oxi::print!("{}\n", meta);
-
         // remove conflicting existing mark
         let opts = oxi::api::opts::GetExtmarksOpts::builder()
             .details(true)
@@ -97,7 +98,6 @@ impl Highlighter {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;
-                    oxi::print!("{}\n", front_kind);
                     let grp = get_hl_group(&tok.kind);
                     if grp != "Normal" {
                         let meta = HighlightMeta::new(
@@ -107,8 +107,8 @@ impl Highlighter {
                             tok.span.end.col,
                             &grp,
                         );
+                        oxi::print!("{} {}\n", front_kind, &meta);
                         self.highlight(&meta)?;
-                        oxi::print!("{}\n", counter);
                     }
                     counter += 1;
                 }
