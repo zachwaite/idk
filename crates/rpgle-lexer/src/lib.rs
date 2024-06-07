@@ -88,8 +88,9 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 #[cfg(test)]
 mod tests {
     use crate::core::{
-        new_lexer, CommentType, FileAdditionType, FileDesignation, FileFormatType,
-        FileSequenceType, FileType, FormType, LexerException, Position, TokenKind,
+        new_lexer, CommentType, DefinitionDataType, DefinitionType, FileAdditionType,
+        FileDesignation, FileFormatType, FileSequenceType, FileType, FormType, LexerException,
+        Position, TokenKind,
     };
 
     use super::*;
@@ -105,7 +106,7 @@ mod tests {
        *inlr = *on;                                                                                 
                                                                                                     
      F**********************************************************************************************
-                                                                                                    
+     D LastId          S              8  0                                                          
 "#[1..];
         let expected: Vec<Token> = vec![
             Token::new(
@@ -427,6 +428,102 @@ mod tests {
                 Span {
                     start: Position::new(7, 100, 807),
                     end: Position::new(7, 101, 808),
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(8, 0, 808),
+                    end: Position::new(8, 5, 813),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Definition),
+                "D",
+                Span {
+                    start: Position::new(8, 5, 813),
+                    end: Position::new(8, 6, 814),
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                " LastId        ",
+                Span {
+                    start: Position::new(8, 6, 814),
+                    end: Position::new(8, 21, 829),
+                },
+            ),
+            Token::new(
+                TokenKind::FileFormat(FileFormatType::ProgramDescribed),
+                " ",
+                Span {
+                    start: Position::new(8, 21, 829),
+                    end: Position::new(8, 22, 830),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(8, 22, 830),
+                    end: Position::new(8, 23, 831),
+                },
+            ),
+            Token::new(
+                TokenKind::DefinitionType(DefinitionType::Standalone),
+                "S ",
+                Span {
+                    start: Position::new(8, 23, 831),
+                    end: Position::new(8, 25, 833),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "       ",
+                Span {
+                    start: Position::new(8, 25, 833),
+                    end: Position::new(8, 32, 840),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "      8",
+                Span {
+                    start: Position::new(8, 32, 840),
+                    end: Position::new(8, 39, 847),
+                },
+            ),
+            Token::new(
+                TokenKind::DefinitionDataType(DefinitionDataType::Blank),
+                " ",
+                Span {
+                    start: Position::new(8, 39, 847),
+                    end: Position::new(8, 40, 848),
+                },
+            ),
+            Token::new(
+                TokenKind::DefinitionDecimals,
+                " 0",
+                Span {
+                    start: Position::new(8, 40, 848),
+                    end: Position::new(8, 42, 850),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(8, 42, 850),
+                    end: Position::new(8, 43, 851),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                         ",
+                Span {
+                    start: Position::new(8, 43, 851),
+                    end: Position::new(8, 100, 908),
                 },
             ),
         ];
