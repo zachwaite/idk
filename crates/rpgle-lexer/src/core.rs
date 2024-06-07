@@ -75,6 +75,36 @@ pub enum FileFormatType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+pub enum DefinitionType {
+    Blank,
+    Constant,
+    DataStructure,
+    Prototype,
+    ProcedureInterface,
+    Standalone,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
+pub enum DefinitionDataType {
+    Blank,
+    Character,
+    Binary,
+    UCS2,
+    Date,
+    Float,
+    Graphic,
+    Integer,
+    Indicator,
+    Object,
+    Packed,
+    Zoned,
+    Time,
+    Unsigned,
+    Timestamp,
+    Pointer,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenKind {
     // error
     Idk(LexerException),
@@ -88,6 +118,7 @@ pub enum TokenKind {
     EndFree,
 
     // positional tokens
+    // fspec
     Sequence,
     Comment(CommentType),
     FormType(FormType),
@@ -97,6 +128,10 @@ pub enum TokenKind {
     FileAddition(FileAdditionType),
     FileSequence(FileSequenceType),
     FileFormat(FileFormatType),
+    // dspec
+    DefinitionType(DefinitionType),
+    DefinitionDataType(DefinitionDataType),
+    DefinitionDecimals,
 }
 
 impl fmt::Display for TokenKind {
@@ -117,6 +152,9 @@ impl fmt::Display for TokenKind {
             Self::FileAddition(_) => format!("FileAddition"),
             Self::FileSequence(_) => format!("FileSequence"),
             Self::FileFormat(_) => format!("FileFormatType"),
+            Self::DefinitionType(_) => format!("DefinitionType"),
+            Self::DefinitionDataType(_) => format!("DefinitionDataType"),
+            Self::DefinitionDecimals => format!("DefinitionDecimals"),
         };
         write!(f, "{}", s)
     }
