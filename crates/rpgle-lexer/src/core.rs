@@ -301,6 +301,7 @@ pub enum LexerMode {
     CSpec,
     DSpec,
     LineComment,
+    CompilerDirective,
 }
 
 impl fmt::Display for LexerMode {
@@ -318,6 +319,7 @@ impl fmt::Display for LexerMode {
             Self::CSpec => format!("CSpec"),
             Self::DSpec => format!("DSpec"),
             Self::LineComment => format!("LineComment"),
+            Self::CompilerDirective => format!("CompilerDirective"),
         };
         write!(f, "{}", s)
     }

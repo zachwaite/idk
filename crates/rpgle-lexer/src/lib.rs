@@ -49,6 +49,8 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, 0, _, Some('C'), _) => LexerMode::CSpec,
         (_, 0, _, Some('O'), _) => LexerMode::OSpec,
         (_, 0, _, Some('P'), _) => LexerMode::PSpec,
+        (_, 0, _, Some(' '), Some('/')) => LexerMode::CompilerDirective,
+        (_, 0, _, Some(' '), Some(' ')) => LexerMode::Free,
         (mode, 1.., _, _, _) => mode,
         (a, b, c, d, e) => {
             // let msg = format!(
@@ -79,6 +81,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, LexerMode::CSpec) => cspec::next_token(lexer),
         (_, LexerMode::OSpec) => ospec::next_token(lexer),
         (_, LexerMode::PSpec) => pspec::next_token(lexer),
+        (_, LexerMode::CompilerDirective) => idk::next_token(lexer),
         (_, LexerMode::Idk) => idk::next_token(lexer),
     };
     lexer.state.borrow_mut().mode = new_mode;
