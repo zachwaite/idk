@@ -98,7 +98,7 @@ impl Highlighter {
             front_kind = tok.kind;
         }
         let mut counter = 0;
-        while front_kind != TokenKind::Eof && counter < 130 {
+        while front_kind != TokenKind::Eof && counter < 200 {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;
@@ -133,7 +133,7 @@ fn idk() -> oxi::Result<oxi::Dictionary> {
     let highlight_rpgle = oxi::Function::from_fn(move |(): ()| {
         let mut highlighter = Highlighter {
             buf: oxi::api::Buffer::current(),
-            namespace_id: oxi::api::create_namespace("Foo"),
+            namespace_id: oxi::api::create_namespace("RPGLENamespace"),
         };
         if let Err(e) = highlighter.highlight_all() {
             oxi::print!("ERROR");
