@@ -381,7 +381,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
+                TokenKind::Whitespace,
                 "                                                                                             ",
                 Span {
                     start: Position::new(4, 7, 411),
@@ -421,10 +421,58 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "*inlr = *on;                                                                                 ",
+                TokenKind::Indicator,
+                "*inlr",
                 Span {
                     start: Position::new(5, 7, 512),
+                    end: Position::new(5, 12, 517),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                " ",
+                Span {
+                    start: Position::new(5, 12, 517),
+                    end: Position::new(5, 13, 518),
+                },
+            ),
+            Token::new(
+                TokenKind::Equals,
+                "=",
+                Span {
+                    start: Position::new(5, 13, 518),
+                    end: Position::new(5, 14, 519),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                " ",
+                Span {
+                    start: Position::new(5, 14, 519),
+                    end: Position::new(5, 15, 520),
+                },
+            ),
+            Token::new(
+                TokenKind::IndicatorValue,
+                "*on",
+                Span {
+                    start: Position::new(5, 15, 520),
+                    end: Position::new(5, 18, 523),
+                },
+            ),
+            Token::new(
+                TokenKind::Semicolon,
+                ";",
+                Span {
+                    start: Position::new(5, 18, 523),
+                    end: Position::new(5, 19, 524),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                "                                                                                 ",
+                Span {
+                    start: Position::new(5, 19, 524),
                     end: Position::new(5, 100, 605),
                 },
             ),
@@ -461,7 +509,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
+                TokenKind::Whitespace,
                 "                                                                                             ",
                 Span {
                     start: Position::new(6, 7, 613),

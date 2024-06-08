@@ -158,6 +158,17 @@ pub enum TokenKind {
     Equals,
     Semicolon,
     IndicatorValue,
+    // keywords
+    SetLL,
+    SetGT,
+    Chain,
+    Read,
+    ReadE,
+    ReadPE,
+    Identifier,
+    Write,
+    StringLiteral,
+    Number,
 }
 
 impl fmt::Display for TokenKind {
@@ -188,6 +199,16 @@ impl fmt::Display for TokenKind {
             Self::Whitespace => format!("Whitespace"),
             Self::Equals => format!("Equals"),
             Self::Semicolon => format!("Semicolon"),
+            Self::SetLL => format!("SetLL"),
+            Self::SetGT => format!("SetGT"),
+            Self::Chain => format!("Chain"),
+            Self::Read => format!("Chain"),
+            Self::ReadE => format!("ReadE"),
+            Self::ReadPE => format!("ReadPE"),
+            Self::Write => format!("Write"),
+            Self::Identifier => format!("Identifier"),
+            Self::StringLiteral => format!("StringLiteral"),
+            Self::Number => format!("Number"),
         };
         write!(f, "{}", s)
     }
@@ -394,6 +415,11 @@ pub fn ch(lexer: &Lexer) -> Option<&char> {
 pub fn is_letter(ch: &char) -> bool {
     ch.is_ascii_alphabetic()
 }
+
+pub fn is_numeric(ch: &char) -> bool {
+    ch.is_numeric()
+}
+
 pub fn is_alphanumeric(ch: &char) -> bool {
     ch.is_alphanumeric()
 }
@@ -432,6 +458,24 @@ pub fn read_char(lexer: &Lexer) -> Result<(), IllegalLexerState> {
 pub fn read_identifier(lexer: &Lexer) -> Result<(), IllegalLexerState> {
     // read until the cursor is on something not alphanumeric
     while ch(lexer).is_some() && is_alphanumeric(&ch(lexer).unwrap()) {
+        read_char(lexer)?;
+    }
+    Ok(())
+}
+
+pub fn read_number(lexer: &Lexer) -> Result<(), IllegalLexerState> {
+    // read until the cursor is on something not alphanumeric
+    while ch(lexer).is_some() && is_numeric(&ch(lexer).unwrap()) {
+        read_char(lexer)?;
+    }
+    Ok(())
+}
+
+pub fn read_string_literal(lexer: &Lexer) -> Result<(), IllegalLexerState> {
+    while ch(lexer).is_some()
+        && !matches!(ch(lexer), Some('\''))
+        && !matches!(ch(lexer), Some('\n'))
+    {
         read_char(lexer)?;
     }
     Ok(())

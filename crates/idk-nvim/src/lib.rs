@@ -19,6 +19,16 @@ fn get_hl_group(kind: &TokenKind) -> String {
         TokenKind::CompilerDirectiveType(_) => "@keyword.directive.define".to_string(),
         TokenKind::Indicator => "@variable.builtin".to_string(),
         TokenKind::IndicatorValue => "@variable.parameter.builtin".to_string(),
+        TokenKind::SetLL
+        | TokenKind::SetGT
+        | TokenKind::Chain
+        | TokenKind::Read
+        | TokenKind::ReadE
+        | TokenKind::ReadPE
+        | TokenKind::Write => "@function.builtin".to_string(),
+        TokenKind::Number => "@number".to_string(),
+        TokenKind::Identifier => "Identifier".to_string(),
+        TokenKind::StringLiteral => "String".to_string(),
         _ => "Normal".to_string(),
     }
 }

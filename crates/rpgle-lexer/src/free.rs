@@ -1,7 +1,7 @@
 use crate::core::{
-    ch, is_alphanumeric, peek, read_char, read_identifier, read_spaces_or_tabs, read_until_column,
-    read_until_end_of_line, text_at, CommentType, FormType, IllegalLexerState, Lexer,
-    LexerException, Span, Token, TokenKind,
+    ch, is_alphanumeric, is_numeric, peek, read_char, read_identifier, read_number,
+    read_spaces_or_tabs, read_string_literal, read_until_column, read_until_end_of_line, text_at,
+    CommentType, FormType, IllegalLexerState, Lexer, LexerException, Span, Token, TokenKind,
 };
 
 fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -58,12 +58,18 @@ fn read_reserved(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
     let kind = match ch(lexer) {
-        Some(' ') => {
+        Some(' ') | Some('\t') => {
             read_spaces_or_tabs(lexer)?;
             TokenKind::Whitespace
         }
-        Some('=') => TokenKind::Equals,
-        Some(';') => TokenKind::Semicolon,
+        Some('=') => {
+            read_char(lexer)?;
+            TokenKind::Equals
+        }
+        Some(';') => {
+            read_char(lexer)?;
+            TokenKind::Semicolon
+        }
         Some('/') => {
             read_char(lexer)?;
             match ch(lexer) {
@@ -75,6 +81,15 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                     read_until_end_of_line(lexer)?;
                     TokenKind::Idk(LexerException::NotImplemented)
                 }
+            }
+        }
+        Some('\'') => {
+            // force 1 char
+            read_char(lexer)?;
+            read_string_literal(lexer)?;
+            match ch(lexer) {
+                Some('\'') => TokenKind::StringLiteral,
+                _ => TokenKind::Idk(LexerException::NotImplemented),
             }
         }
         Some('*') => {
@@ -97,10 +112,35 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                 None => TokenKind::Eof,
             }
         }
-        _ => {
-            read_until_end_of_line(lexer)?;
-            TokenKind::Idk(LexerException::NotImplemented)
-        }
+        Some(x) => match is_alphanumeric(&x) {
+            true => match is_numeric(&x) {
+                true => {
+                    read_number(lexer)?;
+                    TokenKind::Number
+                }
+                false => {
+                    let is = lexer.state.borrow().position.idx;
+                    read_identifier(lexer)?;
+                    let ie = lexer.state.borrow().position.idx;
+                    let literal = lexer.input[is..ie].iter().collect::<String>();
+                    match literal.to_uppercase().as_str() {
+                        "SETLL" => TokenKind::SetLL,
+                        "SETGT" => TokenKind::SetGT,
+                        "CHAIN" => TokenKind::Chain,
+                        "READ" => TokenKind::Read,
+                        "READE" => TokenKind::ReadE,
+                        "READPE" => TokenKind::ReadPE,
+                        "WRITE" => TokenKind::Write,
+                        _ => TokenKind::Identifier,
+                    }
+                }
+            },
+            false => {
+                read_until_end_of_line(lexer)?;
+                TokenKind::Idk(LexerException::NotImplemented)
+            }
+        },
+        None => TokenKind::Eof,
     };
 
     let end = lexer.state.borrow().position;
