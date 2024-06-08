@@ -1,3 +1,4 @@
+mod compiler_directive;
 mod core;
 mod cspec;
 mod dspec;
@@ -81,7 +82,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, LexerMode::CSpec) => cspec::next_token(lexer),
         (_, LexerMode::OSpec) => ospec::next_token(lexer),
         (_, LexerMode::PSpec) => pspec::next_token(lexer),
-        (_, LexerMode::CompilerDirective) => idk::next_token(lexer),
+        (_, LexerMode::CompilerDirective) => compiler_directive::next_token(lexer),
         (_, LexerMode::Idk) => idk::next_token(lexer),
     };
     lexer.state.borrow_mut().mode = new_mode;

@@ -105,6 +105,22 @@ pub enum DefinitionDataType {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+pub enum CompilerDirectiveType {
+    Free,
+    EndFree,
+    Title,
+    Eject,
+    Space,
+    Copy,
+    Include,
+    If,
+    Elseif,
+    Else,
+    Endif,
+    Eof,
+}
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum TokenKind {
     // error
     Idk(LexerException),
@@ -132,6 +148,8 @@ pub enum TokenKind {
     DefinitionType(DefinitionType),
     DefinitionDataType(DefinitionDataType),
     DefinitionDecimals,
+    // compiler directive
+    CompilerDirectiveType(CompilerDirectiveType),
 }
 
 impl fmt::Display for TokenKind {
@@ -155,6 +173,7 @@ impl fmt::Display for TokenKind {
             Self::DefinitionType(_) => format!("DefinitionType"),
             Self::DefinitionDataType(_) => format!("DefinitionDataType"),
             Self::DefinitionDecimals => format!("DefinitionDecimals"),
+            Self::CompilerDirectiveType(_) => format!("CompilerDirectiveType"),
         };
         write!(f, "{}", s)
     }
@@ -358,6 +377,13 @@ pub fn ch(lexer: &Lexer) -> Option<&char> {
     lexer.input.get(idx)
 }
 
+pub fn is_letter(ch: &char) -> bool {
+    ch.is_ascii_alphabetic()
+}
+pub fn is_alphanumeric(ch: &char) -> bool {
+    ch.is_alphanumeric()
+}
+
 pub fn peek_n(lexer: &Lexer, n: usize) -> Option<&char> {
     let idx = lexer.state.borrow().position.idx;
     lexer.input.get(idx + n)
@@ -379,6 +405,14 @@ pub fn read_char(lexer: &Lexer) -> Result<(), IllegalLexerState> {
         }
         None => Err(IllegalLexerState::ReadBeyondEOF),
     }
+}
+
+pub fn read_identifier(lexer: &Lexer) -> Result<(), IllegalLexerState> {
+    // read until the cursor is on something not alphanumeric
+    while ch(lexer).is_some() && is_alphanumeric(&ch(lexer).unwrap()) {
+        read_char(lexer)?;
+    }
+    Ok(())
 }
 
 pub fn read_until_column(lexer: &Lexer, col: usize) -> Result<(), IllegalLexerState> {
