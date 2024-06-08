@@ -92,9 +92,9 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 #[cfg(test)]
 mod tests {
     use crate::core::{
-        new_lexer, CommentType, DefinitionDataType, DefinitionType, FileAdditionType,
-        FileDesignation, FileFormatType, FileSequenceType, FileType, FormType, LexerException,
-        Position, TokenKind,
+        new_lexer, CommentType, CompilerDirectiveType, DefinitionDataType, DefinitionType,
+        FileAdditionType, FileDesignation, FileFormatType, FileSequenceType, FileType, FormType,
+        LexerException, Position, TokenKind,
     };
 
     use super::*;
@@ -111,6 +111,7 @@ mod tests {
                                                                                                     
      F**********************************************************************************************
      D LastId          S              8  0                                                          
+      /free                                                                                         
 "#[1..];
         let expected: Vec<Token> = vec![
             Token::new(
@@ -528,6 +529,38 @@ mod tests {
                 Span {
                     start: Position::new(8, 43, 851),
                     end: Position::new(8, 100, 908),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(8, 100, 908),
+                    end: Position::new(8, 101, 909),
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(9, 0, 909),
+                    end: Position::new(9, 5, 914),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(9, 5, 914),
+                    end: Position::new(9, 6, 915),
+                },
+            ),
+            Token::new(
+                TokenKind::CompilerDirectiveType(CompilerDirectiveType::Free),
+                "/free                                                                                         ",
+                Span {
+                    start: Position::new(9, 6, 915),
+                    end: Position::new(9, 100, 1009),
                 },
             ),
         ];
