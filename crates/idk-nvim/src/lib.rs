@@ -17,6 +17,8 @@ fn get_hl_group(kind: &TokenKind) -> String {
         TokenKind::DefinitionDataType(_) => "@type.qualifier".to_string(),
         TokenKind::DefinitionDecimals => "@number".to_string(),
         TokenKind::CompilerDirectiveType(_) => "@keyword.directive.define".to_string(),
+        TokenKind::Indicator => "@variable.builtin".to_string(),
+        TokenKind::IndicatorValue => "@variable.parameter.builtin".to_string(),
         _ => "Normal".to_string(),
     }
 }
@@ -98,7 +100,7 @@ impl Highlighter {
             front_kind = tok.kind;
         }
         let mut counter = 0;
-        while front_kind != TokenKind::Eof && counter < 200 {
+        while front_kind != TokenKind::Eof && counter < 1000 {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;

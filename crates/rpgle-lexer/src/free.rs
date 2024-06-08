@@ -1,6 +1,7 @@
 use crate::core::{
-    ch, read_char, read_until_column, read_until_end_of_line, text_at, CommentType, FormType,
-    IllegalLexerState, Lexer, LexerException, Span, Token, TokenKind,
+    ch, is_alphanumeric, peek, read_char, read_identifier, read_spaces_or_tabs, read_until_column,
+    read_until_end_of_line, text_at, CommentType, FormType, IllegalLexerState, Lexer,
+    LexerException, Span, Token, TokenKind,
 };
 
 fn read_sequence(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -57,6 +58,12 @@ fn read_reserved(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
     let kind = match ch(lexer) {
+        Some(' ') => {
+            read_spaces_or_tabs(lexer)?;
+            TokenKind::Whitespace
+        }
+        Some('=') => TokenKind::Equals,
+        Some(';') => TokenKind::Semicolon,
         Some('/') => {
             read_char(lexer)?;
             match ch(lexer) {
@@ -68,6 +75,26 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                     read_until_end_of_line(lexer)?;
                     TokenKind::Idk(LexerException::NotImplemented)
                 }
+            }
+        }
+        Some('*') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some('i') => {
+                    read_identifier(lexer)?;
+                    TokenKind::Indicator
+                }
+                Some(x) => match is_alphanumeric(&x) {
+                    true => {
+                        read_identifier(lexer)?;
+                        TokenKind::IndicatorValue
+                    }
+                    false => {
+                        read_until_end_of_line(lexer)?;
+                        TokenKind::Idk(LexerException::NotImplemented)
+                    }
+                },
+                None => TokenKind::Eof,
             }
         }
         _ => {
@@ -89,8 +116,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         0 => read_sequence(lexer),
         5 => read_form_type(lexer),
         6 => read_reserved(lexer),
-        7 => read_free(lexer),
-        _ => Err(IllegalLexerState::ImpossibleDestination),
+        _ => read_free(lexer),
     }
 }
 

@@ -152,6 +152,12 @@ pub enum TokenKind {
     DefinitionDecimals,
     // compiler directive
     CompilerDirectiveType(CompilerDirectiveType),
+    // free tokens
+    Indicator,
+    Whitespace,
+    Equals,
+    Semicolon,
+    IndicatorValue,
 }
 
 impl fmt::Display for TokenKind {
@@ -177,6 +183,11 @@ impl fmt::Display for TokenKind {
             Self::DefinitionDecimals => format!("DefinitionDecimals"),
             Self::CompilerDirectiveType(_) => format!("CompilerDirectiveType"),
             Self::Reserved => format!("Reserved"),
+            Self::Indicator => format!("Indicator"),
+            Self::IndicatorValue => format!("IndicatorValue"),
+            Self::Whitespace => format!("Whitespace"),
+            Self::Equals => format!("Equals"),
+            Self::Semicolon => format!("Semicolon"),
         };
         write!(f, "{}", s)
     }
@@ -387,6 +398,14 @@ pub fn is_alphanumeric(ch: &char) -> bool {
     ch.is_alphanumeric()
 }
 
+pub fn is_space_or_tab(ch: &char) -> bool {
+    match ch {
+        ' ' => true,
+        '\t' => true,
+        _ => false,
+    }
+}
+
 pub fn peek_n(lexer: &Lexer, n: usize) -> Option<&char> {
     let idx = lexer.state.borrow().position.idx;
     lexer.input.get(idx + n)
@@ -413,6 +432,13 @@ pub fn read_char(lexer: &Lexer) -> Result<(), IllegalLexerState> {
 pub fn read_identifier(lexer: &Lexer) -> Result<(), IllegalLexerState> {
     // read until the cursor is on something not alphanumeric
     while ch(lexer).is_some() && is_alphanumeric(&ch(lexer).unwrap()) {
+        read_char(lexer)?;
+    }
+    Ok(())
+}
+
+pub fn read_spaces_or_tabs(lexer: &Lexer) -> Result<(), IllegalLexerState> {
+    while ch(lexer).is_some() && is_space_or_tab(&ch(lexer).unwrap()) {
         read_char(lexer)?;
     }
     Ok(())
