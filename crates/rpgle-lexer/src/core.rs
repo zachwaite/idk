@@ -132,6 +132,8 @@ pub enum TokenKind {
     FullFree,
     Free,
     EndFree,
+    // Intentional whitespace
+    Reserved,
 
     // positional tokens
     // fspec
@@ -174,6 +176,7 @@ impl fmt::Display for TokenKind {
             Self::DefinitionDataType(_) => format!("DefinitionDataType"),
             Self::DefinitionDecimals => format!("DefinitionDecimals"),
             Self::CompilerDirectiveType(_) => format!("CompilerDirectiveType"),
+            Self::Reserved => format!("Reserved"),
         };
         write!(f, "{}", s)
     }

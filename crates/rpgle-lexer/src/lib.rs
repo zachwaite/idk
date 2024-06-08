@@ -112,6 +112,7 @@ mod tests {
      F**********************************************************************************************
      D LastId          S              8  0                                                          
       /free                                                                                         
+       // Look up LastId                                                                            
 "#[1..];
         let expected: Vec<Token> = vec![
             Token::new(
@@ -356,10 +357,34 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "                                                                                                    ",
+                TokenKind::Sequence,
+                "     ",
                 Span {
                     start: Position::new(4, 0, 404),
+                    end: Position::new(4, 5, 409),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(4, 5, 409),
+                    end: Position::new(4, 6, 410),
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start: Position::new(4, 6, 410),
+                    end: Position::new(4, 7, 411),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                                                             ",
+                Span {
+                    start: Position::new(4, 7, 411),
                     end: Position::new(4, 100, 504),
                 },
             ),
@@ -372,10 +397,34 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "       *inlr = *on;                                                                                 ",
+                TokenKind::Sequence,
+                "     ",
                 Span {
                     start: Position::new(5, 0, 505),
+                    end: Position::new(5, 5, 510),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(5, 5, 510),
+                    end: Position::new(5, 6, 511),
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start: Position::new(5, 6, 511),
+                    end: Position::new(5, 7, 512),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "*inlr = *on;                                                                                 ",
+                Span {
+                    start: Position::new(5, 7, 512),
                     end: Position::new(5, 100, 605),
                 },
             ),
@@ -388,10 +437,34 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "                                                                                                    ",
+                TokenKind::Sequence,
+                "     ",
                 Span {
                     start: Position::new(6, 0, 606),
+                    end: Position::new(6, 5, 611),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(6, 5, 611),
+                    end: Position::new(6, 6, 612),
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start: Position::new(6, 6, 612),
+                    end: Position::new(6, 7, 613),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "                                                                                             ",
+                Span {
+                    start: Position::new(6, 7, 613),
                     end: Position::new(6, 100, 706),
                 },
             ),
@@ -561,6 +634,46 @@ mod tests {
                 Span {
                     start: Position::new(9, 6, 915),
                     end: Position::new(9, 100, 1009),
+                },
+            ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(9, 100, 1009),
+                    end: Position::new(9, 101, 1010),
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(10, 0, 1010),
+                    end: Position::new(10, 5, 1015),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(10, 5, 1015),
+                    end: Position::new(10, 6, 1016),
+                },
+            ),
+            Token::new(
+                TokenKind::Reserved,
+                " ",
+                Span {
+                    start: Position::new(10, 6, 1016),
+                    end: Position::new(10, 7, 1017),
+                },
+            ),
+            Token::new(
+                TokenKind::Comment(CommentType::InlineComment),
+                "// Look up LastId                                                                            ",
+                Span {
+                    start: Position::new(10, 7, 1017),
+                    end: Position::new(10, 100, 1110),
                 },
             ),
         ];
