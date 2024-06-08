@@ -16,6 +16,7 @@ fn get_hl_group(kind: &TokenKind) -> String {
         TokenKind::DefinitionType(_) => "@type.definition".to_string(),
         TokenKind::DefinitionDataType(_) => "@type.qualifier".to_string(),
         TokenKind::DefinitionDecimals => "@number".to_string(),
+        TokenKind::CompilerDirectiveType(_) => "@keyword.directive.define".to_string(),
         _ => "Normal".to_string(),
     }
 }
