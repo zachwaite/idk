@@ -1,5 +1,5 @@
 use crate::core::{
-    ch, is_alphanumeric, is_numeric, peek, read_char, read_identifier, read_number,
+    ch, is_identifier_char, is_numeric, read_char, read_identifier, read_number,
     read_spaces_or_tabs, read_string_literal, read_until_column, read_until_end_of_line, text_at,
     CommentType, FormType, IllegalLexerState, Lexer, LexerException, Span, Token, TokenKind,
 };
@@ -66,9 +66,37 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
             read_char(lexer)?;
             TokenKind::Equals
         }
+        Some('<') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some('>') => {
+                    read_char(lexer)?;
+                    TokenKind::NotEquals
+                }
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::GreaterThanOrEquals
+                }
+                _ => TokenKind::LessThan,
+            }
+        }
+        Some('>') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::LessThanOrEquals
+                }
+                _ => TokenKind::GreaterThan,
+            }
+        }
         Some(';') => {
             read_char(lexer)?;
             TokenKind::Semicolon
+        }
+        Some(':') => {
+            read_char(lexer)?;
+            TokenKind::Colon
         }
         Some('/') => {
             read_char(lexer)?;
@@ -77,6 +105,11 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                     read_until_end_of_line(lexer)?;
                     TokenKind::Comment(CommentType::InlineComment)
                 }
+                Some(' ') => TokenKind::Slash,
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::SlashEqual
+                }
                 _ => {
                     read_until_end_of_line(lexer)?;
                     TokenKind::Idk(LexerException::NotImplemented)
@@ -84,22 +117,50 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
             }
         }
         Some('\'') => {
-            // force 1 char
-            read_char(lexer)?;
             read_string_literal(lexer)?;
             match ch(lexer) {
-                Some('\'') => TokenKind::StringLiteral,
+                Some('\'') => {
+                    read_char(lexer)?;
+                    TokenKind::StringLiteral
+                }
+                _ => TokenKind::Idk(LexerException::NotImplemented),
+            }
+        }
+        Some('+') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(' ') => TokenKind::Plus,
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::PlusEqual
+                }
+                _ => TokenKind::Idk(LexerException::NotImplemented),
+            }
+        }
+        Some('-') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(' ') => TokenKind::Minus,
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::MinusEqual
+                }
                 _ => TokenKind::Idk(LexerException::NotImplemented),
             }
         }
         Some('*') => {
             read_char(lexer)?;
             match ch(lexer) {
+                Some(' ') => TokenKind::Asterisk,
+                Some('=') => {
+                    read_char(lexer)?;
+                    TokenKind::AsteriskEqual
+                }
                 Some('i') => {
                     read_identifier(lexer)?;
                     TokenKind::Indicator
                 }
-                Some(x) => match is_alphanumeric(&x) {
+                Some(x) => match is_identifier_char(&x) {
                     true => {
                         read_identifier(lexer)?;
                         TokenKind::IndicatorValue
@@ -112,7 +173,31 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                 None => TokenKind::Eof,
             }
         }
-        Some(x) => match is_alphanumeric(&x) {
+        Some('%') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(x) => match is_identifier_char(&x) {
+                    true => {
+                        read_identifier(lexer)?;
+                        TokenKind::BuiltinIdentifier
+                    }
+                    false => {
+                        read_until_end_of_line(lexer)?;
+                        TokenKind::Idk(LexerException::NotImplemented)
+                    }
+                },
+                None => TokenKind::Eof,
+            }
+        }
+        Some('(') => {
+            read_char(lexer)?;
+            TokenKind::LParen
+        }
+        Some(')') => {
+            read_char(lexer)?;
+            TokenKind::RParen
+        }
+        Some(x) => match is_identifier_char(&x) {
             true => match is_numeric(&x) {
                 true => {
                     read_number(lexer)?;
@@ -131,6 +216,25 @@ fn read_free(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                         "READE" => TokenKind::ReadE,
                         "READPE" => TokenKind::ReadPE,
                         "WRITE" => TokenKind::Write,
+                        "UPDATE" => TokenKind::Update,
+                        "DELETE" => TokenKind::Delete,
+                        "IF" => TokenKind::If,
+                        "OR" => TokenKind::Or,
+                        "AND" => TokenKind::And,
+                        "ELSE" => TokenKind::Else,
+                        "ELSEIF" => TokenKind::Elseif,
+                        "ENDIF" => TokenKind::Endif,
+                        "DOU" => TokenKind::Dou,
+                        "DOW" => TokenKind::Dow,
+                        "ENDDO" => TokenKind::Enddo,
+                        "ITER" => TokenKind::Iter,
+                        "LEAVE" => TokenKind::Leave,
+                        "RESET" => TokenKind::Reset,
+                        "EVAL" => TokenKind::Eval,
+                        "CLEAR" => TokenKind::Clear,
+                        "BEGSR" => TokenKind::Begsr,
+                        "ENDSR" => TokenKind::Endsr,
+                        "EXSR" => TokenKind::Exsr,
                         _ => TokenKind::Identifier,
                     }
                 }

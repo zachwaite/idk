@@ -25,10 +25,44 @@ fn get_hl_group(kind: &TokenKind) -> String {
         | TokenKind::Read
         | TokenKind::ReadE
         | TokenKind::ReadPE
-        | TokenKind::Write => "@function.builtin".to_string(),
+        | TokenKind::Write
+        | TokenKind::Update
+        | TokenKind::Delete
+        | TokenKind::If
+        | TokenKind::Else
+        | TokenKind::Elseif
+        | TokenKind::Endif
+        | TokenKind::Dou
+        | TokenKind::Dow
+        | TokenKind::Iter
+        | TokenKind::Leave
+        | TokenKind::Reset
+        | TokenKind::Eval
+        | TokenKind::Clear
+        | TokenKind::Enddo
+        | TokenKind::Begsr
+        | TokenKind::Endsr
+        | TokenKind::Exsr => "@function.builtin".to_string(),
         TokenKind::Number => "@number".to_string(),
         TokenKind::Identifier => "Identifier".to_string(),
+        TokenKind::BuiltinIdentifier => "@function.builtin".to_string(),
         TokenKind::StringLiteral => "String".to_string(),
+        TokenKind::LessThan
+        | TokenKind::LessThanOrEquals
+        | TokenKind::GreaterThan
+        | TokenKind::GreaterThanOrEquals
+        | TokenKind::And
+        | TokenKind::Or
+        | TokenKind::NotEquals
+        | TokenKind::Equals
+        | TokenKind::Plus
+        | TokenKind::PlusEqual
+        | TokenKind::Minus
+        | TokenKind::MinusEqual
+        | TokenKind::Asterisk
+        | TokenKind::AsteriskEqual
+        | TokenKind::Slash
+        | TokenKind::SlashEqual => "@operator".to_string(),
         _ => "Normal".to_string(),
     }
 }
@@ -110,7 +144,7 @@ impl Highlighter {
             front_kind = tok.kind;
         }
         let mut counter = 0;
-        while front_kind != TokenKind::Eof && counter < 1000 {
+        while front_kind != TokenKind::Eof && counter < 100000 {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;
@@ -124,7 +158,7 @@ impl Highlighter {
                             &grp,
                         );
                         if env::var("DEBUG").is_ok() {
-                            oxi::print!("{} {}\n", front_kind, &meta);
+                            oxi::print!("{} {}...{}\n", front_kind, &meta, tok.text);
                         }
                         self.highlight(&meta)?;
                     }

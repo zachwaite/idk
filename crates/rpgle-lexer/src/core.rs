@@ -156,8 +156,28 @@ pub enum TokenKind {
     Indicator,
     Whitespace,
     Equals,
+    NotEquals,
+    Plus,
+    Minus,
+    Asterisk,
+    Slash,
+    PlusEqual,
+    MinusEqual,
+    AsteriskEqual,
+    SlashEqual,
+    LessThan,
+    LessThanOrEquals,
+    GreaterThan,
+    GreaterThanOrEquals,
     Semicolon,
+    Colon,
     IndicatorValue,
+    StringLiteral,
+    Number,
+    Identifier,
+    BuiltinIdentifier,
+    LParen,
+    RParen,
     // keywords
     SetLL,
     SetGT,
@@ -165,10 +185,27 @@ pub enum TokenKind {
     Read,
     ReadE,
     ReadPE,
-    Identifier,
     Write,
-    StringLiteral,
-    Number,
+    Update,
+    Delete,
+    If,
+    Or,
+    And,
+    Else,
+    Elseif,
+    Endif,
+    End,
+    Dou,
+    Dow,
+    Enddo,
+    Iter,
+    Leave,
+    Reset,
+    Eval,
+    Clear,
+    Begsr,
+    Endsr,
+    Exsr,
 }
 
 impl fmt::Display for TokenKind {
@@ -198,7 +235,21 @@ impl fmt::Display for TokenKind {
             Self::IndicatorValue => format!("IndicatorValue"),
             Self::Whitespace => format!("Whitespace"),
             Self::Equals => format!("Equals"),
+            Self::NotEquals => format!("NotEquals"),
+            Self::LessThan => format!("LessThan"),
+            Self::LessThanOrEquals => format!("LessThanOrEquals"),
+            Self::GreaterThan => format!("GreaterThan"),
+            Self::GreaterThanOrEquals => format!("GreaterThanOrEquals"),
+            Self::Plus => format!("Plus"),
+            Self::Minus => format!("Minus"),
+            Self::Asterisk => format!("Asterisk"),
+            Self::Slash => format!("Slash"),
+            Self::PlusEqual => format!("PlusEqual"),
+            Self::MinusEqual => format!("MinusEqual"),
+            Self::AsteriskEqual => format!("AsteriskEqual"),
+            Self::SlashEqual => format!("SlashEqual"),
             Self::Semicolon => format!("Semicolon"),
+            Self::Colon => format!("Colon"),
             Self::SetLL => format!("SetLL"),
             Self::SetGT => format!("SetGT"),
             Self::Chain => format!("Chain"),
@@ -206,9 +257,32 @@ impl fmt::Display for TokenKind {
             Self::ReadE => format!("ReadE"),
             Self::ReadPE => format!("ReadPE"),
             Self::Write => format!("Write"),
+            Self::Update => format!("Update"),
+            Self::Delete => format!("Delete"),
             Self::Identifier => format!("Identifier"),
+            Self::BuiltinIdentifier => format!("BuiltinIdentifier"),
+            Self::LParen => format!("LParen"),
+            Self::RParen => format!("RParen"),
             Self::StringLiteral => format!("StringLiteral"),
             Self::Number => format!("Number"),
+            Self::If => format!("If"),
+            Self::Else => format!("Else"),
+            Self::Elseif => format!("Elseif"),
+            Self::Endif => format!("EndIf"),
+            Self::End => format!("End"),
+            Self::Begsr => format!("Begsr"),
+            Self::Endsr => format!("Endsr"),
+            Self::Exsr => format!("Exsr"),
+            Self::Dou => format!("Dou"),
+            Self::Dow => format!("Dow"),
+            Self::Enddo => format!("Enddo"),
+            Self::Or => format!("Or"),
+            Self::And => format!("And"),
+            Self::Iter => format!("Iter"),
+            Self::Leave => format!("Leave"),
+            Self::Reset => format!("Reset"),
+            Self::Eval => format!("Eval"),
+            Self::Clear => format!("Clear"),
         };
         write!(f, "{}", s)
     }
@@ -420,8 +494,8 @@ pub fn is_numeric(ch: &char) -> bool {
     ch.is_numeric()
 }
 
-pub fn is_alphanumeric(ch: &char) -> bool {
-    ch.is_alphanumeric()
+pub fn is_identifier_char(ch: &char) -> bool {
+    ch.is_alphanumeric() || *ch == '@' || *ch == '$'
 }
 
 pub fn is_space_or_tab(ch: &char) -> bool {
@@ -457,7 +531,7 @@ pub fn read_char(lexer: &Lexer) -> Result<(), IllegalLexerState> {
 
 pub fn read_identifier(lexer: &Lexer) -> Result<(), IllegalLexerState> {
     // read until the cursor is on something not alphanumeric
-    while ch(lexer).is_some() && is_alphanumeric(&ch(lexer).unwrap()) {
+    while ch(lexer).is_some() && is_identifier_char(&ch(lexer).unwrap()) {
         read_char(lexer)?;
     }
     Ok(())
@@ -472,11 +546,13 @@ pub fn read_number(lexer: &Lexer) -> Result<(), IllegalLexerState> {
 }
 
 pub fn read_string_literal(lexer: &Lexer) -> Result<(), IllegalLexerState> {
-    while ch(lexer).is_some()
-        && !matches!(ch(lexer), Some('\''))
-        && !matches!(ch(lexer), Some('\n'))
-    {
-        read_char(lexer)?;
+    read_char(lexer)?;
+    while ch(lexer).is_some() && !matches!(ch(lexer), Some('\n')) {
+        if matches!(ch(lexer), Some('\'')) {
+            break;
+        } else {
+            read_char(lexer)?;
+        }
     }
     Ok(())
 }
