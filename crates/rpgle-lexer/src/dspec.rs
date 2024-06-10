@@ -1,7 +1,9 @@
 use crate::{
     core::{
-        ch, read_until_column, read_until_end_of_line, text_at, DefinitionDataType, DefinitionType,
-        FileFormatType, FormType, IllegalLexerState, Lexer, LexerException, Span, Token, TokenKind,
+        ch, is_identifier_char, is_numeric, read_identifier, read_number, read_spaces_or_tabs,
+        read_string_literal, read_until_column, read_until_end_of_line, text_at,
+        DefinitionDataType, DefinitionType, FileFormatType, FormType, IllegalLexerState, Lexer,
+        LexerException, Span, Token, TokenKind,
     },
     read_char,
 };
@@ -74,7 +76,7 @@ fn read_file_format(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
             &txt,
             span,
         )),
-        (22, Some('E')) => Ok(Token::new(
+        (22, Some('E') | Some('e')) => Ok(Token::new(
             TokenKind::FileFormat(FileFormatType::ExternallyDescribed),
             &txt,
             span,
@@ -115,29 +117,31 @@ fn read_definition_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                 _ => TokenKind::DefinitionType(DefinitionType::Blank),
             }
         }
-        Some('C') => {
+        Some('C') | Some('c') => {
             read_char(lexer)?;
             match ch(lexer) {
                 Some(' ') => TokenKind::DefinitionType(DefinitionType::Constant),
                 _ => TokenKind::Idk(LexerException::NotImplemented),
             }
         }
-        Some('D') => {
+        Some('D') | Some('d') => {
             read_char(lexer)?;
             match ch(lexer) {
                 Some('D') => TokenKind::DefinitionType(DefinitionType::DataStructure),
                 _ => TokenKind::Idk(LexerException::NotImplemented),
             }
         }
-        Some('P') => {
+        Some('P') | Some('p') => {
             read_char(lexer)?;
             match ch(lexer) {
-                Some('R') => TokenKind::DefinitionType(DefinitionType::Prototype),
-                Some('I') => TokenKind::DefinitionType(DefinitionType::ProcedureInterface),
+                Some('R') | Some('r') => TokenKind::DefinitionType(DefinitionType::Prototype),
+                Some('I') | Some('i') => {
+                    TokenKind::DefinitionType(DefinitionType::ProcedureInterface)
+                }
                 _ => TokenKind::Idk(LexerException::NotImplemented),
             }
         }
-        Some('S') => {
+        Some('S') | Some('s') => {
             read_char(lexer)?;
             match ch(lexer) {
                 Some(' ') => TokenKind::DefinitionType(DefinitionType::Standalone),
@@ -176,19 +180,32 @@ fn read_from_position(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 fn read_to_position_length(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let c = 39;
     let start = lexer.state.borrow().position;
-    let maybe = ch(lexer);
-    read_until_column(lexer, c)?;
+    let kind = match (start.col, ch(lexer)) {
+        (32..=38, Some(' ')) => {
+            read_spaces_or_tabs(lexer)?;
+            TokenKind::Whitespace
+        }
+        (32..=38, Some(x)) => match is_numeric(&x) {
+            true => {
+                read_number(lexer)?;
+                TokenKind::Number
+            }
+            false => {
+                read_until_column(lexer, c)?;
+                TokenKind::Idk(LexerException::NotImplemented)
+            }
+        },
+        (_, None) => TokenKind::Eof,
+        (_, _) => {
+            read_until_column(lexer, c)?;
+            TokenKind::Idk(LexerException::NotImplemented)
+        }
+    };
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    // TDE
-    match (end.col, maybe) {
-        (_, _) => {
-            let ex = LexerException::NotImplemented;
-            let tok = Token::new(TokenKind::Idk(ex), &txt, span);
-            Ok(tok)
-        }
-    }
+    let tok = Token::new(kind, &txt, span);
+    Ok(tok)
 }
 
 fn read_data_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -196,20 +213,20 @@ fn read_data_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let maybe = ch(lexer);
     let kind = match maybe {
         Some(' ') => TokenKind::DefinitionDataType(DefinitionDataType::Blank),
-        Some('A') => TokenKind::DefinitionDataType(DefinitionDataType::Character),
-        Some('B') => TokenKind::DefinitionDataType(DefinitionDataType::Binary),
-        Some('C') => TokenKind::DefinitionDataType(DefinitionDataType::UCS2),
-        Some('D') => TokenKind::DefinitionDataType(DefinitionDataType::Date),
-        Some('F') => TokenKind::DefinitionDataType(DefinitionDataType::Float),
-        Some('G') => TokenKind::DefinitionDataType(DefinitionDataType::Graphic),
-        Some('I') => TokenKind::DefinitionDataType(DefinitionDataType::Integer),
-        Some('N') => TokenKind::DefinitionDataType(DefinitionDataType::Indicator),
-        Some('O') => TokenKind::DefinitionDataType(DefinitionDataType::Object),
-        Some('P') => TokenKind::DefinitionDataType(DefinitionDataType::Packed),
-        Some('S') => TokenKind::DefinitionDataType(DefinitionDataType::Zoned),
-        Some('T') => TokenKind::DefinitionDataType(DefinitionDataType::Time),
-        Some('U') => TokenKind::DefinitionDataType(DefinitionDataType::Unsigned),
-        Some('Z') => TokenKind::DefinitionDataType(DefinitionDataType::Timestamp),
+        Some('A') | Some('a') => TokenKind::DefinitionDataType(DefinitionDataType::Character),
+        Some('B') | Some('b') => TokenKind::DefinitionDataType(DefinitionDataType::Binary),
+        Some('C') | Some('c') => TokenKind::DefinitionDataType(DefinitionDataType::UCS2),
+        Some('D') | Some('d') => TokenKind::DefinitionDataType(DefinitionDataType::Date),
+        Some('F') | Some('f') => TokenKind::DefinitionDataType(DefinitionDataType::Float),
+        Some('G') | Some('g') => TokenKind::DefinitionDataType(DefinitionDataType::Graphic),
+        Some('I') | Some('i') => TokenKind::DefinitionDataType(DefinitionDataType::Integer),
+        Some('N') | Some('n') => TokenKind::DefinitionDataType(DefinitionDataType::Indicator),
+        Some('O') | Some('o') => TokenKind::DefinitionDataType(DefinitionDataType::Object),
+        Some('P') | Some('p') => TokenKind::DefinitionDataType(DefinitionDataType::Packed),
+        Some('S') | Some('s') => TokenKind::DefinitionDataType(DefinitionDataType::Zoned),
+        Some('T') | Some('t') => TokenKind::DefinitionDataType(DefinitionDataType::Time),
+        Some('U') | Some('u') => TokenKind::DefinitionDataType(DefinitionDataType::Unsigned),
+        Some('Z') | Some('z') => TokenKind::DefinitionDataType(DefinitionDataType::Timestamp),
         Some('*') => TokenKind::DefinitionDataType(DefinitionDataType::Pointer),
         _ => TokenKind::Idk(LexerException::NotImplemented),
     };
@@ -262,14 +279,97 @@ fn read_reserved(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 
 fn read_keywords(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
-    read_until_end_of_line(lexer)?;
+    let kind = match ch(lexer) {
+        Some(' ') | Some('\t') => {
+            read_spaces_or_tabs(lexer)?;
+            TokenKind::Whitespace
+        }
+        Some('(') => {
+            read_char(lexer)?;
+            TokenKind::LParen
+        }
+        Some(')') => {
+            read_char(lexer)?;
+            TokenKind::RParen
+        }
+        Some(':') => {
+            read_char(lexer)?;
+            TokenKind::Colon
+        }
+        Some('*') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(x) => match is_identifier_char(&x) {
+                    true => {
+                        read_identifier(lexer)?;
+                        TokenKind::IndicatorValue
+                    }
+                    false => {
+                        read_until_end_of_line(lexer)?;
+                        TokenKind::Idk(LexerException::NotImplemented)
+                    }
+                },
+                None => TokenKind::Eof,
+            }
+        }
+        Some('\'') => {
+            read_string_literal(lexer)?;
+            match ch(lexer) {
+                Some('\'') => {
+                    read_char(lexer)?;
+                    TokenKind::StringLiteral
+                }
+                _ => TokenKind::Idk(LexerException::NotImplemented),
+            }
+        }
+        Some('%') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(x) => match is_identifier_char(&x) {
+                    true => {
+                        read_identifier(lexer)?;
+                        TokenKind::BuiltinIdentifier
+                    }
+                    false => {
+                        read_until_end_of_line(lexer)?;
+                        TokenKind::Idk(LexerException::NotImplemented)
+                    }
+                },
+                None => TokenKind::Eof,
+            }
+        }
+        Some(x) => match is_identifier_char(&x) {
+            true => match is_numeric(&x) {
+                true => {
+                    read_number(lexer)?;
+                    TokenKind::Number
+                }
+                false => {
+                    let is = lexer.state.borrow().position.idx;
+                    read_identifier(lexer)?;
+                    let ie = lexer.state.borrow().position.idx;
+                    let literal = lexer.input[is..ie].iter().collect::<String>();
+                    match literal.to_uppercase().as_str() {
+                        "EXTPGM" => TokenKind::Extpgm,
+                        "DIM" => TokenKind::Dim,
+                        _ => TokenKind::Identifier,
+                    }
+                }
+            },
+            false => {
+                read_until_end_of_line(lexer)?;
+                TokenKind::Idk(LexerException::NotImplemented)
+            }
+        },
+        _ => TokenKind::Idk(LexerException::NotImplemented),
+    };
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    let ex = LexerException::NotImplemented;
-    let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+    let tok = Token::new(kind, &txt, span);
     Ok(tok)
 }
+
 pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let col = lexer.state.borrow().position.col;
     match col {
@@ -280,11 +380,11 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         22 => read_data_structure_type(lexer),
         23 => read_definition_type(lexer),
         25 => read_from_position(lexer),
-        32 => read_to_position_length(lexer),
+        32..=38 => read_to_position_length(lexer),
         39 => read_data_type(lexer),
         40 => read_decimals(lexer),
         42 => read_reserved(lexer),
-        43 => read_keywords(lexer),
+        43.. => read_keywords(lexer),
         _ => Err(IllegalLexerState::ImpossibleDestination),
     }
 }

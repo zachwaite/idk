@@ -1,5 +1,6 @@
 use crate::core::{
-    ch, read_until_column, read_until_end_of_line, text_at, FileAdditionType, FileDesignation,
+    ch, is_identifier_char, read_char, read_identifier, read_spaces_or_tabs, read_string_literal,
+    read_until_column, read_until_end_of_line, text_at, FileAdditionType, FileDesignation,
     FileFormatType, FileSequenceType, FileType, FormType, IllegalLexerState, Lexer, LexerException,
     Span, Token, TokenKind,
 };
@@ -366,12 +367,73 @@ fn read_reserved(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 
 fn read_keywords(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
-    read_until_end_of_line(lexer)?;
+    let kind = match ch(lexer) {
+        Some(' ') | Some('\t') => {
+            read_spaces_or_tabs(lexer)?;
+            TokenKind::Whitespace
+        }
+        Some('(') => {
+            read_char(lexer)?;
+            TokenKind::LParen
+        }
+        Some(')') => {
+            read_char(lexer)?;
+            TokenKind::RParen
+        }
+        Some(':') => {
+            read_char(lexer)?;
+            TokenKind::Colon
+        }
+        Some('*') => {
+            read_char(lexer)?;
+            match ch(lexer) {
+                Some(x) => match is_identifier_char(&x) {
+                    true => {
+                        read_identifier(lexer)?;
+                        TokenKind::IndicatorValue
+                    }
+                    false => {
+                        read_until_end_of_line(lexer)?;
+                        TokenKind::Idk(LexerException::NotImplemented)
+                    }
+                },
+                None => TokenKind::Eof,
+            }
+        }
+        Some('\'') => {
+            read_string_literal(lexer)?;
+            match ch(lexer) {
+                Some('\'') => {
+                    read_char(lexer)?;
+                    TokenKind::StringLiteral
+                }
+                _ => TokenKind::Idk(LexerException::NotImplemented),
+            }
+        }
+        Some(x) => match is_identifier_char(&x) {
+            true => {
+                let is = lexer.state.borrow().position.idx;
+                read_identifier(lexer)?;
+                let ie = lexer.state.borrow().position.idx;
+                let literal = lexer.input[is..ie].iter().collect::<String>();
+                match literal.to_uppercase().as_str() {
+                    "RENAME" => TokenKind::Rename,
+                    "IGNORE" => TokenKind::Ignore,
+                    "PREFIX" => TokenKind::Prefix,
+                    _ => TokenKind::Identifier,
+                }
+            }
+            false => {
+                read_until_end_of_line(lexer)?;
+                TokenKind::Idk(LexerException::NotImplemented)
+            }
+        },
+        _ => TokenKind::Idk(LexerException::NotImplemented),
+    };
     let end = lexer.state.borrow().position;
     let span = Span { start, end };
     let txt = text_at(lexer, span);
-    let ex = LexerException::NotImplemented;
-    let tok = Token::new(TokenKind::Idk(ex), &txt, span);
+    let tok = Token::new(kind, &txt, span);
     Ok(tok)
 }
 
@@ -394,7 +456,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         34 => read_file_organization(lexer),
         35 => read_device(lexer),
         42 => read_reserved(lexer),
-        43 => read_keywords(lexer),
+        43.. => read_keywords(lexer),
         _ => Err(IllegalLexerState::ImpossibleDestination),
     }
 }

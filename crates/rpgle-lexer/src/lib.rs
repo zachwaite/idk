@@ -53,18 +53,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, 0, _, Some(' '), Some('/')) => LexerMode::CompilerDirective,
         (_, 0, _, Some(' '), Some(' ')) => LexerMode::Free,
         (mode, 1.., _, _, _) => mode,
-        (a, b, c, d, e) => {
-            // let msg = format!(
-            //     "{}, {}, {}, {}, {}",
-            //     a,
-            //     b,
-            //     c.unwrap(),
-            //     d.unwrap(),
-            //     e.unwrap()
-            // );
-            // println!("{}", msg);
-            LexerMode::Idk
-        }
+        (_, _, _, _, _) => LexerMode::Idk,
     };
     // println!("{}", new_mode);
 

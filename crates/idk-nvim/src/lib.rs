@@ -13,6 +13,17 @@ fn get_hl_group(kind: &TokenKind) -> String {
         TokenKind::Name => "Identifier".to_string(),
         TokenKind::FileType(_) => "@keyword.storage".to_string(),
         TokenKind::FileDesignation(_) => "@keyword.directive".to_string(),
+        TokenKind::Option
+        | TokenKind::Datedit
+        | TokenKind::Datfmt
+        | TokenKind::Timfmt
+        | TokenKind::Dftactgrp
+        | TokenKind::Debug
+        | TokenKind::Rename
+        | TokenKind::Ignore
+        | TokenKind::Prefix
+        | TokenKind::Extpgm
+        | TokenKind::Dim => "@keyword.directive".to_string(),
         TokenKind::DefinitionType(_) => "@type.definition".to_string(),
         TokenKind::DefinitionDataType(_) => "@type.qualifier".to_string(),
         TokenKind::DefinitionDecimals => "@number".to_string(),
