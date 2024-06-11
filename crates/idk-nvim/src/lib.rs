@@ -155,7 +155,7 @@ impl Highlighter {
             front_kind = tok.kind;
         }
         let mut counter = 0;
-        while front_kind != TokenKind::Eof && counter < 100000 {
+        while front_kind != TokenKind::Eof && counter < 1000000 {
             match next_token(&lexer) {
                 Ok(tok) => {
                     front_kind = tok.kind;
@@ -169,7 +169,7 @@ impl Highlighter {
                             &grp,
                         );
                         if env::var("DEBUG").is_ok() {
-                            oxi::print!("{} {}...{}\n", front_kind, &meta, tok.text);
+                            oxi::print!("{}: {} {}...{}\n", counter, front_kind, &meta, tok.text);
                         }
                         self.highlight(&meta)?;
                     }
@@ -180,6 +180,9 @@ impl Highlighter {
                     return Ok(());
                 }
             }
+        }
+        if env::var("DEBUG").is_ok() {
+            oxi::print!("{}: {}\n", counter, front_kind);
         }
         Ok(())
     }
