@@ -458,10 +458,18 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "      8",
+                TokenKind::Whitespace,
+                "      ",
                 Span {
                     start: Position::new(0, 32, 32),
+                    end: Position::new(0, 38, 38),
+                },
+            ),
+            Token::new(
+                TokenKind::Number,
+                "8",
+                Span {
+                    start: Position::new(0, 38, 38),
                     end: Position::new(0, 39, 39),
                 },
             ),
@@ -490,7 +498,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
+                TokenKind::Whitespace,
                 "                                                         ",
                 Span {
                     start: Position::new(0, 43, 43),

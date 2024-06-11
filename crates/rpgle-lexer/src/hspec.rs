@@ -154,10 +154,66 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                " OPTION(*nodebugio:*srcstmt)                                                                  ",
+                TokenKind::Whitespace,
+                " ",
                 Span {
                     start: Position::new(0, 6, 6),
+                    end: Position::new(0, 7, 7),
+                },
+            ),
+            Token::new(
+                TokenKind::Option,
+                "OPTION",
+                Span {
+                    start: Position::new(0, 7, 7),
+                    end: Position::new(0, 13, 13),
+                },
+            ),
+            Token::new(
+                TokenKind::LParen,
+                "(",
+                Span {
+                    start: Position::new(0, 13, 13),
+                    end: Position::new(0, 14, 14),
+                },
+            ),
+            Token::new(
+                TokenKind::IndicatorValue,
+                "*nodebugio",
+                Span {
+                    start: Position::new(0, 14, 14),
+                    end: Position::new(0, 24, 24),
+                },
+            ),
+            Token::new(
+                TokenKind::Colon,
+                ":",
+                Span {
+                    start: Position::new(0, 24, 24),
+                    end: Position::new(0, 25, 25),
+                },
+            ),
+            Token::new(
+                TokenKind::IndicatorValue,
+                "*srcstmt",
+                Span {
+                    start: Position::new(0, 25, 25),
+                    end: Position::new(0, 33, 33),
+                },
+            ),
+            Token::new(
+                TokenKind::RParen,
+                ")",
+                Span {
+                    start: Position::new(0, 33, 33),
+                    end: Position::new(0, 34, 34),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                "                                                                  ",
+                Span {
+                    start: Position::new(0, 34, 34),
                     end: Position::new(0, 100, 100),
                 },
             ),

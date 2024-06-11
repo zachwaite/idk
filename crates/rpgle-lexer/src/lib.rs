@@ -186,10 +186,66 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                " OPTION(*nodebugio:*srcstmt)                                                                  ",
+                TokenKind::Whitespace,
+                " ",
                 Span {
                     start: Position::new(2, 6, 208),
+                    end: Position::new(2, 7, 209),
+                },
+            ),
+            Token::new(
+                TokenKind::Option,
+                "OPTION",
+                Span {
+                    start: Position::new(2, 7, 209),
+                    end: Position::new(2, 13, 215),
+                },
+            ),
+            Token::new(
+                TokenKind::LParen,
+                "(",
+                Span {
+                    start: Position::new(2, 13, 215),
+                    end: Position::new(2, 14, 216),
+                },
+            ),
+            Token::new(
+                TokenKind::IndicatorValue,
+                "*nodebugio",
+                Span {
+                    start: Position::new(2, 14, 216),
+                    end: Position::new(2, 24, 226),
+                },
+            ),
+            Token::new(
+                TokenKind::Colon,
+                ":",
+                Span {
+                    start: Position::new(2, 24, 226),
+                    end: Position::new(2, 25, 227),
+                },
+            ),
+            Token::new(
+                TokenKind::IndicatorValue,
+                "*srcstmt",
+                Span {
+                    start: Position::new(2, 25, 227),
+                    end: Position::new(2, 33, 235),
+                },
+            ),
+            Token::new(
+                TokenKind::RParen,
+                ")",
+                Span {
+                    start: Position::new(2, 33, 235),
+                    end: Position::new(2, 34, 236),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                "                                                                  ",
+                Span {
+                    start: Position::new(2, 34, 236),
                     end: Position::new(2, 100, 302),
                 },
             ),
@@ -330,7 +386,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
+                TokenKind::Whitespace,
                 "                                                         ",
                 Span {
                     start: Position::new(3, 43, 346),
@@ -602,10 +658,18 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
-                "      8",
+                TokenKind::Whitespace,
+                "      ",
                 Span {
                     start: Position::new(8, 32, 840),
+                    end: Position::new(8, 38, 846),
+                },
+            ),
+            Token::new(
+                TokenKind::Number,
+                "8",
+                Span {
+                    start: Position::new(8, 38, 846),
                     end: Position::new(8, 39, 847),
                 },
             ),
@@ -634,7 +698,7 @@ mod tests {
                 },
             ),
             Token::new(
-                TokenKind::Idk(LexerException::NotImplemented),
+                TokenKind::Whitespace,
                 "                                                         ",
                 Span {
                     start: Position::new(8, 43, 851),
