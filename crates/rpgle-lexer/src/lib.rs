@@ -17,6 +17,8 @@ pub use core::{
     Token, TokenKind,
 };
 
+pub use core::TokenMeta; // public export
+
 fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
     let end = Position::new(start.row, 101, start.idx + 1);
@@ -30,7 +32,8 @@ fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     // guard for eof
     if peek(lexer).is_none() {
-        return Ok(Token::new(TokenKind::Eof, "", Span::empty()));
+        let tok = Token::new(TokenKind::Eof, "", Span::empty());
+        return Ok(tok);
     }
 
     // manage mode
@@ -55,7 +58,6 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (mode, 1.., _, _, _) => mode,
         (_, _, _, _, _) => LexerMode::Idk,
     };
-    // println!("{}", new_mode);
 
     // dispatch lexer
     let rs = match (col, new_mode) {
@@ -75,7 +77,8 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
         (_, LexerMode::Idk) => idk::next_token(lexer),
     };
     lexer.state.borrow_mut().mode = new_mode;
-    rs
+    let tok = rs?;
+    Ok(tok)
 }
 
 #[cfg(test)]
