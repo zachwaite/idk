@@ -14,6 +14,7 @@ members = [
   # "crates/idk",              # cli for idklib
   # "crates/idk-lsp",          # language server
   "crates/idk-nvim",           # nvim-oxi plugin
+  "crates/idk-graph",          # source graph cli tool
   ]
 
 [workspace.package]
