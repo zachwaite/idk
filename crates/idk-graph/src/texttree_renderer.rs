@@ -1,11 +1,11 @@
 use crate::cst::{Call, Definition, Program, Statement};
 
-struct OutputState {
+struct TextTreeOutput {
     indent: usize,
     out: String,
 }
 
-impl OutputState {
+impl TextTreeOutput {
     fn new() -> Self {
         Self {
             indent: 2,
@@ -41,7 +41,7 @@ impl OutputState {
     }
 }
 
-pub fn render(pgm: Program) -> String {
+pub fn render_text_tree(pgm: Program) -> String {
     let mut defs: Vec<Definition> = vec![];
     for stmt in pgm.statements.iter() {
         if let Statement::Def(d) = stmt {
@@ -49,7 +49,7 @@ pub fn render(pgm: Program) -> String {
         }
     }
 
-    let mut output = OutputState::new();
+    let mut output = TextTreeOutput::new();
     for stmt in pgm.statements.iter() {
         if let Statement::Call(call) = stmt {
             output.build(&defs, call);

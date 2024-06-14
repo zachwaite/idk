@@ -201,7 +201,6 @@ pub fn parse_program(parser: &Parser) -> Result<Program, IllegalParserState> {
 #[cfg(test)]
 mod tests {
     use crate::parser::{parse_program, Parser};
-    use crate::renderer::render;
 
     use rpgle_lexer::new_lexer;
 
@@ -254,10 +253,6 @@ mod tests {
         let lexer = new_lexer(input);
         let parser = Parser::new(&lexer).unwrap();
         let rs = parse_program(&parser);
-        println!("{}", input);
-        println!("----");
-        println!("{}", rs.unwrap().to_raw_text());
-        println!("----");
-        // assert_eq!(input, rs.unwrap().to_raw_text());
+        assert_eq!(input, rs.unwrap().to_raw_text());
     }
 }
