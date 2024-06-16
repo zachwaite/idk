@@ -205,7 +205,7 @@ mod tests {
     use rpgle_lexer::new_lexer;
 
     #[test]
-    fn test_e2e() {
+    fn test_round_trip() {
         let input = &r#"
      H OPTION(*nodebugio:*srcstmt)                                                                  
      FCowEvt    UF A E           K DISK                                                             
