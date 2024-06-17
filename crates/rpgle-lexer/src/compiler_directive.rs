@@ -53,7 +53,7 @@ fn read_directive_type(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
                 let literal = lexer.input[is..ie].iter().collect::<String>();
                 match literal.to_uppercase().as_str() {
                     "FREE" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::Free),
-                    "ENDFREE" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::EndFree),
+                    "END-FREE" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::EndFree),
                     "TITLE" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::Title),
                     "EJECT" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::Eject),
                     "SPACE" => TokenKind::CompilerDirectiveType(CompilerDirectiveType::Space),
@@ -95,8 +95,9 @@ mod tests {
     use crate::core::{new_lexer, FormType, Position, TokenKind};
 
     use super::*;
+
     #[test]
-    fn test_next_token() {
+    fn test_next_token_01() {
         let input = &r#"
       /free                                                                                         
 "#[1..];
@@ -120,6 +121,47 @@ mod tests {
             Token::new(
                 TokenKind::CompilerDirectiveType(CompilerDirectiveType::Free),
                 "/free                                                                                         ",
+                Span {
+                    start: Position::new(0, 6, 6),
+                    end: Position::new(0, 100, 100),
+                },
+            ),
+        ];
+        let lexer = new_lexer(input);
+        for pair in expected.into_iter().enumerate() {
+            // println!("`{}` {}", pair.1.kind, lexer.state.borrow().position);
+            let idx = pair.0.to_string();
+            let expected_token = pair.1;
+            let observed_token = next_token(&lexer).unwrap();
+            assert_eq!(observed_token, expected_token, "test #{}", idx);
+        }
+    }
+
+    #[test]
+    fn test_next_token_02() {
+        let input = &r#"
+      /End-Free                                                                                     
+"#[1..];
+        let expected: Vec<Token> = vec![
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(0, 0, 0),
+                    end: Position::new(0, 5, 5),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Empty),
+                " ",
+                Span {
+                    start: Position::new(0, 5, 5),
+                    end: Position::new(0, 6, 6),
+                },
+            ),
+            Token::new(
+                TokenKind::CompilerDirectiveType(CompilerDirectiveType::EndFree),
+                "/End-Free                                                                                     ",
                 Span {
                     start: Position::new(0, 6, 6),
                     end: Position::new(0, 100, 100),
