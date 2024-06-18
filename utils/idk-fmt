@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+#! /usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+# vendoring this
+_catecho () {
+    if read -t 0; then
+        cat
+    else
+        echo "$*"
+    fi
+}
+
+USAGE=$(cat <<-EOM
+idk-fmt v1.0
+
+Format source code from ibm i
+
+Args:
+  lang (string): CL | RPG | DDS
+  <txt> (string): OPTIONAL - the text to extract. If not supplied, stdin is assumed
+
+Exit codes:
+  0 = ok
+  1 = error
+
+Example:
+  $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
+EOM
+)
+# ================================== Main =============================================
+#
+
+# guard
+if [[ "$1" == "-h" ]]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+if [[ "$1" == "RPG" ]]; then
+  WIDTH=100
+else
+  WIDTH=80
+fi
+
+if [ "$#" -ne 2 ]; then
+  cat - | sed -e "s/.\{$WIDTH\}/&\n/g" | tail -n +2
+else
+  echo $2 | sed -e "s/.\{$WIDTH\}/&\n/g" | tail -n +2
+fi
+

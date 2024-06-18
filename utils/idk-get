@@ -1,0 +1,30 @@
+#! /usr/bin/env bash
+set -o errexit
+set -o nounset
+
+USAGE=$(cat <<-EOM
+idk-ge v1.0
+
+Download source code from ibm i
+
+Args:
+  LIB/FILE(MEMBER) (string): The library, file and member pattern to extract
+
+Exit codes:
+  0 = ok
+  1 = error
+
+Example:
+  $ DSN=AS400 idk-get "ZWAITE/QRPGLESSRC(ZEVT)"
+EOM
+)
+# ================================== Main =============================================
+#
+
+# guard
+if [[ "$1" == "-h" ]]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+echo "SELECT GET_CLOB_FROM_FILE('$1') FROM sysibm.sysdummy1 WITH UR" | isql -c -b -d';' -L99999999999 "$DSN"

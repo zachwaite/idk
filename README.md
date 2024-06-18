@@ -32,3 +32,9 @@ dot -Tsvg ./graph.gv > ./graph.svg
 Output:
 
 ![dotrender](./screenshots/readme-dotrender.svg)
+
+## Download source files from IBM i
+
+```sh
+$ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
+```
