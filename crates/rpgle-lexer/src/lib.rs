@@ -17,6 +17,8 @@ pub use core::{
     Token, TokenKind,
 };
 
+pub use core::FormType; // This feels leaky. Is there a better way to identify the sections
+
 pub use core::TokenMeta; // public export
 
 fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
@@ -85,7 +87,7 @@ pub fn next_token(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
 mod tests {
     use crate::core::{
         new_lexer, CommentType, CompilerDirectiveType, DefinitionDataType, DefinitionType,
-        FileAdditionType, FileDesignation, FileFormatType, FileSequenceType, FileType, FormType,
+        FileAdditionType, FileDesignation, FileFormatType, FileSequenceType, FileType,
         LexerException, Position, TokenKind,
     };
 

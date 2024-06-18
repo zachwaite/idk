@@ -38,3 +38,12 @@ Output:
 ```sh
 $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
 ```
+
+## Set marks at each spectype
+
+- `'h` = jump to mark at beginning of h-specs
+- `'f` = jump to mark at beginning of f-specs
+- `'d` = jump to mark at beginning of d-specs
+- `'i` = jump to mark at beginning of i-specs
+- `'c` = jump to mark at beginning of c-specs
+- `'o` = jump to mark at beginning of o-specs

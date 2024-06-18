@@ -1,7 +1,80 @@
 use nvim_oxi::{self as oxi};
-use rpgle_lexer::{new_lexer, next_token, TokenKind};
+use rpgle_lexer::{new_lexer, next_token, FormType, Token, TokenKind};
 use std::env;
 use std::fmt;
+use std::fmt::Display;
+
+struct SpecState {
+    control: usize,
+    file: usize,
+    definition: usize,
+    input: usize,
+    calculation: usize,
+    output: usize,
+}
+
+impl fmt::Display for SpecState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = format!(
+            "SpecState(H: {}, F: {}, D: {}, C: {})",
+            self.control, self.file, self.definition, self.calculation
+        );
+        write!(f, "{}", out)
+    }
+}
+
+impl SpecState {
+    fn new() -> Self {
+        Self {
+            control: 99999999,
+            file: 99999999,
+            definition: 99999999,
+            input: 99999999,
+            calculation: 99999999,
+            output: 99999999,
+        }
+    }
+
+    fn evolve(&mut self, token: &Token) {
+        let kind = token.kind;
+        let row = token.span.start.row;
+        match kind {
+            TokenKind::FormType(FormType::Control) => {
+                if row < self.control {
+                    self.control = row;
+                }
+            }
+            TokenKind::FormType(FormType::File) => {
+                if row < self.file {
+                    self.file = row;
+                }
+            }
+            TokenKind::FormType(FormType::Definition) => {
+                if row < self.definition {
+                    self.definition = row;
+                }
+            }
+            TokenKind::FormType(FormType::Input) => {
+                if row < self.input {
+                    self.input = row;
+                }
+            }
+            TokenKind::FormType(FormType::Calculation) | TokenKind::Free => {
+                if row < self.calculation {
+                    self.calculation = row;
+                }
+            }
+            TokenKind::FormType(FormType::Output) => {
+                if row < self.output {
+                    self.output = row;
+                }
+            }
+            _ => {
+                // pass
+            }
+        }
+    }
+}
 
 fn get_hl_group(kind: &TokenKind) -> String {
     match kind {
@@ -188,6 +261,53 @@ impl Highlighter {
     }
 }
 
+struct Marker {
+    buf: oxi::api::Buffer,
+    namespace_id: u32,
+}
+
+impl Marker {
+    pub fn mark_specs(&mut self) -> oxi::Result<()> {
+        let count = self.buf.line_count()?;
+        let lines = self.buf.get_lines(0..count, true)?;
+        let mut input = String::new();
+        for line in lines {
+            input.push_str(&line.to_string());
+            input.push_str("\n");
+        }
+        let lexer = new_lexer(&input);
+        let mut front_kind = TokenKind::Eof;
+        if let Ok(tok) = next_token(&lexer) {
+            front_kind = tok.kind;
+        }
+        let mut counter = 0;
+        let mut state = SpecState::new();
+        while front_kind != TokenKind::Eof && counter < 1000000 {
+            match next_token(&lexer) {
+                Ok(tok) => {
+                    state.evolve(&tok);
+                    counter += 1;
+                }
+                Err(e) => {
+                    oxi::print!("{}\n", e);
+                    return Ok(());
+                }
+            }
+        }
+        let opts = oxi::api::opts::SetMarkOpts::default();
+        let _ = self.buf.set_mark('h', state.control, 0, &opts);
+        let _ = self.buf.set_mark('f', state.file, 0, &opts);
+        let _ = self.buf.set_mark('d', state.definition, 0, &opts);
+        let _ = self.buf.set_mark('c', state.calculation, 0, &opts);
+        let _ = self.buf.set_mark('i', state.input, 0, &opts);
+        let _ = self.buf.set_mark('o', state.output, 0, &opts);
+        if env::var("DEBUG").is_ok() {
+            oxi::print!("{}: {}\n", counter, state);
+        }
+        Ok(())
+    }
+}
+
 #[nvim_oxi::plugin]
 fn idk() -> oxi::Result<oxi::Dictionary> {
     let highlight_rpgle = oxi::Function::from_fn(move |(): ()| {
@@ -203,8 +323,21 @@ fn idk() -> oxi::Result<oxi::Dictionary> {
         }
     });
 
-    Ok(oxi::Dictionary::from_iter([(
-        "highlight_rpgle",
-        oxi::Object::from(highlight_rpgle),
-    )]))
+    let mark_rpgle_specs = oxi::Function::from_fn(move |(): ()| {
+        let mut marker = Marker {
+            buf: oxi::api::Buffer::current(),
+            namespace_id: oxi::api::create_namespace("RPGLENamespace2"),
+        };
+        if let Err(e) = marker.mark_specs() {
+            oxi::print!("ERROR");
+            oxi::print!("\n");
+            oxi::print!("{}", e);
+            oxi::print!("\n");
+        }
+    });
+
+    Ok(oxi::Dictionary::from_iter([
+        ("highlight_rpgle", oxi::Object::from(highlight_rpgle)),
+        ("mark_rpgle_specs", oxi::Object::from(mark_rpgle_specs)),
+    ]))
 }
