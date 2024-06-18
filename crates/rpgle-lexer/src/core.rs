@@ -221,6 +221,7 @@ pub enum TokenKind {
     Begsr,
     Endsr,
     Exsr,
+    Move,
 }
 
 impl fmt::Display for TokenKind {
@@ -309,6 +310,7 @@ impl fmt::Display for TokenKind {
             Self::Reset => format!("Reset"),
             Self::Eval => format!("Eval"),
             Self::Clear => format!("Clear"),
+            Self::Move => format!("Move"),
         };
         write!(f, "{}", s)
     }
@@ -521,7 +523,7 @@ pub fn is_numeric(ch: &char) -> bool {
 }
 
 pub fn is_identifier_char(ch: &char) -> bool {
-    ch.is_alphanumeric() || *ch == '@' || *ch == '$'
+    ch.is_alphanumeric() || *ch == '@' || *ch == '$' || *ch == '-'
 }
 
 pub fn is_space_or_tab(ch: &char) -> bool {
