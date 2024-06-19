@@ -1,8 +1,7 @@
 use nvim_oxi::{self as oxi};
-use rpgle_lexer::{new_lexer, next_token, FormType, Token, TokenKind};
+use rpgle_lexer::{new_lexer, next_token, CompilerDirectiveType, FormType, Token, TokenKind};
 use std::env;
 use std::fmt;
-use std::fmt::Display;
 
 struct SpecState {
     control: usize,
@@ -17,7 +16,10 @@ impl fmt::Display for SpecState {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let out = format!(
             "SpecState(H: {}, F: {}, D: {}, C: {})",
-            self.control, self.file, self.definition, self.calculation
+            self.get_control(),
+            self.get_file(),
+            self.get_definition(),
+            self.get_calculation()
         );
         write!(f, "{}", out)
     }
@@ -33,6 +35,30 @@ impl SpecState {
             calculation: 99999999,
             output: 99999999,
         }
+    }
+
+    fn get_control(&self) -> usize {
+        self.control + 1
+    }
+
+    fn get_file(&self) -> usize {
+        self.file + 1
+    }
+
+    fn get_definition(&self) -> usize {
+        self.definition + 1
+    }
+
+    fn get_input(&self) -> usize {
+        self.input + 1
+    }
+
+    fn get_calculation(&self) -> usize {
+        self.calculation + 1
+    }
+
+    fn get_output(&self) -> usize {
+        self.output + 1
     }
 
     fn evolve(&mut self, token: &Token) {
@@ -59,7 +85,8 @@ impl SpecState {
                     self.input = row;
                 }
             }
-            TokenKind::FormType(FormType::Calculation) | TokenKind::Free => {
+            TokenKind::FormType(FormType::Calculation)
+            | TokenKind::CompilerDirectiveType(CompilerDirectiveType::Free) => {
                 if row < self.calculation {
                     self.calculation = row;
                 }
@@ -295,12 +322,12 @@ impl Marker {
             }
         }
         let opts = oxi::api::opts::SetMarkOpts::default();
-        let _ = self.buf.set_mark('h', state.control, 0, &opts);
-        let _ = self.buf.set_mark('f', state.file, 0, &opts);
-        let _ = self.buf.set_mark('d', state.definition, 0, &opts);
-        let _ = self.buf.set_mark('c', state.calculation, 0, &opts);
-        let _ = self.buf.set_mark('i', state.input, 0, &opts);
-        let _ = self.buf.set_mark('o', state.output, 0, &opts);
+        let _ = self.buf.set_mark('h', state.get_control(), 1, &opts);
+        let _ = self.buf.set_mark('f', state.get_file(), 1, &opts);
+        let _ = self.buf.set_mark('d', state.get_definition(), 1, &opts);
+        let _ = self.buf.set_mark('c', state.get_calculation(), 1, &opts);
+        let _ = self.buf.set_mark('i', state.get_input(), 1, &opts);
+        let _ = self.buf.set_mark('o', state.get_output(), 1, &opts);
         if env::var("DEBUG").is_ok() {
             oxi::print!("{}: {}\n", counter, state);
         }

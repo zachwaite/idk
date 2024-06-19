@@ -14,12 +14,10 @@ mod pspec;
 
 pub use core::{
     ch, new_lexer, peek, peek_n, read_char, IllegalLexerState, Lexer, LexerMode, Position, Span,
-    Token, TokenKind,
+    Token, TokenKind, TokenMeta,
 };
 
-pub use core::FormType; // This feels leaky. Is there a better way to identify the sections
-
-pub use core::TokenMeta; // public export
+pub use core::{CompilerDirectiveType, FormType}; // This feels leaky. Is there a better way to identify the sections
 
 fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
