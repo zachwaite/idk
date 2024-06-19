@@ -1,5 +1,5 @@
 use crate::cst::{Call, Definition, Idk, Program, Statement, StatementMeta};
-use rpgle_lexer::{next_token, IllegalLexerState, Lexer, Span, Token, TokenKind, TokenMeta};
+use rpgle_lexer::{next_token, IllegalLexerState, Lexer, Span, Token, TokenKind};
 use std::{cell::RefCell, collections::VecDeque};
 use thiserror::Error;
 
@@ -65,18 +65,6 @@ fn front_kind(parser: &Parser) -> Result<TokenKind, IllegalParserState> {
     }
 }
 
-fn peek_n(parser: &Parser, n: usize) -> Result<TokenMeta, IllegalParserState> {
-    let len = parser.active_buffer.borrow().len();
-    match len {
-        0 | 1 => Err(IllegalParserState::TokenBufferIndexError),
-        _ => {
-            fill_active_buffer(parser, n);
-            let meta = TokenMeta::from(&parser.active_buffer.borrow()[n]);
-            Ok(meta)
-        }
-    }
-}
-
 fn flush_idk_buffer(parser: &Parser) -> Result<Idk, IllegalParserState> {
     let mut meta = StatementMeta::empty();
     for t in parser.idk_buffer.borrow_mut().drain(0..) {
@@ -89,13 +77,6 @@ fn flush_idk_buffer(parser: &Parser) -> Result<Idk, IllegalParserState> {
 fn shrug_and_advance(parser: &Parser) -> Result<(), IllegalParserState> {
     let token = pop_active_buffer(parser)?;
     parser.idk_buffer.borrow_mut().push_back(token);
-    Ok(())
-}
-
-fn shrug_and_advance_until(parser: &Parser, kind: TokenKind) -> Result<(), IllegalParserState> {
-    while front_kind(parser)? != kind && front_kind(parser)? != TokenKind::Eof {
-        shrug_and_advance(parser)?;
-    }
     Ok(())
 }
 
