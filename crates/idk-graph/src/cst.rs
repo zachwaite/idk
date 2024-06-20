@@ -76,10 +76,26 @@ impl fmt::Display for Call {
     }
 }
 
+// domain types
+#[derive(Clone)]
+pub struct Mutation {
+    pub keyword: String,
+    pub name: String,
+    pub meta: StatementMeta,
+}
+
+impl fmt::Display for Mutation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = format!("{}(name=`{}`)", self.keyword, self.name);
+        write!(f, "{}", out)
+    }
+}
+
 #[derive(Clone)]
 pub struct Definition {
     pub name: String,
     pub calls: Vec<Call>,
+    pub mutations: Vec<Mutation>,
     pub meta: StatementMeta,
 }
 
@@ -93,6 +109,7 @@ impl fmt::Display for Definition {
 pub enum Statement {
     Call(Call),
     Def(Definition),
+    Mutation(Mutation),
     Idk(Idk),
 }
 
@@ -101,6 +118,7 @@ impl fmt::Display for Statement {
         match self {
             Self::Def(x) => write!(f, "{}", x.to_string()),
             Self::Call(x) => write!(f, "{}", x.to_string()),
+            Self::Mutation(x) => write!(f, "{}", x.to_string()),
             Self::Idk(x) => write!(f, "{}", x.to_string()),
         }
     }
@@ -111,6 +129,7 @@ impl Statement {
         match self {
             Self::Def(x) => x.meta.to_raw_text(),
             Self::Call(x) => x.meta.to_raw_text(),
+            Self::Mutation(x) => x.meta.to_raw_text(),
             Self::Idk(x) => x.meta.to_raw_text(),
         }
     }

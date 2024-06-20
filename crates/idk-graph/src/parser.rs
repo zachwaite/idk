@@ -1,4 +1,4 @@
-use crate::cst::{Call, Definition, Idk, Program, Statement, StatementMeta};
+use crate::cst::{Call, Definition, Idk, Mutation, Program, Statement, StatementMeta};
 use rpgle_lexer::{next_token, IllegalLexerState, Lexer, Span, Token, TokenKind};
 use std::{cell::RefCell, collections::VecDeque};
 use thiserror::Error;
@@ -98,6 +98,48 @@ fn parse_subroutine_call(parser: &Parser) -> Result<Call, IllegalParserState> {
     Ok(call)
 }
 
+fn parse_write(parser: &Parser) -> Result<Mutation, IllegalParserState> {
+    let mut meta = StatementMeta::empty();
+    meta.push_token(pop_active_buffer(parser)?); // Exsr
+    while front_kind(parser)? != TokenKind::Identifier && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let tok = pop_active_buffer(parser)?; // name
+    meta.push_token(tok.clone());
+    while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let name = tok.text.trim().to_uppercase();
+    let keyword = "Write".to_string();
+    let out = Mutation {
+        keyword,
+        name,
+        meta,
+    };
+    Ok(out)
+}
+
+fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
+    let mut meta = StatementMeta::empty();
+    meta.push_token(pop_active_buffer(parser)?); // Exsr
+    while front_kind(parser)? != TokenKind::Identifier && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let tok = pop_active_buffer(parser)?; // name
+    meta.push_token(tok.clone());
+    while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let name = tok.text.trim().to_uppercase();
+    let keyword = "Update".to_string();
+    let out = Mutation {
+        keyword,
+        name,
+        meta,
+    };
+    Ok(out)
+}
+
 fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalParserState> {
     let mut meta = StatementMeta::empty();
     // signature
@@ -112,11 +154,22 @@ fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalPar
     }
     let name = tok.text.trim().to_string();
 
-    // body + calls
+    // body, calls, mutations
     let mut calls = vec![];
+    let mut mutations = vec![];
     while front_kind(parser)? != TokenKind::Endsr && front_kind(parser)? != TokenKind::Eof {
         let kind = front_kind(parser)?;
         match kind {
+            TokenKind::Write => {
+                let mutation = parse_write(parser)?;
+                meta.push_other(&mutation.meta);
+                mutations.push(mutation);
+            }
+            TokenKind::Update => {
+                let mutation = parse_update(parser)?;
+                meta.push_other(&mutation.meta);
+                mutations.push(mutation);
+            }
             TokenKind::Exsr => {
                 let call = parse_subroutine_call(parser)?;
                 meta.push_other(&call.meta);
@@ -141,13 +194,20 @@ fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalPar
     }
     meta.push_token(pop_active_buffer(parser)?); // push semicolon
 
-    let def = Definition { name, calls, meta };
+    let def = Definition {
+        name,
+        calls,
+        mutations,
+        meta,
+    };
     Ok(def)
 }
 
 fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
     while !matches!(front_kind(parser), Ok(TokenKind::Begsr))
         && !matches!(front_kind(parser), Ok(TokenKind::Exsr))
+        && !matches!(front_kind(parser), Ok(TokenKind::Write))
+        && !matches!(front_kind(parser), Ok(TokenKind::Update))
         && !matches!(front_kind(parser), Ok(TokenKind::Eof))
     {
         shrug_and_advance(parser)?;
@@ -164,6 +224,14 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
         Ok(TokenKind::Exsr) => {
             let call = parse_subroutine_call(parser)?;
             Ok(Statement::Call(call))
+        }
+        Ok(TokenKind::Write) => {
+            let write = parse_write(parser)?;
+            Ok(Statement::Mutation(write))
+        }
+        Ok(TokenKind::Update) => {
+            let update = parse_update(parser)?;
+            Ok(Statement::Mutation(update))
         }
         _ => Err(IllegalParserState::ImpossibleDestinationError),
     }
