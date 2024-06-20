@@ -1,8 +1,7 @@
 mod cli;
 mod cst;
-mod dot_renderer;
 mod parser;
-mod texttree_renderer;
+mod renderer;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {

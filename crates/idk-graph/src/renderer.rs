@@ -1,6 +1,6 @@
 use crate::cst::{Program, Statement};
 
-fn render_node(name: &str) -> String {
+fn render_node_dot(name: &str) -> String {
     format!(
         r#"
   "{}" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
@@ -24,7 +24,7 @@ fn render_node(name: &str) -> String {
     )
 }
 
-fn render_edge(parent_name: &str, child_name: &str) -> String {
+fn render_edge_dot(parent_name: &str, child_name: &str) -> String {
     format!(
         r#""{}" -> "{}" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];"#,
         parent_name, child_name
@@ -35,13 +35,13 @@ pub fn render_dot(pgm: Program) -> String {
     let mut nodes: Vec<String> = vec![];
     let mut edges: Vec<String> = vec![];
 
-    let snippet = render_node("MAIN");
+    let snippet = render_node_dot("MAIN");
     nodes.push(snippet);
     for stmt in pgm.statements.iter() {
         if let Statement::Call(call) = stmt {
-            let snippet = render_node(&call.name.to_uppercase());
+            let snippet = render_node_dot(&call.name.to_uppercase());
             nodes.push(snippet);
-            let snippet = render_edge("MAIN", &call.name.to_uppercase());
+            let snippet = render_edge_dot("MAIN", &call.name.to_uppercase());
             edges.push(snippet);
         }
     }
@@ -50,10 +50,10 @@ pub fn render_dot(pgm: Program) -> String {
         if let Statement::Def(def) = stmt {
             for call in def.calls.iter() {
                 if !nodes.contains(&call.name.to_uppercase()) {
-                    let snippet = render_node(&call.name.to_uppercase());
+                    let snippet = render_node_dot(&call.name.to_uppercase());
                     nodes.push(snippet);
                 }
-                let snippet = render_edge(&def.name.to_uppercase(), &call.name.to_uppercase());
+                let snippet = render_edge_dot(&def.name.to_uppercase(), &call.name.to_uppercase());
                 edges.push(snippet);
             }
         }

@@ -4,14 +4,12 @@ use std::fs::File;
 use std::io;
 use std::path::Path;
 
-use crate::dot_renderer::render_dot;
 use crate::parser::{parse_program, Parser as RpgleParser};
-use crate::texttree_renderer::render_text_tree;
+use crate::renderer::render_dot;
 use rpgle_lexer::new_lexer;
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    TextTree,
     Dot,
 }
 
@@ -58,22 +56,9 @@ fn dot(input: &str) -> Result<String, Box<dyn Error>> {
     Ok(output)
 }
 
-fn text_tree(input: &str) -> Result<String, Box<dyn Error>> {
-    let lexer = new_lexer(&input);
-    let parser = RpgleParser::new(&lexer).unwrap();
-    let pgm = parse_program(&parser)?;
-    let output = render_text_tree(pgm);
-    Ok(output)
-}
-
 pub fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
     match args.command {
-        Command::TextTree => {
-            let input = read_input(args.input.as_str())?;
-            let output = text_tree(&input)?;
-            write_output(&output, args.output.as_str())?;
-        }
         Command::Dot => {
             let input = read_input(args.input.as_str())?;
             let output = dot(&input)?;
