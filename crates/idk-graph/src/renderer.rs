@@ -91,7 +91,9 @@ pub fn render_dot(pgm: Program) -> String {
             let snippet = render_node_dot(&data);
             nodes.push(snippet);
             let snippet = render_edge_dot("MAIN", &call.name.to_uppercase());
-            edges.push(snippet);
+            if !edges.contains(&snippet) {
+                edges.push(snippet);
+            }
         }
     }
 
@@ -115,7 +117,9 @@ pub fn render_dot(pgm: Program) -> String {
                     nodes.push(snippet);
                 }
                 let snippet = render_edge_dot(&def.name.to_uppercase(), &call.name.to_uppercase());
-                edges.push(snippet);
+                if !edges.contains(&snippet) {
+                    edges.push(snippet);
+                }
             }
         }
     }
