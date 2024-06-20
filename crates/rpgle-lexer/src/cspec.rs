@@ -142,6 +142,8 @@ fn read_operation_and_extender(lexer: &Lexer) -> Result<Token, IllegalLexerState
                 "EXSR" => TokenKind::Exsr,
                 "CHAIN" => TokenKind::Chain,
                 "MOVE" => TokenKind::Move,
+                "WRITE" => TokenKind::Write,
+                "UPDATE" => TokenKind::Update,
                 "IF" => TokenKind::If,
                 _ => TokenKind::Identifier,
             };
