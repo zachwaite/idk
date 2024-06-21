@@ -6,17 +6,6 @@
 
 ## CLI Source Code Visualization
 
-### text-tree renderer
-
-```
-$ idk-graph text-tree demo.rpgle
-MAIN
-  $SetLstId
-  $CrtEvts
-    $CrtCowEvt
-    $CrtBrnEvt
-```
-
 ### dot renderer
 
 input:
