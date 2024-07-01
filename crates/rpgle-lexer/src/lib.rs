@@ -17,7 +17,7 @@ pub use core::{
     Token, TokenKind, TokenMeta,
 };
 
-pub use core::{CompilerDirectiveType, FormType}; // This feels leaky. Is there a better way to identify the sections
+pub use core::{CommentType, CompilerDirectiveType, FormType}; // This feels leaky. Is there a better way to identify the sections
 
 fn read_newline(lexer: &Lexer) -> Result<Token, IllegalLexerState> {
     let start = lexer.state.borrow().position;
