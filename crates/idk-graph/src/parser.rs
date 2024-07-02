@@ -159,7 +159,8 @@ fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
 
 fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalParserState> {
     let mut meta = StatementMeta::empty();
-    // signature
+    let mut is_free = false; // TDE: refactor
+                             // signature
     let name = match front_kind(parser)? {
         TokenKind::Begsr => {
             meta.push_token(pop_active_buffer(parser)?); // Begsr
@@ -175,6 +176,7 @@ fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalPar
             {
                 meta.push_token(pop_active_buffer(parser)?);
             }
+            is_free = true;
             tok.text.trim().to_string()
         }
         TokenKind::FormType(FormType::Calculation) => {
@@ -224,8 +226,15 @@ fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalPar
     // end
     let tok = pop_active_buffer(parser)?; // Endsr
     meta.push_token(tok.clone());
-    while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
-        meta.push_token(pop_active_buffer(parser)?);
+    if is_free {
+        while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
+            meta.push_token(pop_active_buffer(parser)?);
+        }
+    } else {
+        // traditional
+        while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+            meta.push_token(pop_active_buffer(parser)?);
+        }
     }
 
     // guard
@@ -329,12 +338,12 @@ mod tests {
          Endif;                                                                                     
        Endsr;                                                                                       
                                                                                                     
-       Begsr $CrtBrnEvt;                                                                            
+     C     $CrtBRNEVT    BegSr                                                                      
          EID = Id;                                                                                  
          BNAME = 'BESSE';                                                                           
          BDAT = 20240101;                                                                           
          Write BORNFMT;                                                                             
-       Endsr;                                                                                       
+     C                   ENDSR                                                                      
                                                                                                     
        Begsr $CrtCowEvt;                                                                            
          Id = LastId + 1;                                                                           
