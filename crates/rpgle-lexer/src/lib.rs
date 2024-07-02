@@ -105,6 +105,7 @@ mod tests {
      D LastId          S              8  0                                                          
       /free                                                                                         
        // Look up LastId                                                                            
+     D QCmdExc         PR                  eXTpGM('QCMDEXC')                                        
 "#[1..];
         let expected: Vec<Token> = vec![
             Token::new(
@@ -780,6 +781,127 @@ mod tests {
                     end: Position::new(10, 100, 1110),
                 },
             ),
+            Token::new(
+                TokenKind::Eol,
+                "\n",
+                Span {
+                    start: Position::new(10, 100, 1110),
+                    end: Position::new(10, 101, 1111),
+                },
+            ),
+            Token::new(
+                TokenKind::Sequence,
+                "     ",
+                Span {
+                    start: Position::new(11, 0, 1111),
+                    end: Position::new(11, 5, 1116),
+                },
+            ),
+            Token::new(
+                TokenKind::FormType(FormType::Definition),
+                "D",
+                Span {
+                    start: Position::new(11, 5, 1116),
+                    end: Position::new(11, 6, 1117),
+                },
+            ),
+            Token::new(
+                TokenKind::Name,
+                " QCmdExc       ",
+                Span {
+                    start: Position::new(11, 6, 1117),
+                    end: Position::new(11, 21, 1132),
+                },
+            ),
+            Token::new(
+                TokenKind::FileFormat(FileFormatType::ProgramDescribed),
+                " ",
+                Span {
+                    start: Position::new(11, 21, 1132),
+                    end: Position::new(11, 22, 1133),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                " ",
+                Span {
+                    start: Position::new(11, 22, 1133),
+                    end: Position::new(11, 23, 1134),
+                },
+            ),
+            Token::new(
+                TokenKind::DefinitionType(DefinitionType::Prototype),
+                "PR",
+                Span {
+                    start: Position::new(11, 23, 1134),
+                    end: Position::new(11, 25, 1136),
+                },
+            ),
+            Token::new(
+                TokenKind::Idk(LexerException::NotImplemented),
+                "       ",
+                Span {
+                    start: Position::new(11, 25, 1136),
+                    end: Position::new(11, 32, 1143),
+                },
+            ),
+            // Not sure about this. Should I parse into empty fields?
+            Token::new(
+                TokenKind::Whitespace,
+                "           ",
+                Span {
+                    start: Position::new(11, 32, 1143),
+                    end: Position::new(11, 43, 1154),
+                },
+            ),
+            Token::new(
+                TokenKind::Extpgm,
+                "eXTpGM",
+                Span {
+                    start: Position::new(11, 43, 1154),
+                    end: Position::new(11, 49, 1160),
+                },
+            ),
+            Token::new(
+                TokenKind::LParen,
+                "(",
+                Span {
+                    start: Position::new(11, 49, 1160),
+                    end: Position::new(11, 50, 1161),
+                },
+            ),
+            Token::new(
+                TokenKind::StringLiteral,
+                "'QCMDEXC'",
+                Span {
+                    start: Position::new(11, 50, 1161),
+                    end: Position::new(11, 59, 1170),
+                },
+            ),
+            Token::new(
+                TokenKind::RParen,
+                ")",
+                Span {
+                    start: Position::new(11, 59, 1170),
+                    end: Position::new(11, 60, 1171),
+                },
+            ),
+            Token::new(
+                TokenKind::Whitespace,
+                "                                        ",
+                Span {
+                    start: Position::new(11, 60, 1171),
+                    end: Position::new(11, 100, 1211),
+                },
+            ),
+            // Token::new(
+            //     TokenKind::Eol,
+            //     "\n",
+            //     Span {
+            //         start: Position::new(11, 100, 1211),
+            //         end: Position::new(11, 101, 1212),
+            //     },
+            // ),
         ];
         let lexer = new_lexer(input);
         for pair in expected.into_iter().enumerate() {
