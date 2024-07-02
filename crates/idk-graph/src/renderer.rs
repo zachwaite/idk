@@ -1,4 +1,4 @@
-use crate::cst::{Program, Statement};
+use crate::cst::{Definition, Program, Statement};
 
 fn render_node_dot(data: &NodeData) -> String {
     let mut mutsnips = "".to_string();
@@ -44,7 +44,7 @@ pub fn render_dot(pgm: Program) -> String {
 
     // gather muts from defs
     for stmt in pgm.statements.iter() {
-        if let Statement::Def(def) = stmt {
+        if let Statement::Def(Definition::Subroutine(def)) = stmt {
             let mut muts = def
                 .mutations
                 .iter()
@@ -99,7 +99,7 @@ pub fn render_dot(pgm: Program) -> String {
 
     // add nodes for calls inside other calls
     for stmt in pgm.statements.iter() {
-        if let Statement::Def(def) = stmt {
+        if let Statement::Def(Definition::Subroutine(def)) = stmt {
             for call in def.calls.iter() {
                 if !nodes.contains(&call.name.to_uppercase()) {
                     let maybe = mutations

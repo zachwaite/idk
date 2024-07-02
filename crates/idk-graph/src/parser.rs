@@ -1,4 +1,7 @@
-use crate::cst::{Call, Definition, Idk, Mutation, Program, Statement, StatementMeta};
+use crate::cst::{
+    Definition, Idk, Mutation, Program, Statement, StatementMeta, SubroutineCall,
+    SubroutineDefinition,
+};
 use rpgle_lexer::{
     next_token, CommentType, FormType, IllegalLexerState, Lexer, Span, Token, TokenKind,
 };
@@ -99,7 +102,7 @@ fn shrug_and_advance(parser: &Parser) -> Result<(), IllegalParserState> {
 
 // level 1
 
-fn parse_subroutine_call(parser: &Parser) -> Result<Call, IllegalParserState> {
+fn parse_subroutine_call(parser: &Parser) -> Result<SubroutineCall, IllegalParserState> {
     let mut meta = StatementMeta::empty();
     meta.push_token(pop_active_buffer(parser)?); // Exsr
     while front_kind(parser)? != TokenKind::Identifier && front_kind(parser)? != TokenKind::Eof {
@@ -111,7 +114,7 @@ fn parse_subroutine_call(parser: &Parser) -> Result<Call, IllegalParserState> {
         meta.push_token(pop_active_buffer(parser)?);
     }
     let name = tok.text.trim().to_string();
-    let call = Call { name, meta };
+    let call = SubroutineCall { name, meta };
     Ok(call)
 }
 
@@ -157,7 +160,9 @@ fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     Ok(out)
 }
 
-fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalParserState> {
+fn parse_subroutine_definition(
+    parser: &Parser,
+) -> Result<SubroutineDefinition, IllegalParserState> {
     let mut meta = StatementMeta::empty();
     let mut is_free = false; // TDE: refactor
                              // signature
@@ -243,7 +248,7 @@ fn parse_subroutine_definition(parser: &Parser) -> Result<Definition, IllegalPar
     }
     meta.push_token(pop_active_buffer(parser)?); // push semicolon
 
-    let def = Definition {
+    let def = SubroutineDefinition {
         name,
         calls,
         mutations,
@@ -273,7 +278,8 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
     match front_kind(parser) {
         Ok(TokenKind::Begsr) | Ok(TokenKind::FormType(FormType::Calculation)) => {
             let def = parse_subroutine_definition(parser)?;
-            Ok(Statement::Def(def))
+            let sub_def = Definition::Subroutine(def);
+            Ok(Statement::Def(sub_def))
         }
         Ok(TokenKind::Exsr) => {
             let call = parse_subroutine_call(parser)?;
@@ -322,6 +328,9 @@ mod tests {
      F**********************************************************************************************
      D**********************************************************************************************
      D LastId          S              8  0                                                          
+     D QCmdExc         PR                  EXTPGM('QCMDEXC')                                        
+     D  Command                    2000                                                             
+     D  Length                       15  5                                                          
      C**********************************************************************************************
       /free                                                                                         
        Exsr $SetLstId;                                                                              

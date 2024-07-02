@@ -64,12 +64,12 @@ impl fmt::Display for Idk {
 
 // domain types
 #[derive(Clone)]
-pub struct Call {
+pub struct SubroutineCall {
     pub name: String,
     pub meta: StatementMeta,
 }
 
-impl fmt::Display for Call {
+impl fmt::Display for SubroutineCall {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let out = format!("SubroutineCall(name=`{}`)", self.name);
         write!(f, "{}", out)
@@ -92,22 +92,57 @@ impl fmt::Display for Mutation {
 }
 
 #[derive(Clone)]
-pub struct Definition {
+pub struct SubroutineDefinition {
     pub name: String,
-    pub calls: Vec<Call>,
+    pub calls: Vec<SubroutineCall>,
     pub mutations: Vec<Mutation>,
     pub meta: StatementMeta,
 }
 
-impl fmt::Display for Definition {
+impl fmt::Display for SubroutineDefinition {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let out = format!("SubroutineDefinition(name=`{}`)", self.name);
         write!(f, "{}", out)
     }
 }
 
+#[derive(Clone)]
+pub struct ExternalPgmDefinition {
+    pub name: String,
+    pub meta: StatementMeta,
+}
+
+impl fmt::Display for ExternalPgmDefinition {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = format!("ExternalPgmDefinition(name=`{}`)", self.name);
+        write!(f, "{}", out)
+    }
+}
+
+#[derive(Clone)]
+pub enum Definition {
+    Subroutine(SubroutineDefinition),
+    ExternalPgm(ExternalPgmDefinition),
+}
+
+impl fmt::Display for Definition {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = self.to_string();
+        write!(f, "{}", out)
+    }
+}
+
+impl Definition {
+    pub fn to_raw_text(&self) -> String {
+        match self {
+            Self::Subroutine(x) => x.meta.to_raw_text(),
+            Self::ExternalPgm(x) => x.meta.to_raw_text(),
+        }
+    }
+}
+
 pub enum Statement {
-    Call(Call),
+    Call(SubroutineCall),
     Def(Definition),
     Mutation(Mutation),
     Idk(Idk),
@@ -127,7 +162,7 @@ impl fmt::Display for Statement {
 impl Statement {
     pub fn to_raw_text(&self) -> String {
         match self {
-            Self::Def(x) => x.meta.to_raw_text(),
+            Self::Def(x) => x.to_raw_text(),
             Self::Call(x) => x.meta.to_raw_text(),
             Self::Mutation(x) => x.meta.to_raw_text(),
             Self::Idk(x) => x.meta.to_raw_text(),
