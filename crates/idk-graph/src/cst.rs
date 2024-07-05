@@ -78,6 +78,42 @@ impl fmt::Display for SubroutineCall {
 
 // domain types
 #[derive(Clone)]
+pub struct ExternalPgmCall {
+    pub name: String,
+    pub meta: StatementMeta,
+}
+
+impl fmt::Display for ExternalPgmCall {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = format!("ExtPgmCall(name=`{}`)", self.name);
+        write!(f, "{}", out)
+    }
+}
+
+#[derive(Clone)]
+pub enum Call {
+    Subroutine(SubroutineCall),
+    ExternalPgm(ExternalPgmCall),
+}
+
+impl fmt::Display for Call {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = self.to_string();
+        write!(f, "{}", out)
+    }
+}
+
+impl Call {
+    pub fn to_raw_text(&self) -> String {
+        match self {
+            Self::Subroutine(x) => x.meta.to_raw_text(),
+            Self::ExternalPgm(x) => x.meta.to_raw_text(),
+        }
+    }
+}
+
+// domain types
+#[derive(Clone)]
 pub struct Mutation {
     pub keyword: String,
     pub name: String,
