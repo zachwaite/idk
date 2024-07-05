@@ -1,5 +1,13 @@
 use crate::cst::{Call, Definition, Program, Statement};
 
+fn node_color(data: &NodeData) -> String {
+    match data.data_type {
+        NodeDataType::Main => "black".to_string(),
+        NodeDataType::Subroutine => "black".to_string(),
+        NodeDataType::ExternalPgm => "slategrey".to_string(),
+    }
+}
+
 fn render_node_dot(data: &NodeData) -> String {
     let mut mutsnips = "".to_string();
     for snip in data.mutations.iter() {
@@ -11,7 +19,7 @@ fn render_node_dot(data: &NodeData) -> String {
   "{}" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
   <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
     <tr>
-      <td bgcolor="black" align="center" colspan="2">
+      <td bgcolor="{}" align="center" colspan="2">
         <font color="white">
         {}
         </font>
@@ -21,7 +29,10 @@ fn render_node_dot(data: &NodeData) -> String {
   </table>
   > ];
     "#,
-        data.name, data.name, mutsnips
+        data.name,
+        node_color(data),
+        data.name,
+        mutsnips
     )
 }
 
@@ -32,7 +43,14 @@ fn render_edge_dot(parent_name: &str, child_name: &str) -> String {
     )
 }
 
+enum NodeDataType {
+    Main,
+    Subroutine,
+    ExternalPgm,
+}
+
 struct NodeData {
+    data_type: NodeDataType,
     name: String,
     mutations: Vec<String>,
 }
@@ -68,6 +86,7 @@ pub fn render_dot(pgm: Program) -> String {
         }
     }
     let data = NodeData {
+        data_type: NodeDataType::Main,
         name: "MAIN".to_string(),
         mutations: main_muts,
     };
@@ -85,6 +104,7 @@ pub fn render_dot(pgm: Program) -> String {
                 None => vec![],
             };
             let data = NodeData {
+                data_type: NodeDataType::Subroutine,
                 name: call.name.to_uppercase(),
                 mutations: muts,
             };
@@ -97,6 +117,7 @@ pub fn render_dot(pgm: Program) -> String {
         }
         if let Statement::Call(Call::ExternalPgm(call)) = stmt {
             let data = NodeData {
+                data_type: NodeDataType::ExternalPgm,
                 name: call.name.to_uppercase(),
                 mutations: vec![],
             };
@@ -124,6 +145,7 @@ pub fn render_dot(pgm: Program) -> String {
                                 None => vec![],
                             };
                             let data = NodeData {
+                                data_type: NodeDataType::Subroutine,
                                 name: c.name.to_uppercase(),
                                 mutations: muts,
                             };
@@ -139,6 +161,7 @@ pub fn render_dot(pgm: Program) -> String {
                     Call::ExternalPgm(c) => {
                         if !nodes.contains(&c.name.to_uppercase()) {
                             let data = NodeData {
+                                data_type: NodeDataType::ExternalPgm,
                                 name: c.name.to_uppercase(),
                                 mutations: vec![],
                             };

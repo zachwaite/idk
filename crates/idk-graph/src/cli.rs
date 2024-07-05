@@ -735,7 +735,7 @@ digraph g {
   "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
   <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
     <tr>
-      <td bgcolor="black" align="center" colspan="2">
+      <td bgcolor="slategrey" align="center" colspan="2">
         <font color="white">
         QCMDEXC
         </font>
@@ -749,7 +749,7 @@ digraph g {
   "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
   <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
     <tr>
-      <td bgcolor="black" align="center" colspan="2">
+      <td bgcolor="slategrey" align="center" colspan="2">
         <font color="white">
         QCMDEXC
         </font>
@@ -763,7 +763,7 @@ digraph g {
   "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
   <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
     <tr>
-      <td bgcolor="black" align="center" colspan="2">
+      <td bgcolor="slategrey" align="center" colspan="2">
         <font color="white">
         QCMDEXC
         </font>
@@ -805,7 +805,7 @@ digraph g {
   "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
   <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
     <tr>
-      <td bgcolor="black" align="center" colspan="2">
+      <td bgcolor="slategrey" align="center" colspan="2">
         <font color="white">
         QCMDEXC
         </font>
@@ -826,8 +826,8 @@ digraph g {
 }
 "#;
         let observed = dot(&input).unwrap();
-        // let _ = std::fs::write("/tmp/expected.gv", expected);
-        // let _ = std::fs::write("/tmp/observed.gv", &observed);
+        let _ = std::fs::write("/tmp/expected.gv", expected);
+        let _ = std::fs::write("/tmp/observed.gv", &observed);
         assert_eq!(&observed, expected);
     }
 }
