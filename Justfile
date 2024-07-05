@@ -4,8 +4,9 @@ test:
 
 graph rpgfile:
   #! /usr/bin/env bash
+  rm ~/Downloads/tmp-graph.*
   ./target/debug/idk-graph dot {{ rpgfile }} > ~/Downloads/tmp-graph.gv
-  dot -Tsvg /tmp/graph.gv > ~/Downloads/tmp-graph.svg
+  dot -Tsvg ~/Downloads/tmp-graph.gv > ~/Downloads/tmp-graph.svg
 
 build:
   #! /usr/bin/env bash
