@@ -1,4 +1,4 @@
-use crate::cst::{Definition, Program, Statement};
+use crate::cst::{Call, Definition, Program, Statement};
 
 fn render_node_dot(data: &NodeData) -> String {
     let mut mutsnips = "".to_string();
@@ -76,7 +76,7 @@ pub fn render_dot(pgm: Program) -> String {
 
     // add nodes for top level calls
     for stmt in pgm.statements.iter() {
-        if let Statement::Call(call) = stmt {
+        if let Statement::Call(Call::Subroutine(call)) = stmt {
             let maybe = mutations
                 .iter()
                 .find(|x| x.0.to_string() == call.name.to_uppercase());
@@ -95,30 +95,62 @@ pub fn render_dot(pgm: Program) -> String {
                 edges.push(snippet);
             }
         }
+        if let Statement::Call(Call::ExternalPgm(call)) = stmt {
+            let data = NodeData {
+                name: call.name.to_uppercase(),
+                mutations: vec![],
+            };
+            let snippet = render_node_dot(&data);
+            nodes.push(snippet);
+            let snippet = render_edge_dot("MAIN", &call.name.to_uppercase());
+            if !edges.contains(&snippet) {
+                edges.push(snippet);
+            }
+        }
     }
 
     // add nodes for calls inside other calls
     for stmt in pgm.statements.iter() {
         if let Statement::Def(Definition::Subroutine(def)) = stmt {
             for call in def.calls.iter() {
-                if !nodes.contains(&call.name.to_uppercase()) {
-                    let maybe = mutations
-                        .iter()
-                        .find(|x| x.0.to_string() == call.name.to_uppercase());
-                    let muts = match maybe {
-                        Some(m) => m.1.clone(),
-                        None => vec![],
-                    };
-                    let data = NodeData {
-                        name: call.name.to_uppercase(),
-                        mutations: muts,
-                    };
-                    let snippet = render_node_dot(&data);
-                    nodes.push(snippet);
-                }
-                let snippet = render_edge_dot(&def.name.to_uppercase(), &call.name.to_uppercase());
-                if !edges.contains(&snippet) {
-                    edges.push(snippet);
+                match call {
+                    Call::Subroutine(c) => {
+                        if !nodes.contains(&c.name.to_uppercase()) {
+                            let maybe = mutations
+                                .iter()
+                                .find(|x| x.0.to_string() == c.name.to_uppercase());
+                            let muts = match maybe {
+                                Some(m) => m.1.clone(),
+                                None => vec![],
+                            };
+                            let data = NodeData {
+                                name: c.name.to_uppercase(),
+                                mutations: muts,
+                            };
+                            let snippet = render_node_dot(&data);
+                            nodes.push(snippet);
+                        }
+                        let snippet =
+                            render_edge_dot(&def.name.to_uppercase(), &c.name.to_uppercase());
+                        if !edges.contains(&snippet) {
+                            edges.push(snippet);
+                        }
+                    }
+                    Call::ExternalPgm(c) => {
+                        if !nodes.contains(&c.name.to_uppercase()) {
+                            let data = NodeData {
+                                name: c.name.to_uppercase(),
+                                mutations: vec![],
+                            };
+                            let snippet = render_node_dot(&data);
+                            nodes.push(snippet);
+                        }
+                        let snippet =
+                            render_edge_dot(&def.name.to_uppercase(), &c.name.to_uppercase());
+                        if !edges.contains(&snippet) {
+                            edges.push(snippet);
+                        }
+                    }
                 }
             }
         }

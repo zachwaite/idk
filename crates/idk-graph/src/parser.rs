@@ -1,6 +1,6 @@
 use crate::cst::{
-    Definition, Idk, Mutation, Program, Statement, StatementMeta, SubroutineCall,
-    SubroutineDefinition,
+    Call, Definition, ExternalPgmCall, Idk, Mutation, Program, Statement, StatementMeta,
+    SubroutineCall, SubroutineDefinition,
 };
 use rpgle_lexer::{
     next_token, CommentType, FormType, IllegalLexerState, Lexer, Span, Token, TokenKind,
@@ -118,6 +118,20 @@ fn parse_subroutine_call(parser: &Parser) -> Result<SubroutineCall, IllegalParse
     Ok(call)
 }
 
+fn parse_extpgm_call(parser: &Parser) -> Result<ExternalPgmCall, IllegalParserState> {
+    let mut meta = StatementMeta::empty();
+    let tok = pop_active_buffer(parser)?; // name
+    meta.push_token(tok.clone());
+    while front_kind(parser)? != TokenKind::RParen && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    meta.push_token(pop_active_buffer(parser)?); // RParen
+    meta.push_token(pop_active_buffer(parser)?); // Semicolon
+    let name = tok.text.trim().to_string();
+    let call = ExternalPgmCall { name, meta };
+    Ok(call)
+}
+
 fn parse_write(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     let mut meta = StatementMeta::empty();
     meta.push_token(pop_active_buffer(parser)?); // Exsr
@@ -202,7 +216,7 @@ fn parse_subroutine_definition(
     };
 
     // body, calls, mutations
-    let mut calls = vec![];
+    let mut calls: Vec<Call> = vec![]; // REFACTOR ADAPT TO
     let mut mutations = vec![];
     while front_kind(parser)? != TokenKind::Endsr && front_kind(parser)? != TokenKind::Eof {
         let kind = front_kind(parser)?;
@@ -218,9 +232,21 @@ fn parse_subroutine_definition(
                 mutations.push(mutation);
             }
             TokenKind::Exsr => {
-                let call = parse_subroutine_call(parser)?;
-                meta.push_other(&call.meta);
+                let sub = parse_subroutine_call(parser)?;
+                meta.push_other(&sub.meta);
+                let call = Call::Subroutine(sub);
                 calls.push(call);
+            }
+            TokenKind::Identifier => {
+                let peeked = peek_n(parser, 1)?.kind;
+                if matches!(peeked, TokenKind::LParen) {
+                    let ext = parse_extpgm_call(parser)?;
+                    meta.push_other(&ext.meta);
+                    let call = Call::ExternalPgm(ext);
+                    calls.push(call);
+                } else {
+                    meta.push_token(pop_active_buffer(parser)?);
+                }
             }
             _ => {
                 meta.push_token(pop_active_buffer(parser)?);
@@ -266,6 +292,7 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
             front_kind(parser),
             Ok(TokenKind::FormType(FormType::Calculation))
         )
+        && !matches!(front_kind(parser), Ok(TokenKind::Identifier))
         && !matches!(front_kind(parser), Ok(TokenKind::Eof))
     {
         shrug_and_advance(parser)?;
@@ -283,7 +310,7 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
         }
         Ok(TokenKind::Exsr) => {
             let call = parse_subroutine_call(parser)?;
-            Ok(Statement::Call(call))
+            Ok(Statement::Call(Call::Subroutine(call)))
         }
         Ok(TokenKind::Write) => {
             let write = parse_write(parser)?;
@@ -292,6 +319,10 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
         Ok(TokenKind::Update) => {
             let update = parse_update(parser)?;
             Ok(Statement::Mutation(update))
+        }
+        Ok(TokenKind::Identifier) => {
+            let call = parse_extpgm_call(parser)?;
+            Ok(Statement::Call(Call::ExternalPgm(call)))
         }
         _ => Err(IllegalParserState::ImpossibleDestinationError),
     }
@@ -304,6 +335,11 @@ pub fn parse_program(parser: &Parser) -> Result<Program, IllegalParserState> {
         // guard against line comment for c-spec style
         let k2 = peek_n(parser, 1)?.kind;
         if matches!(k2, TokenKind::Comment(CommentType::LineComment)) {
+            shrug_and_advance(parser)?;
+        }
+        // guard against identifiers that are not calls
+        let k1 = front_kind(parser)?;
+        if matches!(k1, TokenKind::Identifier) && !matches!(k2, TokenKind::LParen) {
             shrug_and_advance(parser)?;
         }
         let new_stmt = parse_statement(parser)?;
@@ -335,12 +371,14 @@ mod tests {
       /free                                                                                         
        Exsr $SetLstId;                                                                              
        Exsr $CrtEvts;                                                                               
+       QCmdExc(Foo:Bar);                                                                            
        *inlr = *on;                                                                                 
                                                                                                     
        Begsr $SetLstId;                                                                             
          SetLL *Loval CowEvtL2;                                                                     
          If Not %Eof;                                                                               
            Read CowEvtL2;                                                                           
+             QCmdExc(FOO:BaR);                                                                      
            LastId = Vid;                                                                            
          Else;                                                                                      
           LastId = 1;                                                                               

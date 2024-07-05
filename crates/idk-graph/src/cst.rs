@@ -130,7 +130,7 @@ impl fmt::Display for Mutation {
 #[derive(Clone)]
 pub struct SubroutineDefinition {
     pub name: String,
-    pub calls: Vec<SubroutineCall>,
+    pub calls: Vec<Call>,
     pub mutations: Vec<Mutation>,
     pub meta: StatementMeta,
 }
@@ -178,7 +178,7 @@ impl Definition {
 }
 
 pub enum Statement {
-    Call(SubroutineCall),
+    Call(Call),
     Def(Definition),
     Mutation(Mutation),
     Idk(Idk),
@@ -199,7 +199,7 @@ impl Statement {
     pub fn to_raw_text(&self) -> String {
         match self {
             Self::Def(x) => x.to_raw_text(),
-            Self::Call(x) => x.meta.to_raw_text(),
+            Self::Call(x) => x.to_raw_text(),
             Self::Mutation(x) => x.meta.to_raw_text(),
             Self::Idk(x) => x.meta.to_raw_text(),
         }
