@@ -38,6 +38,23 @@ pub enum FormType {
     Idk,
 }
 
+impl fmt::Display for FormType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let out = match self {
+            Self::Empty => format!("Empty"),
+            Self::Control => format!("Control"),
+            Self::File => format!("File"),
+            Self::Definition => format!("Definition"),
+            Self::Input => format!("Input"),
+            Self::Calculation => format!("Calculation"),
+            Self::Output => format!("Output"),
+            Self::Procedure => format!("Procedure"),
+            Self::Idk => format!("IDK"),
+        };
+        write!(f, "{}", out)
+    }
+}
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum FileType {
     Input,
@@ -235,7 +252,7 @@ impl fmt::Display for TokenKind {
             Self::EndFree => format!("EndFree"),
             Self::Sequence => format!("Sequence"),
             Self::Comment(_) => format!("Comment"),
-            Self::FormType(_) => format!("FormType"),
+            Self::FormType(t) => format!("FormType({})", t),
             Self::Name => format!("Name"),
             Self::FileType(_) => format!("FileType"),
             Self::FileDesignation(_) => format!("FileDesignation"),
