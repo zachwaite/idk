@@ -826,8 +826,71 @@ digraph g {
 }
 "#;
         let observed = dot(&input).unwrap();
-        let _ = std::fs::write("/tmp/expected.gv", expected);
-        let _ = std::fs::write("/tmp/observed.gv", &observed);
+        // let _ = std::fs::write("/tmp/expected.gv", expected);
+        // let _ = std::fs::write("/tmp/observed.gv", &observed);
         assert_eq!(&observed, expected);
     }
+
+    //     #[test]
+    //     fn test_dot6_extpgm2() {
+    //         let input = &r#"
+    //      H OPTION(*nodebugio:*srcstmt)
+    //      H ALWNULL(*USRCTL)
+    //      FCowEvt    UF A E           K DISK
+    //      FBornEvt   UF A E           K DISK
+    //      FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)
+    //      F**********************************************************************************************
+    //      D**********************************************************************************************
+    //      D LastId          S              8  0
+    //      D QCmdExc         PR                  EXTPGM('QCMDEXC')
+    //      D  Command                    2000
+    //      D  Length                       15  5
+    //      C**********************************************************************************************
+    //       /free
+    //        Exsr $SetLstId;
+    //        Exsr $CrtEvts;
+    //        QCmdExc(Foo:Bar);
+    //        *inlr = *on;
+    //
+    //        Begsr $SetLstId;
+    //          SetLL *Loval CowEvtL2;
+    //          If Not %Eof;
+    //            Read CowEvtL2;
+    //            LastId = Vid;
+    //          Else;
+    //           LastId = 1;
+    //                         QCmdExc(Foo:Bar);
+    //          Endif;
+    //        Endsr;
+    //
+    //      C     $CrtBRNEVT    BegSr
+    //          EID = Id;
+    //          BNAME = 'BESSE';
+    //          BDAT = 20240101;
+    //                         QCmdExc(Foo:Bar);
+    //          Write BORNFMT;
+    //      C                   ENDSR
+    //
+    //        Begsr $CrtCowEvt;
+    //          Id = LastId + 1;
+    //          Edat = 20240101;
+    //          Etim = 125959;
+    //          Etyp = 'BORN';
+    //          Write EVTFMT;
+    //        Endsr;
+    //
+    //        Begsr $CrtEvts;
+    //          Exsr $CrtCowEvt;
+    //          Exsr $CrtBrnEvt;
+    //                     QCmdExc(Foo:Bar);
+    //        Endsr;
+    //      "#[1..];
+    //
+    //         let expected = &r#"
+    // "#;
+    //         let observed = dot(&input).unwrap();
+    //         let _ = std::fs::write("/tmp/expected.gv", expected);
+    //         let _ = std::fs::write("/tmp/observed.gv", &observed);
+    //         assert_eq!(&observed, expected);
+    //     }
 }

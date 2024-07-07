@@ -100,6 +100,13 @@ fn shrug_and_advance(parser: &Parser) -> Result<(), IllegalParserState> {
     Ok(())
 }
 
+fn shrug_and_advance_until_eol(parser: &Parser) -> Result<(), IllegalParserState> {
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        shrug_and_advance(parser)?;
+    }
+    Ok(())
+}
+
 // level 1
 
 fn parse_subroutine_call(parser: &Parser) -> Result<SubroutineCall, IllegalParserState> {
@@ -114,6 +121,10 @@ fn parse_subroutine_call(parser: &Parser) -> Result<SubroutineCall, IllegalParse
         meta.push_token(pop_active_buffer(parser)?);
     }
     let name = tok.text.trim().to_string();
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
     let call = SubroutineCall { name, meta };
     Ok(call)
 }
@@ -128,6 +139,10 @@ fn parse_extpgm_call(parser: &Parser) -> Result<ExternalPgmCall, IllegalParserSt
     meta.push_token(pop_active_buffer(parser)?); // RParen
     meta.push_token(pop_active_buffer(parser)?); // Semicolon
     let name = tok.text.trim().to_string();
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
     let call = ExternalPgmCall { name, meta };
     Ok(call)
 }
@@ -143,8 +158,14 @@ fn parse_write(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
         meta.push_token(pop_active_buffer(parser)?);
     }
+    meta.push_token(pop_active_buffer(parser)?); // semicolon
+
     let name = tok.text.trim().to_uppercase();
     let keyword = "Write".to_string();
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
     let out = Mutation {
         keyword,
         name,
@@ -166,6 +187,10 @@ fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     }
     let name = tok.text.trim().to_uppercase();
     let keyword = "Update".to_string();
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
     let out = Mutation {
         keyword,
         name,
@@ -274,6 +299,11 @@ fn parse_subroutine_definition(
     }
     meta.push_token(pop_active_buffer(parser)?); // push semicolon
 
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+
     let def = SubroutineDefinition {
         name,
         calls,
@@ -284,20 +314,6 @@ fn parse_subroutine_definition(
 }
 
 fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
-    while !matches!(front_kind(parser), Ok(TokenKind::Begsr))
-        && !matches!(front_kind(parser), Ok(TokenKind::Exsr))
-        && !matches!(front_kind(parser), Ok(TokenKind::Write))
-        && !matches!(front_kind(parser), Ok(TokenKind::Update))
-        && !matches!(
-            front_kind(parser),
-            Ok(TokenKind::FormType(FormType::Calculation))
-        )
-        && !matches!(front_kind(parser), Ok(TokenKind::Identifier))
-        && !matches!(front_kind(parser), Ok(TokenKind::Eof))
-    {
-        shrug_and_advance(parser)?;
-    }
-
     if parser.idk_buffer.borrow().len() > 0 {
         let idk = flush_idk_buffer(parser)?;
         return Ok(Statement::Idk(idk));
@@ -332,18 +348,39 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
 pub fn parse_program(parser: &Parser) -> Result<Program, IllegalParserState> {
     let mut pgm = Program::new();
     while front_kind(parser)? != TokenKind::Eof {
-        // guard against line comment for c-spec style
-        let k2 = peek_n(parser, 1)?.kind;
-        if matches!(k2, TokenKind::Comment(CommentType::LineComment)) {
-            shrug_and_advance(parser)?;
+        match front_kind(parser)? {
+            TokenKind::Begsr | TokenKind::Exsr | TokenKind::Write | TokenKind::Update => {
+                let new_stmt = parse_statement(parser)?;
+                pgm.statements.push(new_stmt);
+            }
+            TokenKind::Identifier => {
+                let k2 = peek_n(parser, 1)?.kind;
+                if !matches!(k2, TokenKind::LParen) {
+                    shrug_and_advance(parser)?;
+                } else {
+                    let new_stmt = parse_statement(parser)?;
+                    pgm.statements.push(new_stmt);
+                }
+            }
+            TokenKind::FormType(ft) => match peek_n(parser, 1)?.kind {
+                TokenKind::Comment(CommentType::LineComment) => {
+                    shrug_and_advance(parser)?;
+                }
+                _ => match ft {
+                    FormType::Calculation => {
+                        let new_stmt = parse_statement(parser)?;
+                        pgm.statements.push(new_stmt);
+                    }
+                    FormType::Empty => {
+                        shrug_and_advance(parser)?;
+                    }
+                    _ => {
+                        shrug_and_advance_until_eol(parser)?;
+                    }
+                },
+            },
+            _ => shrug_and_advance(parser)?,
         }
-        // guard against identifiers that are not calls
-        let k1 = front_kind(parser)?;
-        if matches!(k1, TokenKind::Identifier) && !matches!(k2, TokenKind::LParen) {
-            shrug_and_advance(parser)?;
-        }
-        let new_stmt = parse_statement(parser)?;
-        pgm.statements.push(new_stmt);
     }
     Ok(pgm)
 }
@@ -408,6 +445,9 @@ mod tests {
         let lexer = new_lexer(input);
         let parser = Parser::new(&lexer).unwrap();
         let rs = parse_program(&parser);
-        assert_eq!(input, rs.unwrap().to_raw_text());
+        let observed = rs.unwrap().to_raw_text();
+        let _ = std::fs::write("/tmp/expected.rpgle", &input);
+        let _ = std::fs::write("/tmp/observed.rpgle", &observed);
+        assert_eq!(input, observed);
     }
 }
