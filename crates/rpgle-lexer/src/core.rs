@@ -239,6 +239,8 @@ pub enum TokenKind {
     Endsr,
     Exsr,
     Move,
+    Plist,
+    Parm,
 }
 
 impl fmt::Display for TokenKind {
@@ -328,6 +330,8 @@ impl fmt::Display for TokenKind {
             Self::Eval => format!("Eval"),
             Self::Clear => format!("Clear"),
             Self::Move => format!("Move"),
+            Self::Plist => format!("Plist"),
+            Self::Parm => format!("Parm"),
         };
         write!(f, "{}", s)
     }

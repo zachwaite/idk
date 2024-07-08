@@ -145,6 +145,8 @@ fn read_operation_and_extender(lexer: &Lexer) -> Result<Token, IllegalLexerState
                 "WRITE" => TokenKind::Write,
                 "UPDATE" => TokenKind::Update,
                 "IF" => TokenKind::If,
+                "PLIST" => TokenKind::Plist,
+                "PARM" => TokenKind::Parm,
                 _ => TokenKind::Identifier,
             };
             Ok(Token::new(kind, &txt, span))
