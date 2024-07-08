@@ -176,7 +176,7 @@ fn parse_write(parser: &Parser) -> Result<Mutation, IllegalParserState> {
 
 fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     let mut meta = StatementMeta::empty();
-    meta.push_token(pop_active_buffer(parser)?); // Exsr
+    meta.push_token(pop_active_buffer(parser)?); // update
     while front_kind(parser)? != TokenKind::Identifier && front_kind(parser)? != TokenKind::Eof {
         meta.push_token(pop_active_buffer(parser)?);
     }
@@ -187,6 +187,31 @@ fn parse_update(parser: &Parser) -> Result<Mutation, IllegalParserState> {
     }
     let name = tok.text.trim().to_uppercase();
     let keyword = "Update".to_string();
+    // TODO: why store this in meta instead of idk buffer???
+    while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let out = Mutation {
+        keyword,
+        name,
+        meta,
+    };
+    Ok(out)
+}
+
+fn parse_delete(parser: &Parser) -> Result<Mutation, IllegalParserState> {
+    let mut meta = StatementMeta::empty();
+    meta.push_token(pop_active_buffer(parser)?); // delete
+    while front_kind(parser)? != TokenKind::Identifier && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let tok = pop_active_buffer(parser)?; // name
+    meta.push_token(tok.clone());
+    while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
+        meta.push_token(pop_active_buffer(parser)?);
+    }
+    let name = tok.text.trim().to_uppercase();
+    let keyword = "Delete".to_string();
     // TODO: why store this in meta instead of idk buffer???
     while front_kind(parser)? != TokenKind::Eol && front_kind(parser)? != TokenKind::Eof {
         meta.push_token(pop_active_buffer(parser)?);
@@ -253,6 +278,11 @@ fn parse_subroutine_definition(
             }
             TokenKind::Update => {
                 let mutation = parse_update(parser)?;
+                meta.push_other(&mutation.meta);
+                mutations.push(mutation);
+            }
+            TokenKind::Delete => {
+                let mutation = parse_delete(parser)?;
                 meta.push_other(&mutation.meta);
                 mutations.push(mutation);
             }
@@ -336,6 +366,10 @@ fn parse_statement(parser: &Parser) -> Result<Statement, IllegalParserState> {
             let update = parse_update(parser)?;
             Ok(Statement::Mutation(update))
         }
+        Ok(TokenKind::Delete) => {
+            let update = parse_delete(parser)?;
+            Ok(Statement::Mutation(update))
+        }
         Ok(TokenKind::Identifier) => {
             let call = parse_extpgm_call(parser)?;
             Ok(Statement::Call(Call::ExternalPgm(call)))
@@ -349,7 +383,11 @@ pub fn parse_program(parser: &Parser) -> Result<Program, IllegalParserState> {
     let mut pgm = Program::new();
     while front_kind(parser)? != TokenKind::Eof {
         match front_kind(parser)? {
-            TokenKind::Begsr | TokenKind::Exsr | TokenKind::Write | TokenKind::Update => {
+            TokenKind::Begsr
+            | TokenKind::Exsr
+            | TokenKind::Write
+            | TokenKind::Update
+            | TokenKind::Delete => {
                 let new_stmt = parse_statement(parser)?;
                 pgm.statements.push(new_stmt);
             }
