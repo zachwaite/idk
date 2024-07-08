@@ -540,7 +540,7 @@ pub fn is_numeric(ch: &char) -> bool {
 }
 
 pub fn is_identifier_char(ch: &char) -> bool {
-    ch.is_alphanumeric() || *ch == '@' || *ch == '$' || *ch == '-'
+    ch.is_alphanumeric() || *ch == '@' || *ch == '$' || *ch == '-' || *ch == '#'
 }
 
 pub fn is_space_or_tab(ch: &char) -> bool {
