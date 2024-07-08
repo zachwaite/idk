@@ -831,66 +831,208 @@ digraph g {
         assert_eq!(&observed, expected);
     }
 
-    //     #[test]
-    //     fn test_dot6_extpgm2() {
-    //         let input = &r#"
-    //      H OPTION(*nodebugio:*srcstmt)
-    //      H ALWNULL(*USRCTL)
-    //      FCowEvt    UF A E           K DISK
-    //      FBornEvt   UF A E           K DISK
-    //      FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)
-    //      F**********************************************************************************************
-    //      D**********************************************************************************************
-    //      D LastId          S              8  0
-    //      D QCmdExc         PR                  EXTPGM('QCMDEXC')
-    //      D  Command                    2000
-    //      D  Length                       15  5
-    //      C**********************************************************************************************
-    //       /free
-    //        Exsr $SetLstId;
-    //        Exsr $CrtEvts;
-    //        QCmdExc(Foo:Bar);
-    //        *inlr = *on;
-    //
-    //        Begsr $SetLstId;
-    //          SetLL *Loval CowEvtL2;
-    //          If Not %Eof;
-    //            Read CowEvtL2;
-    //            LastId = Vid;
-    //          Else;
-    //           LastId = 1;
-    //                         QCmdExc(Foo:Bar);
-    //          Endif;
-    //        Endsr;
-    //
-    //      C     $CrtBRNEVT    BegSr
-    //          EID = Id;
-    //          BNAME = 'BESSE';
-    //          BDAT = 20240101;
-    //                         QCmdExc(Foo:Bar);
-    //          Write BORNFMT;
-    //      C                   ENDSR
-    //
-    //        Begsr $CrtCowEvt;
-    //          Id = LastId + 1;
-    //          Edat = 20240101;
-    //          Etim = 125959;
-    //          Etyp = 'BORN';
-    //          Write EVTFMT;
-    //        Endsr;
-    //
-    //        Begsr $CrtEvts;
-    //          Exsr $CrtCowEvt;
-    //          Exsr $CrtBrnEvt;
-    //                     QCmdExc(Foo:Bar);
-    //        Endsr;
-    //      "#[1..];
-    //
-    //         let expected = &r#"
-    // "#;
-    //         let observed = dot(&input).unwrap();
-    //         let _ = std::fs::write("/tmp/expected.gv", expected);
-    //         let _ = std::fs::write("/tmp/observed.gv", &observed);
-    //         assert_eq!(&observed, expected);
-    //     }
+    #[test]
+    fn test_dot6_extpgm2() {
+        let input = &r#"
+     H OPTION(*nodebugio:*srcstmt)                                                                  
+     H ALWNULL(*USRCTL)                                                                             
+     FCowEvt    UF A E           K DISK                                                             
+     FBornEvt   UF A E           K DISK                                                             
+     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        
+     F**********************************************************************************************
+     D**********************************************************************************************
+     D LastId          S              8  0                                                          
+     D QCmdExc         PR                  EXTPGM('QCMDEXC')                                        
+     D  Command                    2000                                                             
+     D  Length                       15  5                                                          
+     C**********************************************************************************************
+      /free                                                                                         
+       Exsr $SetLstId;                                                                              
+       Exsr $CrtEvts;                                                                               
+       Delete FOO;                                                                                  
+       QCmdExc(Foo:Bar);                                                                            
+       *inlr = *on;                                                                                 
+                                                                                                    
+       Begsr $SetLstId;                                                                             
+         SetLL *Loval CowEvtL2;                                                                     
+         If Not %Eof;                                                                               
+           Read CowEvtL2;                                                                           
+           LastId = Vid;                                                                            
+         Else;                                                                                      
+          LastId = 1;                                                                               
+                        QCmdExc(Foo:Bar);                                                           
+         Endif;                                                                                     
+       Endsr;                                                                                       
+                                                                                                    
+     C     $CrtBRNEVT    BegSr                                                                      
+         EID = Id;                                                                                  
+         BNAME = 'BESSE';                                                                           
+         BDAT = 20240101;                                                                           
+                        QCmdExc(Foo:Bar);                                                           
+         Write BORNFMT;                                                                             
+     C                   ENDSR                                                                      
+                                                                                                    
+       Begsr $CrtCowEvt;                                                                            
+         Id = LastId + 1;                                                                           
+         Edat = 20240101;                                                                           
+         Etim = 125959;                                                                             
+         Etyp = 'BORN';                                                                             
+         Write EVTFMT;                                                                              
+       Endsr;                                                                                       
+                                                                                                    
+       Begsr $CrtEvts;                                                                              
+         Exsr $CrtCowEvt;                                                                           
+         Exsr $CrtBrnEvt;                                                                           
+                    QCmdExc(Foo:Bar);                                                               
+       Endsr;                                                                                       
+         "#[1..];
+
+        let expected = &r#"
+digraph g {
+  fontname="Helvetica,Arial,sans-serif"
+  node [fontname="Helvetica,Arial,sans-serif"]
+  edge [fontname="Helvetica,Arial,sans-serif"]
+  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir = "LR"];
+  ratio = auto;
+  
+  "MAIN" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="black" align="center" colspan="2">
+        <font color="white">
+        MAIN
+        </font>
+      </td>
+    </tr>
+    <tr><td align="left" port="r0">Delete: FOO</td></tr>
+  </table>
+  > ];
+    
+
+  "$SETLSTID" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="black" align="center" colspan="2">
+        <font color="white">
+        $SETLSTID
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+
+  "$CRTEVTS" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="black" align="center" colspan="2">
+        <font color="white">
+        $CRTEVTS
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+
+  "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="slategrey" align="center" colspan="2">
+        <font color="white">
+        QCMDEXC
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+
+  "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="slategrey" align="center" colspan="2">
+        <font color="white">
+        QCMDEXC
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+
+  "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="slategrey" align="center" colspan="2">
+        <font color="white">
+        QCMDEXC
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+
+  "$CRTCOWEVT" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="black" align="center" colspan="2">
+        <font color="white">
+        $CRTCOWEVT
+        </font>
+      </td>
+    </tr>
+    <tr><td align="left" port="r0">Write: EVTFMT</td></tr>
+  </table>
+  > ];
+    
+
+  "$CRTBRNEVT" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="black" align="center" colspan="2">
+        <font color="white">
+        $CRTBRNEVT
+        </font>
+      </td>
+    </tr>
+    <tr><td align="left" port="r0">Write: BORNFMT</td></tr>
+  </table>
+  > ];
+    
+
+  "QCMDEXC" [ style = "filled, bold" penwidth = 5 fillcolor = "white" fontname = "Courier New" shape = "Mrecord" label =<
+  <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td bgcolor="slategrey" align="center" colspan="2">
+        <font color="white">
+        QCMDEXC
+        </font>
+      </td>
+    </tr>
+    
+  </table>
+  > ];
+    
+  "MAIN" -> "$SETLSTID" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"MAIN" -> "$CRTEVTS" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"MAIN" -> "QCMDEXC" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"$SETLSTID" -> "QCMDEXC" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"$CRTBRNEVT" -> "QCMDEXC" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"$CRTEVTS" -> "$CRTCOWEVT" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"$CRTEVTS" -> "$CRTBRNEVT" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+"$CRTEVTS" -> "QCMDEXC" [ penwidth = 1 fontsize = 14 fontcolor = "grey28" ];
+}
+"#;
+        let observed = dot(&input).unwrap();
+        // let _ = std::fs::write("/tmp/expected.gv", expected);
+        // let _ = std::fs::write("/tmp/observed.gv", &observed);
+        assert_eq!(&observed, expected);
+    }
 }
