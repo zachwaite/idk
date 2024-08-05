@@ -117,7 +117,11 @@ fn parse_subroutine_call(parser: &Parser) -> Result<SubroutineCall, IllegalParse
     }
     let tok = pop_active_buffer(parser)?; // name
     meta.push_token(tok.clone());
-    while front_kind(parser)? != TokenKind::Semicolon && front_kind(parser)? != TokenKind::Eof {
+    // relax semicolon for now
+    while front_kind(parser)? != TokenKind::Semicolon
+        && front_kind(parser)? != TokenKind::Eol
+        && front_kind(parser)? != TokenKind::Eof
+    {
         meta.push_token(pop_active_buffer(parser)?);
     }
     let name = tok.text.trim().to_string();
@@ -406,8 +410,21 @@ pub fn parse_program(parser: &Parser) -> Result<Program, IllegalParserState> {
                 }
                 _ => match ft {
                     FormType::Calculation => {
-                        let new_stmt = parse_statement(parser)?;
-                        pgm.statements.push(new_stmt);
+                        let mut i = 1;
+                        let mut should_parse = false;
+                        while peek_n(parser, i)?.kind != TokenKind::Eol {
+                            if peek_n(parser, i)?.kind == TokenKind::Begsr {
+                                should_parse = true;
+                                break;
+                            }
+                            i += 1;
+                        }
+                        if should_parse {
+                            let new_stmt = parse_statement(parser)?;
+                            pgm.statements.push(new_stmt);
+                        } else {
+                            shrug_and_advance_until_eol(parser)?;
+                        }
                     }
                     FormType::Empty => {
                         shrug_and_advance(parser)?;
