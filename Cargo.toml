@@ -9,7 +9,7 @@ members = [
   # "crates/dspf-lexer",       # lib
   # "crates/dspf-parser",      # lib
   "crates/rpgle-lexer",      # lib
-  # "crates/rpgle-parser",     # lib
+  "crates/rpgle-parser",     # lib
   # "crates/idklib",           # lib - core domain
   # "crates/idk",              # cli for idklib
   # "crates/idk-lsp",          # language server
