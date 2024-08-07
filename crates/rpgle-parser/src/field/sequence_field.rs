@@ -4,26 +4,26 @@ use super::result::FieldResult;
 use crate::meta::{Meta, Position};
 
 #[derive(Debug, Clone)]
-pub struct IdkField {
+pub struct SequenceField {
     pub value: String,
     pub meta: Meta,
 }
 
-impl Display for IdkField {
+impl Display for SequenceField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char])> for FieldResult<IdkField> {
-    fn from(value: (Position, &[char])) -> Self {
+impl From<(Position, &[char; 6])> for FieldResult<SequenceField> {
+    fn from(value: (Position, &[char; 6])) -> Self {
         let chars = value.1;
-        let meta = Meta::from(value);
-        let fld = IdkField {
+        let meta = Meta::from((value.0, chars.as_slice()));
+        let fld = SequenceField {
             value: chars.iter().collect::<String>(),
             meta,
         };
-        Self::Idk(fld)
+        Self::Ok(fld)
     }
 }

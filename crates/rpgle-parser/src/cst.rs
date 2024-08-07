@@ -1,44 +1,160 @@
-use crate::meta::Diagnostic;
-use crate::spec::Spec;
+use crate::line::SpecLine;
+use crate::spec::{CommentSpec, IdkSpec, Spec};
 use std::fmt::Display;
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum ParserException {
+    #[error("This line is too long to coerce to 100 chars: {0}")]
+    LongLineException(String),
+}
 
 pub struct CST {
     pub specs: Vec<Spec>,
-    pub diagnostics: Vec<Diagnostic>,
 }
 
 impl Display for CST {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", "CST!")
+        println!(
+            "{} specs ========================================",
+            self.specs.len()
+        );
+        let out = self
+            .specs
+            .iter()
+            .map(|spec| spec.to_string())
+            .collect::<Vec<String>>()
+            .join("\n");
+        write!(f, "{}", out)
     }
 }
 
-impl From<&str> for CST {
-    fn from(txt: &str) -> Self {
-        Self {
-            specs: vec![],
-            diagnostics: vec![],
+impl TryFrom<&str> for CST {
+    type Error = ParserException;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        // check all lines are 100 chars long so we can safely convert to [char;100]
+        // return early if not all meet this condition
+        let mut padded_lines: Vec<[char; 100]> = vec![];
+        for line in value.split("\n") {
+            if line.len() == 100 {
+                let rs: [char; 100] = line.chars().collect::<Vec<char>>().try_into().unwrap();
+                padded_lines.push(rs);
+            } else if line.len() < 100 {
+                let mut rs: [char; 100] = std::iter::repeat(' ')
+                    .take(100)
+                    .collect::<Vec<char>>()
+                    .try_into()
+                    .unwrap();
+                for (i, char) in line.chars().enumerate() {
+                    rs[i] = char;
+                }
+                padded_lines.push(rs);
+            } else {
+                return Err(ParserException::LongLineException(line.to_string()));
+            }
         }
+
+        // parse each line into a specline
+        // speclines have a context granularity of "line" and could be parallelized
+        let speclines = padded_lines
+            .iter()
+            .enumerate()
+            .map(|(i, chars)| SpecLine::from((i, chars)))
+            .collect::<Vec<SpecLine>>();
+
+        // parse speclines into specs
+        // this is a reduction and adjacent lines need to know about each other
+        let cst = CST::from(speclines);
+        Ok(cst)
     }
 }
 
-// type L = [char; 100];
-//
-// let speclines = raw.split('\n')
-//                    .map(|txt| { pad100chars(txt) })?
-//                    .enumerate()
-//                    .map(|i, chars| {SpecLine.from(i, chars)}) // type: L
-//                    .collect::<Vec<SpecLine>>()
+impl From<Vec<SpecLine>> for CST {
+    fn from(value: Vec<SpecLine>) -> Self {
+        let lines = value;
+        let mut specs: Vec<Spec> = vec![];
+        let mut i = 0;
+        while i < lines.len() {
+            let cur = &lines[i];
+            match cur {
+                SpecLine::Idk(line) => {
+                    let spec = IdkSpec { line: line.clone() };
+                    specs.push(Spec::Idk(spec));
+                    i += 1;
+                }
+                SpecLine::Comment(line) => {
+                    let spec = CommentSpec { line: line.clone() };
+                    specs.push(Spec::Comment(spec));
+                    i += 1;
+                }
+            };
+        }
 
-// let specs = speclines
-//                .iter()
-//                .fold(|acc, cur| { evolve(acc, cur) })
-//                .collect::<Vec<Spec>>()
+        Self { specs }
+    }
+}
 
-// impl From<(usize, L)> for DSpecLine {
-//     fn from(value: (usize, L)) -> Self {
-//         sequence: SequenceField::from(i, L::from_slice(chars[0..6])),
-//         formtype: FormtypeField::from(i, L::from_slice(chars[6..7])),
-//         ...
-//      }
-// }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_round_trip() {
+        let input = &r#"
+     H OPTION(*nodebugio:*srcstmt)                                                                  
+     FCowEvt    UF A E           K DISK                                                             
+     FBornEvt   UF A E           K DISK                                                             
+     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        
+     F**********************************************************************************************
+     D**********************************************************************************************
+     D LastId          S              8  0                                                          
+     D QCmdExc         PR                  EXTPGM('QCMDEXC')                                        
+     D  Command                    2000                                                             
+     D  Length                       15  5                                                          
+     C**********************************************************************************************
+      /free                                                                                         
+       Exsr $SetLstId;                                                                              
+       Exsr $CrtEvts;                                                                               
+       QCmdExc(Foo:Bar);                                                                            
+       *inlr = *on;                                                                                 
+                                                                                                    
+       Begsr $SetLstId;                                                                             
+         SetLL *Loval CowEvtL2;                                                                     
+         If Not %Eof;                                                                               
+           Read CowEvtL2;                                                                           
+             QCmdExc(FOO:BaR);                                                                      
+           LastId = Vid;                                                                            
+         Else;                                                                                      
+          LastId = 1;                                                                               
+         Endif;                                                                                     
+       Endsr;                                                                                       
+                                                                                                    
+     C     $CrtBRNEVT    BegSr                                                                      
+         EID = Id;                                                                                  
+         BNAME = 'BESSE';                                                                           
+         BDAT = 20240101;                                                                           
+         Write BORNFMT;                                                                             
+     C                   ENDSR                                                                      
+                                                                                                    
+       Begsr $CrtCowEvt;                                                                            
+         Id = LastId + 1;                                                                           
+         Edat = 20240101;                                                                           
+         Etim = 125959;                                                                             
+         Etyp = 'BORN';                                                                             
+         Write EVTFMT;                                                                              
+       Endsr;                                                                                       
+                                                                                                    
+       Begsr $CrtEvts;                                                                              
+         Exsr $CrtCowEvt;                                                                           
+         Exsr $CrtBrnEvt;                                                                           
+       Endsr;                                                                                       "#
+            [1..];
+        let cst = CST::try_from(input).unwrap();
+        let observed = cst.to_string();
+        let expected = input;
+        // let _ = std::fs::write("/tmp/observed.rpgle", &observed);
+        // let _ = std::fs::write("/tmp/expected.rpgle", &expected);
+        assert_eq!(observed, expected);
+    }
+}

@@ -2,16 +2,21 @@ use super::diagnostic::Diagnostic;
 use super::position::Position;
 use super::span::Span;
 
+#[derive(Debug, Clone)]
 pub struct Meta {
     pub span: Span,
+    pub text: String,
     pub digs: Vec<Diagnostic>,
 }
 
-impl From<((usize, usize), (usize, usize))> for Meta {
-    fn from(value: ((usize, usize), (usize, usize))) -> Self {
-        let start = Position::from(value.0);
-        let end = Position::from(value.1);
+impl From<(Position, &[char])> for Meta {
+    fn from(value: (Position, &[char])) -> Self {
+        let start = value.0;
+        let chars = value.1;
+        let text = chars.iter().collect::<String>();
+        let end = Position::from((start.row, chars.len()));
         let span = Span { start, end };
-        Self { span, digs: vec![] }
+        let digs = vec![];
+        Self { span, text, digs }
     }
 }
