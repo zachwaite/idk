@@ -17,8 +17,9 @@ impl Display for KeywordsField {
     }
 }
 
-impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
-    fn from(value: (Position, &[char; 94])) -> Self {
+// for f-spec keywords
+impl From<(Position, &[char; 57])> for FieldResult<KeywordsField> {
+    fn from(value: (Position, &[char; 57])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         match chars[0] {
@@ -34,8 +35,9 @@ impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
     }
 }
 
-impl From<(Position, &[char; 83])> for FieldResult<KeywordsField> {
-    fn from(value: (Position, &[char; 83])) -> Self {
+// TODO: for f-spec continuation keywords
+impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
+    fn from(value: (Position, &[char; 94])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         match chars[0] {

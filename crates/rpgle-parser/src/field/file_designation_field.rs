@@ -6,53 +6,56 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Filetype {
+pub enum FileDesignation {
     Empty,
-    I,
-    O,
-    U,
-    C,
+    P,
+    S,
+    R,
+    T,
+    F,
 }
 
-impl Display for Filetype {
+impl Display for FileDesignation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
             Self::Empty => " ".to_string(),
-            Self::I => "I".to_string(),
-            Self::O => "O".to_string(),
-            Self::U => "U".to_string(),
-            Self::C => "C".to_string(),
+            Self::P => "P".to_string(),
+            Self::S => "S".to_string(),
+            Self::R => "R".to_string(),
+            Self::T => "T".to_string(),
+            Self::F => "F".to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FiletypeField {
-    pub value: Filetype,
+pub struct FileDesignationField {
+    pub value: FileDesignation,
     pub meta: Meta,
 }
 
-impl Display for FiletypeField {
+impl Display for FileDesignationField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FiletypeField> {
+impl From<(Position, &[char; 1])> for FieldResult<FileDesignationField> {
     fn from(value: (Position, &[char; 1])) -> Self {
         let chars = value.1;
         let maybe = match chars[0] {
-            ' ' => Some(Filetype::Empty),
-            'I' => Some(Filetype::I),
-            'O' => Some(Filetype::O),
-            'U' => Some(Filetype::U),
-            'C' => Some(Filetype::C),
+            ' ' => Some(FileDesignation::Empty),
+            'P' => Some(FileDesignation::P),
+            'S' => Some(FileDesignation::S),
+            'R' => Some(FileDesignation::R),
+            'T' => Some(FileDesignation::T),
+            'F' => Some(FileDesignation::F),
             _ => None,
         };
         if let Some(x) = maybe {
-            let fld = FiletypeField {
+            let fld = FileDesignationField {
                 value: x,
                 meta: Meta::from((value.0, chars.as_slice())),
             };

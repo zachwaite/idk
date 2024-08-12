@@ -6,53 +6,54 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Filetype {
-    Empty,
-    I,
-    O,
-    U,
-    C,
+pub enum Device {
+    PRINTER,
+    DISK,
+    WORKSTN,
+    SPECIAL,
+    SEQ,
 }
 
-impl Display for Filetype {
+impl Display for Device {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
-            Self::Empty => " ".to_string(),
-            Self::I => "I".to_string(),
-            Self::O => "O".to_string(),
-            Self::U => "U".to_string(),
-            Self::C => "C".to_string(),
+            Self::PRINTER => "PRINTER".to_string(),
+            Self::DISK => "DISK".to_string(),
+            Self::WORKSTN => "WORKSTN".to_string(),
+            Self::SPECIAL => "SPECIAL".to_string(),
+            Self::SEQ => "SEQ".to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FiletypeField {
-    pub value: Filetype,
+pub struct DeviceField {
+    pub value: Device,
     pub meta: Meta,
 }
 
-impl Display for FiletypeField {
+impl Display for DeviceField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FiletypeField> {
-    fn from(value: (Position, &[char; 1])) -> Self {
+impl From<(Position, &[char; 7])> for FieldResult<DeviceField> {
+    fn from(value: (Position, &[char; 7])) -> Self {
         let chars = value.1;
-        let maybe = match chars[0] {
-            ' ' => Some(Filetype::Empty),
-            'I' => Some(Filetype::I),
-            'O' => Some(Filetype::O),
-            'U' => Some(Filetype::U),
-            'C' => Some(Filetype::C),
+        let txt = chars.iter().filter(|c| **c != ' ').collect::<String>();
+        let maybe = match txt.as_str() {
+            "PRINTER" => Some(Device::PRINTER),
+            "DISK" => Some(Device::DISK),
+            "WORKSTN" => Some(Device::WORKSTN),
+            "SPECIAL" => Some(Device::SPECIAL),
+            "SEQ" => Some(Device::SEQ),
             _ => None,
         };
         if let Some(x) = maybe {
-            let fld = FiletypeField {
+            let fld = DeviceField {
                 value: x,
                 meta: Meta::from((value.0, chars.as_slice())),
             };

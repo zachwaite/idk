@@ -6,53 +6,47 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Filetype {
+pub enum FileFormat {
     Empty,
-    I,
-    O,
-    U,
-    C,
+    F,
+    E,
 }
 
-impl Display for Filetype {
+impl Display for FileFormat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
             Self::Empty => " ".to_string(),
-            Self::I => "I".to_string(),
-            Self::O => "O".to_string(),
-            Self::U => "U".to_string(),
-            Self::C => "C".to_string(),
+            Self::F => "F".to_string(),
+            Self::E => "E".to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FiletypeField {
-    pub value: Filetype,
+pub struct FileFormatField {
+    pub value: FileFormat,
     pub meta: Meta,
 }
 
-impl Display for FiletypeField {
+impl Display for FileFormatField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FiletypeField> {
+impl From<(Position, &[char; 1])> for FieldResult<FileFormatField> {
     fn from(value: (Position, &[char; 1])) -> Self {
         let chars = value.1;
         let maybe = match chars[0] {
-            ' ' => Some(Filetype::Empty),
-            'I' => Some(Filetype::I),
-            'O' => Some(Filetype::O),
-            'U' => Some(Filetype::U),
-            'C' => Some(Filetype::C),
+            ' ' => Some(FileFormat::Empty),
+            'F' => Some(FileFormat::F),
+            'E' => Some(FileFormat::E),
             _ => None,
         };
         if let Some(x) = maybe {
-            let fld = FiletypeField {
+            let fld = FileFormatField {
                 value: x,
                 meta: Meta::from((value.0, chars.as_slice())),
             };

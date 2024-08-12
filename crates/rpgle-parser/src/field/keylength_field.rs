@@ -6,56 +6,48 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Filetype {
+pub enum KeyLength {
     Empty,
-    I,
-    O,
-    U,
-    C,
+    Value(u32), // TODO: constrain value to 1-2000
 }
 
-impl Display for Filetype {
+impl Display for KeyLength {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
             Self::Empty => " ".to_string(),
-            Self::I => "I".to_string(),
-            Self::O => "O".to_string(),
-            Self::U => "U".to_string(),
-            Self::C => "C".to_string(),
+            Self::Value(x) => x.to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FiletypeField {
-    pub value: Filetype,
+pub struct KeyLengthField {
+    pub value: KeyLength,
     pub meta: Meta,
 }
 
-impl Display for FiletypeField {
+impl Display for KeyLengthField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FiletypeField> {
-    fn from(value: (Position, &[char; 1])) -> Self {
+impl From<(Position, &[char; 5])> for FieldResult<KeyLengthField> {
+    fn from(value: (Position, &[char; 5])) -> Self {
         let chars = value.1;
-        let maybe = match chars[0] {
-            ' ' => Some(Filetype::Empty),
-            'I' => Some(Filetype::I),
-            'O' => Some(Filetype::O),
-            'U' => Some(Filetype::U),
-            'C' => Some(Filetype::C),
-            _ => None,
+        let meta = Meta::from((value.0, chars.as_slice()));
+        let txt = chars.iter().filter(|c| **c != ' ').collect::<String>();
+        let maybe = match txt.len() {
+            0 => Some(KeyLength::Empty),
+            _ => match txt.parse::<u32>() {
+                Ok(x) => Some(KeyLength::Value(x)),
+                Err(_) => None,
+            },
         };
         if let Some(x) = maybe {
-            let fld = FiletypeField {
-                value: x,
-                meta: Meta::from((value.0, chars.as_slice())),
-            };
+            let fld = KeyLengthField { value: x, meta };
             Self::Ok(fld)
         } else {
             let fld = IdkField::from((value.0, chars.as_slice()));

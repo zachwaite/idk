@@ -6,62 +6,66 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Formtype {
+pub enum RecordAddressType {
     Empty,
-    H,
-    F,
-    D,
-    I,
-    C,
-    O,
+    A,
     P,
+    G,
+    K,
+    D,
+    T,
+    Z,
+    F,
 }
 
-impl Display for Formtype {
+impl Display for RecordAddressType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
             Self::Empty => " ".to_string(),
-            Self::H => "H".to_string(),
-            Self::F => "F".to_string(),
-            Self::D => "D".to_string(),
-            Self::I => "I".to_string(),
-            Self::C => "C".to_string(),
-            Self::O => "O".to_string(),
+            Self::A => "A".to_string(),
             Self::P => "P".to_string(),
+            Self::G => "G".to_string(),
+            Self::K => "K".to_string(),
+            Self::D => "D".to_string(),
+            Self::T => "T".to_string(),
+            Self::Z => "Z".to_string(),
+            Self::F => "F".to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FormtypeField {
-    pub value: Formtype,
+pub struct RecordAddressTypeField {
+    pub value: RecordAddressType,
     pub meta: Meta,
 }
 
-impl Display for FormtypeField {
+impl Display for RecordAddressTypeField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FormtypeField> {
+impl From<(Position, &[char; 1])> for FieldResult<RecordAddressTypeField> {
     fn from(value: (Position, &[char; 1])) -> Self {
         let chars = value.1;
         let maybe = match chars[0] {
-            ' ' => Some(Formtype::Empty),
-            'H' => Some(Formtype::H),
-            'F' => Some(Formtype::F),
-            'D' => Some(Formtype::D),
-            'I' => Some(Formtype::I),
-            'C' => Some(Formtype::C),
-            'O' => Some(Formtype::O),
-            'P' => Some(Formtype::P),
+            ' ' => Some(RecordAddressType::Empty),
+            'A' => Some(RecordAddressType::A),
+            'P' => Some(RecordAddressType::P),
+            'G' => Some(RecordAddressType::G),
+            'K' => Some(RecordAddressType::K),
+            'D' => Some(RecordAddressType::D),
+            'T' => Some(RecordAddressType::T),
+            'Z' => Some(RecordAddressType::Z),
+            'F' => Some(RecordAddressType::F),
+
             _ => None,
         };
         if let Some(x) = maybe {
-            let fld = FormtypeField {
+            let fld = RecordAddressTypeField {
                 value: x,
                 meta: Meta::from((value.0, chars.as_slice())),
             };
