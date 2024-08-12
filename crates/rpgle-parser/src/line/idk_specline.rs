@@ -1,8 +1,9 @@
 use crate::field::FieldResult;
 use crate::{field::IdkField, meta::Position};
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IdkSpecLine {
     pub idk: FieldResult<IdkField>,
 }

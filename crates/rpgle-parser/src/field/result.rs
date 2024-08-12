@@ -1,10 +1,9 @@
 use std::fmt::Display;
 
-use crate::meta::Position;
-
 use super::idk_field::IdkField;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum FieldResult<T> {
     Ok(T),
     Idk(IdkField),

@@ -1,7 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use crate::line::IdkSpecLine;
 
+#[derive(Serialize, Deserialize)]
 pub struct IdkSpec {
     pub line: IdkSpecLine,
 }

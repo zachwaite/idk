@@ -1,7 +1,9 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
 use crate::line::CommentSpecLine;
 
+#[derive(Serialize, Deserialize)]
 pub struct CommentSpec {
     pub line: CommentSpecLine,
 }

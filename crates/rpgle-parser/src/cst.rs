@@ -1,5 +1,6 @@
 use crate::line::SpecLine;
-use crate::spec::{CommentSpec, IdkSpec, Spec};
+use crate::spec::{CommentSpec, FSpec, HSpec, IdkSpec, Spec};
+use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use thiserror::Error;
 
@@ -9,6 +10,7 @@ pub enum ParserException {
     LongLineException(String),
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct CST {
     pub specs: Vec<Spec>,
 }
@@ -77,6 +79,7 @@ impl From<Vec<SpecLine>> for CST {
         let mut i = 0;
         while i < lines.len() {
             let cur = &lines[i];
+            // TODO: parse continuations
             match cur {
                 SpecLine::Idk(line) => {
                     let spec = IdkSpec { line: line.clone() };
@@ -86,6 +89,22 @@ impl From<Vec<SpecLine>> for CST {
                 SpecLine::Comment(line) => {
                     let spec = CommentSpec { line: line.clone() };
                     specs.push(Spec::Comment(spec));
+                    i += 1;
+                }
+                SpecLine::HSpec(line) => {
+                    let spec = HSpec {
+                        line: line.clone(),
+                        continuations: vec![],
+                    };
+                    specs.push(Spec::H(spec));
+                    i += 1;
+                }
+                SpecLine::FSpec(line) => {
+                    let spec = FSpec {
+                        line: line.clone(),
+                        continuations: vec![],
+                    };
+                    specs.push(Spec::F(spec));
                     i += 1;
                 }
             };
@@ -98,9 +117,10 @@ impl From<Vec<SpecLine>> for CST {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use insta;
 
     #[test]
-    fn test_round_trip() {
+    fn test_round_trip_snapshot() {
         let input = &r#"
      H OPTION(*nodebugio:*srcstmt)                                                                  
      FCowEvt    UF A E           K DISK                                                             
@@ -151,6 +171,7 @@ mod tests {
        Endsr;                                                                                       "#
             [1..];
         let cst = CST::try_from(input).unwrap();
+        insta::assert_yaml_snapshot!(cst);
         let observed = cst.to_string();
         let expected = input;
         // let _ = std::fs::write("/tmp/observed.rpgle", &observed);

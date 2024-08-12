@@ -6,62 +6,53 @@ use crate::meta::{Meta, Position};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum Formtype {
+pub enum Filetype {
     Empty,
-    H,
-    F,
-    D,
     I,
-    C,
     O,
-    P,
+    U,
+    C,
 }
 
-impl Display for Formtype {
+impl Display for Filetype {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = match self {
             Self::Empty => " ".to_string(),
-            Self::H => "H".to_string(),
-            Self::F => "F".to_string(),
-            Self::D => "D".to_string(),
             Self::I => "I".to_string(),
-            Self::C => "C".to_string(),
             Self::O => "O".to_string(),
-            Self::P => "P".to_string(),
+            Self::U => "U".to_string(),
+            Self::C => "C".to_string(),
         };
         write!(f, "{}", msg)
     }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FormtypeField {
-    pub value: Formtype,
+pub struct FiletypeField {
+    pub value: Filetype,
     pub meta: Meta,
 }
 
-impl Display for FormtypeField {
+impl Display for FiletypeField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl From<(Position, &[char; 1])> for FieldResult<FormtypeField> {
+impl From<(Position, &[char; 1])> for FieldResult<FiletypeField> {
     fn from(value: (Position, &[char; 1])) -> Self {
         let chars = value.1;
         let formtype = match chars[0] {
-            ' ' => Some(Formtype::Empty),
-            'H' => Some(Formtype::H),
-            'F' => Some(Formtype::F),
-            'D' => Some(Formtype::D),
-            'I' => Some(Formtype::I),
-            'C' => Some(Formtype::C),
-            'O' => Some(Formtype::O),
-            'P' => Some(Formtype::P),
+            ' ' => Some(Filetype::Empty),
+            'I' => Some(Filetype::I),
+            'O' => Some(Filetype::O),
+            'U' => Some(Filetype::U),
+            'C' => Some(Filetype::C),
             _ => None,
         };
         if let Some(ft) = formtype {
-            let fld = FormtypeField {
+            let fld = FiletypeField {
                 value: ft,
                 meta: Meta::from((value.0, chars.as_slice())),
             };
