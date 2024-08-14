@@ -25,3 +25,12 @@ impl From<(Position, &[char; 10])> for FieldResult<NameField> {
         Self::Ok(NameField { value, meta })
     }
 }
+
+impl From<(Position, &[char; 15])> for FieldResult<NameField> {
+    fn from(value: (Position, &[char; 15])) -> Self {
+        let chars = value.1;
+        let meta = Meta::from((value.0, chars.as_slice()));
+        let value = chars.iter().filter(|c| **c != ' ').collect::<String>();
+        Self::Ok(NameField { value, meta })
+    }
+}

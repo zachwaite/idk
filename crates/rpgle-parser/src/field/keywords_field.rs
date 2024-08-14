@@ -52,3 +52,21 @@ impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
         }
     }
 }
+
+// for d-spec keywords
+impl From<(Position, &[char; 58])> for FieldResult<KeywordsField> {
+    fn from(value: (Position, &[char; 58])) -> Self {
+        let chars = value.1;
+        let meta = Meta::from((value.0, chars.as_slice()));
+        match chars[0] {
+            '*' => {
+                let value = chars.iter().collect::<String>();
+                Self::Ok(KeywordsField { value, meta })
+            }
+            _ => {
+                let fld = IdkField::from((value.0, chars.as_slice()));
+                Self::Idk(fld)
+            }
+        }
+    }
+}

@@ -1,6 +1,9 @@
 use std::{collections::HashSet, fmt::Display};
 
-use super::{CommentSpecLine, FSpecLine, FSpecLineContinuation, HSpecLine, IdkSpecLine};
+use super::{
+    CommentSpecLine, DSpecLine, DSpecLineContinuation, FSpecLine, FSpecLineContinuation, HSpecLine,
+    IdkSpecLine,
+};
 
 pub enum SpecLine {
     Idk(IdkSpecLine),
@@ -8,6 +11,8 @@ pub enum SpecLine {
     HSpec(HSpecLine),
     FSpec(FSpecLine),
     FSpecContinuation(FSpecLineContinuation),
+    DSpec(DSpecLine),
+    DSpecContinuation(DSpecLineContinuation),
 }
 
 impl From<(usize, &[char; 100])> for SpecLine {
@@ -35,6 +40,10 @@ impl From<(usize, &[char; 100])> for SpecLine {
                     SpecLine::FSpec(line)
                 }
             }
+            ('D', _) => {
+                let line = DSpecLine::from((idx, chars));
+                SpecLine::DSpec(line)
+            }
             _ => {
                 let line = IdkSpecLine::from((idx, chars));
                 SpecLine::Idk(line)
@@ -51,6 +60,8 @@ impl Display for SpecLine {
             Self::HSpec(line) => write!(f, "{}", line.to_string()),
             Self::FSpec(line) => write!(f, "{}", line.to_string()),
             Self::FSpecContinuation(line) => write!(f, "{}", line.to_string()),
+            Self::DSpec(line) => write!(f, "{}", line.to_string()),
+            Self::DSpecContinuation(line) => write!(f, "{}", line.to_string()),
         }
     }
 }
@@ -63,6 +74,8 @@ impl SpecLine {
             Self::HSpec(_) => "HSpecLine".to_string(),
             Self::FSpec(_) => "FSpecLine".to_string(),
             Self::FSpecContinuation(_) => "FSpecLineContinuation".to_string(),
+            Self::DSpec(_) => "DSpecLine".to_string(),
+            Self::DSpecContinuation(_) => "DSpecLineContinuation".to_string(),
         }
     }
 }

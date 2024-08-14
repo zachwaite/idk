@@ -1,4 +1,5 @@
 use super::comment_spec::CommentSpec;
+use super::d_spec::DSpec;
 use super::f_spec::FSpec;
 use super::h_spec::HSpec;
 use super::idk_spec::IdkSpec;
@@ -11,6 +12,7 @@ pub enum Spec {
     Comment(CommentSpec),
     H(HSpec),
     F(FSpec),
+    D(DSpec),
 }
 
 impl Display for Spec {
@@ -20,6 +22,7 @@ impl Display for Spec {
             Self::Comment(spec) => spec.to_string(),
             Self::H(spec) => spec.to_string(),
             Self::F(spec) => spec.to_string(),
+            Self::D(spec) => spec.to_string(),
         };
         write!(f, "{}", msg)
     }
@@ -32,6 +35,7 @@ impl Spec {
             Self::Comment(_) => "CommentSpec".to_string(),
             Self::H(_) => "HSpec".to_string(),
             Self::F(_) => "FSpec".to_string(),
+            Self::D(_) => "DSpec".to_string(),
         }
     }
 }

@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 189
+assertion_line: 193
 expression: cst
 ---
 specs:
@@ -852,11 +852,11 @@ specs:
                   col: 94
               text: "**********************************************************************************************"
               digs: []
-  - Idk:
+  - D:
       line:
-        idk:
-          Idk:
-            value: "     D LastId          S              8  0                                                          "
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -864,14 +864,160 @@ specs:
                   col: 0
                 end:
                   row: 7
-                  col: 100
-              text: "     D LastId          S              8  0                                                          "
+                  col: 5
+              text: "     "
               digs: []
-  - Idk:
-      line:
-        idk:
+        form_type:
+          Ok:
+            value: D
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 1
+              text: D
+              digs: []
+        name:
+          Ok:
+            value: LastId
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 15
+              text: " LastId        "
+              digs: []
+        external_description:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 1
+              text: " "
+              digs: []
+        datastructure_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 1
+              text: " "
+              digs: []
+        definition_type:
+          Ok:
+            value: S
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 2
+              text: "S "
+              digs: []
+        from_position:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 7
+              text: "       "
+              digs: []
+        to_length:
+          Ok:
+            value:
+              Value: 8
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 7
+              text: "      8"
+              digs: []
+        datatype:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 1
+              text: " "
+              digs: []
+        decimals:
+          Ok:
+            value:
+              Value: 0
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 2
+              text: " 0"
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
           Idk:
-            value: "     D QCmdExc         PR                  EXTPGM('QCMDEXC')                                        "
+            value: "                                                         "
+            meta:
+              span:
+                start:
+                  row: 7
+                  col: 0
+                end:
+                  row: 7
+                  col: 57
+              text: "                                                         "
+              digs: []
+      continuations: []
+  - D:
+      line:
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -879,14 +1025,158 @@ specs:
                   col: 0
                 end:
                   row: 8
-                  col: 100
-              text: "     D QCmdExc         PR                  EXTPGM('QCMDEXC')                                        "
+                  col: 5
+              text: "     "
               digs: []
-  - Idk:
-      line:
-        idk:
+        form_type:
+          Ok:
+            value: D
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 1
+              text: D
+              digs: []
+        name:
+          Ok:
+            value: QCmdExc
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 15
+              text: " QCmdExc       "
+              digs: []
+        external_description:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 1
+              text: " "
+              digs: []
+        datastructure_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 1
+              text: " "
+              digs: []
+        definition_type:
+          Ok:
+            value: PR
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 2
+              text: PR
+              digs: []
+        from_position:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 7
+              text: "       "
+              digs: []
+        to_length:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 7
+              text: "       "
+              digs: []
+        datatype:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 1
+              text: " "
+              digs: []
+        decimals:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 2
+              text: "  "
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
           Idk:
-            value: "     D  Command                    2000                                                             "
+            value: "EXTPGM('QCMDEXC')                                        "
+            meta:
+              span:
+                start:
+                  row: 8
+                  col: 0
+                end:
+                  row: 8
+                  col: 57
+              text: "EXTPGM('QCMDEXC')                                        "
+              digs: []
+      continuations: []
+  - D:
+      line:
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -894,14 +1184,159 @@ specs:
                   col: 0
                 end:
                   row: 9
-                  col: 100
-              text: "     D  Command                    2000                                                             "
+                  col: 5
+              text: "     "
               digs: []
-  - Idk:
-      line:
-        idk:
+        form_type:
+          Ok:
+            value: D
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 1
+              text: D
+              digs: []
+        name:
+          Ok:
+            value: Command
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 15
+              text: "  Command      "
+              digs: []
+        external_description:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 1
+              text: " "
+              digs: []
+        datastructure_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 1
+              text: " "
+              digs: []
+        definition_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 2
+              text: "  "
+              digs: []
+        from_position:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 7
+              text: "       "
+              digs: []
+        to_length:
+          Ok:
+            value:
+              Value: 2000
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 7
+              text: "   2000"
+              digs: []
+        datatype:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 1
+              text: " "
+              digs: []
+        decimals:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 2
+              text: "  "
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
           Idk:
-            value: "     D  Length                       15  5                                                          "
+            value: "                                                         "
+            meta:
+              span:
+                start:
+                  row: 9
+                  col: 0
+                end:
+                  row: 9
+                  col: 57
+              text: "                                                         "
+              digs: []
+      continuations: []
+  - D:
+      line:
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -909,9 +1344,155 @@ specs:
                   col: 0
                 end:
                   row: 10
-                  col: 100
-              text: "     D  Length                       15  5                                                          "
+                  col: 5
+              text: "     "
               digs: []
+        form_type:
+          Ok:
+            value: D
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 1
+              text: D
+              digs: []
+        name:
+          Ok:
+            value: Length
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 15
+              text: "  Length       "
+              digs: []
+        external_description:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 1
+              text: " "
+              digs: []
+        datastructure_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 1
+              text: " "
+              digs: []
+        definition_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 2
+              text: "  "
+              digs: []
+        from_position:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 7
+              text: "       "
+              digs: []
+        to_length:
+          Ok:
+            value:
+              Value: 15
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 7
+              text: "     15"
+              digs: []
+        datatype:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 1
+              text: " "
+              digs: []
+        decimals:
+          Ok:
+            value:
+              Value: 5
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 2
+              text: " 5"
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
+          Idk:
+            value: "                                                         "
+            meta:
+              span:
+                start:
+                  row: 10
+                  col: 0
+                end:
+                  row: 10
+                  col: 57
+              text: "                                                         "
+              digs: []
+      continuations: []
   - Comment:
       line:
         sequence:

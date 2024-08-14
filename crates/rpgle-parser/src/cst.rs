@@ -1,5 +1,5 @@
 use crate::line::{IdkSpecLine, SpecLine};
-use crate::spec::{CommentSpec, FSpec, HSpec, IdkSpec, Spec};
+use crate::spec::{CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use thiserror::Error;
@@ -103,12 +103,33 @@ impl From<Vec<SpecLine>> for CST {
                     specs.push(Spec::F(spec));
                 }
                 SpecLine::FSpecContinuation(line) => {
-                    if let Some(Spec::F(fspec)) = specs.last_mut() {
+                    if let Some(Spec::F(spec)) = specs.last_mut() {
                         // if the last spec is an fspec, this continues it
-                        fspec.continuations.push(line.clone());
+                        spec.continuations.push(line.clone());
                         i += 1;
                     } else {
                         // if there is no prior last spec or it is not an fspec, then cast to idk
+                        let raw: (usize, [char; 100]) = line.to_raw();
+                        let spec = IdkSpec {
+                            line: IdkSpecLine::from((raw.0, &raw.1)),
+                        };
+                        specs.push(Spec::Idk(spec));
+                        i += 1;
+                    }
+                }
+                SpecLine::DSpec(line) => {
+                    let spec = DSpec {
+                        line: line.clone(),
+                        continuations: vec![],
+                    };
+                    i += 1;
+                    specs.push(Spec::D(spec));
+                }
+                SpecLine::DSpecContinuation(line) => {
+                    if let Some(Spec::D(spec)) = specs.last_mut() {
+                        spec.continuations.push(line.clone());
+                        i += 1;
+                    } else {
                         let raw: (usize, [char; 100]) = line.to_raw();
                         let spec = IdkSpec {
                             line: IdkSpecLine::from((raw.0, &raw.1)),
