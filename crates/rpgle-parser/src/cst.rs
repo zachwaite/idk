@@ -1,4 +1,4 @@
-use crate::line::SpecLine;
+use crate::line::{IdkSpecLine, SpecLine};
 use crate::spec::{CommentSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -17,10 +17,6 @@ pub struct CST {
 
 impl Display for CST {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        println!(
-            "{} specs ========================================",
-            self.specs.len()
-        );
         let out = self
             .specs
             .iter()
@@ -79,7 +75,6 @@ impl From<Vec<SpecLine>> for CST {
         let mut i = 0;
         while i < lines.len() {
             let cur = &lines[i];
-            // TODO: parse continuations
             match cur {
                 SpecLine::Idk(line) => {
                     let spec = IdkSpec { line: line.clone() };
@@ -104,8 +99,23 @@ impl From<Vec<SpecLine>> for CST {
                         line: line.clone(),
                         continuations: vec![],
                     };
-                    specs.push(Spec::F(spec));
                     i += 1;
+                    specs.push(Spec::F(spec));
+                }
+                SpecLine::FSpecContinuation(line) => {
+                    if let Some(Spec::F(fspec)) = specs.last_mut() {
+                        // if the last spec is an fspec, this continues it
+                        fspec.continuations.push(line.clone());
+                        i += 1;
+                    } else {
+                        // if there is no prior last spec or it is not an fspec, then cast to idk
+                        let raw: (usize, [char; 100]) = line.to_raw();
+                        let spec = IdkSpec {
+                            line: IdkSpecLine::from((raw.0, &raw.1)),
+                        };
+                        specs.push(Spec::Idk(spec));
+                        i += 1;
+                    }
                 }
             };
         }

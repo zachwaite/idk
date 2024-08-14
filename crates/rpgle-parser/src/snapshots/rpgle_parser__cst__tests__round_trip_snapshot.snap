@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 175
+assertion_line: 189
 expression: cst
 ---
 specs:
@@ -717,231 +717,59 @@ specs:
                   col: 57
               text: " Rename(EVTFMT:VEVTFMT)                                  "
               digs: []
-      continuations: []
-  - F:
-      line:
-        sequence:
-          Ok:
-            value: "     "
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 5
-              text: "     "
-              digs: []
-        form_type:
-          Ok:
-            value: F
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: F
-              digs: []
-        name:
-          Ok:
-            value: ""
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 10
-              text: "          "
-              digs: []
-        filetype:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        file_designation:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        endfile:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        file_addition:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        file_sequence:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        file_format:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        record_length:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 5
-              text: "     "
-              digs: []
-        limits_processing:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        keylength:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 5
-              text: "     "
-              digs: []
-        record_address_type:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        file_organization:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        device:
-          Idk:
-            value: "       "
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 7
-              text: "       "
-              digs: []
-        reserved:
-          Ok:
-            value: Empty
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 1
-              text: " "
-              digs: []
-        keywords:
-          Idk:
-            value: "Prefix(V)                                                "
-            meta:
-              span:
-                start:
-                  row: 4
-                  col: 0
-                end:
-                  row: 4
-                  col: 57
-              text: "Prefix(V)                                                "
-              digs: []
-      continuations: []
+      continuations:
+        - sequence:
+            Ok:
+              value: "     "
+              meta:
+                span:
+                  start:
+                    row: 4
+                    col: 0
+                  end:
+                    row: 4
+                    col: 5
+                text: "     "
+                digs: []
+          form_type:
+            Ok:
+              value: F
+              meta:
+                span:
+                  start:
+                    row: 4
+                    col: 0
+                  end:
+                    row: 4
+                    col: 1
+                text: F
+                digs: []
+          nothing:
+            Ok:
+              value: "                                     "
+              meta:
+                span:
+                  start:
+                    row: 4
+                    col: 0
+                  end:
+                    row: 4
+                    col: 37
+                text: "                                     "
+                digs: []
+          keywords:
+            Idk:
+              value: "Prefix(V)                                                "
+              meta:
+                span:
+                  start:
+                    row: 4
+                    col: 0
+                  end:
+                    row: 4
+                    col: 57
+                text: "Prefix(V)                                                "
+                digs: []
   - Comment:
       line:
         sequence:

@@ -1,7 +1,7 @@
 use crate::field::{
     DeviceField, EndfileField, FieldResult, FileAdditionField, FileDesignationField,
     FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField, FormtypeField,
-    IdkField, KeyLengthField, KeywordsField, LimitsProcessingField, NameField,
+    IdkField, KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField,
     RecordAddressTypeField, RecordLengthField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
@@ -85,6 +85,7 @@ impl From<(usize, &[char; 100])> for FSpecLine {
 pub struct FSpecLineContinuation {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,
+    pub nothing: FieldResult<NothingField>,
     pub keywords: FieldResult<KeywordsField>,
 }
 
@@ -93,6 +94,8 @@ impl Display for FSpecLineContinuation {
         let mut msg = String::new();
         msg.push_str(&self.sequence.to_string());
         msg.push_str(&self.form_type.to_string());
+        msg.push_str(&self.nothing.to_string());
+        msg.push_str(&self.keywords.to_string());
         write!(f, "{}", msg)
     }
 }
@@ -105,7 +108,22 @@ impl From<(usize, &[char; 100])> for FSpecLineContinuation {
         Self {
             sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
             form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            keywords: FieldResult::from((start, pluck::<100, 6, 94, 0>(chars))),
+            nothing: FieldResult::from((start, pluck::<100, 6, 37, 57>(chars))),
+            keywords: FieldResult::from((start, pluck::<100, 43, 57, 0>(chars))),
         }
+    }
+}
+
+impl FSpecLineContinuation {
+    pub fn to_raw(&self) -> (usize, [char; 100]) {
+        let start = match &self.sequence {
+            FieldResult::Ok(fld) => fld.meta.span.start.row,
+            FieldResult::Idk(fld) => fld.meta.span.start.row,
+        };
+        let txt = self.to_string();
+        let chars = txt.chars().collect::<Vec<char>>();
+        let msg = "Expect FSpecLineContinuation.to_string() to yield exactly 100 chars";
+        let chars100: [char; 100] = chars.try_into().expect(msg);
+        (start, chars100)
     }
 }

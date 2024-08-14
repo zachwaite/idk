@@ -1,12 +1,13 @@
-use std::fmt::Display;
+use std::{collections::HashSet, fmt::Display};
 
-use super::{CommentSpecLine, FSpecLine, HSpecLine, IdkSpecLine};
+use super::{CommentSpecLine, FSpecLine, FSpecLineContinuation, HSpecLine, IdkSpecLine};
 
 pub enum SpecLine {
     Idk(IdkSpecLine),
     Comment(CommentSpecLine),
     HSpec(HSpecLine),
     FSpec(FSpecLine),
+    FSpecContinuation(FSpecLineContinuation),
 }
 
 impl From<(usize, &[char; 100])> for SpecLine {
@@ -25,8 +26,14 @@ impl From<(usize, &[char; 100])> for SpecLine {
                 SpecLine::HSpec(line)
             }
             ('F', _) => {
-                let line = FSpecLine::from((idx, chars));
-                SpecLine::FSpec(line)
+                let unique_chars = chars[6..42].iter().collect::<HashSet<&char>>();
+                if unique_chars.len() == 1 && unique_chars.contains(&' ') {
+                    let line = FSpecLineContinuation::from((idx, chars));
+                    SpecLine::FSpecContinuation(line)
+                } else {
+                    let line = FSpecLine::from((idx, chars));
+                    SpecLine::FSpec(line)
+                }
             }
             _ => {
                 let line = IdkSpecLine::from((idx, chars));
@@ -43,6 +50,7 @@ impl Display for SpecLine {
             Self::Comment(line) => write!(f, "{}", line.to_string()),
             Self::HSpec(line) => write!(f, "{}", line.to_string()),
             Self::FSpec(line) => write!(f, "{}", line.to_string()),
+            Self::FSpecContinuation(line) => write!(f, "{}", line.to_string()),
         }
     }
 }
@@ -54,6 +62,7 @@ impl SpecLine {
             Self::Comment(_) => "CommentSpecLine".to_string(),
             Self::HSpec(_) => "HSpecLine".to_string(),
             Self::FSpec(_) => "FSpecLine".to_string(),
+            Self::FSpecContinuation(_) => "FSpecLineContinuation".to_string(),
         }
     }
 }
