@@ -176,6 +176,13 @@ mod tests {
         let expected = input;
         // let _ = std::fs::write("/tmp/observed.rpgle", &observed);
         // let _ = std::fs::write("/tmp/expected.rpgle", &expected);
+        // let _ = std::fs::write(
+        //     "/tmp/specs.txt",
+        //     cst.specs
+        //         .iter()
+        //         .map(|spec| format!("{}\n", spec.kind()))
+        //         .collect::<String>(),
+        // );
         assert_eq!(observed, expected);
     }
 }
