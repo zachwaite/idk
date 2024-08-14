@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 166
+assertion_line: 174
 expression: cst
 ---
 specs:
@@ -46,11 +46,11 @@ specs:
               text: " OPTION(*nodebugio:*srcstmt)                                                                  "
               digs: []
       continuations: []
-  - Idk:
+  - F:
       line:
-        idk:
-          Idk:
-            value: "     FCowEvt    UF A E           K DISK                                                             "
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -58,14 +58,223 @@ specs:
                   col: 0
                 end:
                   row: 1
-                  col: 100
-              text: "     FCowEvt    UF A E           K DISK                                                             "
+                  col: 5
+              text: "     "
               digs: []
-  - Idk:
-      line:
-        idk:
+        form_type:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: F
+              digs: []
+        name:
+          Ok:
+            value: CowEvt
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 10
+              text: "CowEvt    "
+              digs: []
+        filetype:
+          Ok:
+            value: U
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: U
+              digs: []
+        file_designation:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: F
+              digs: []
+        endfile:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: " "
+              digs: []
+        file_addition:
+          Ok:
+            value: A
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: A
+              digs: []
+        file_sequence:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: " "
+              digs: []
+        file_format:
+          Ok:
+            value: E
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: E
+              digs: []
+        record_length:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 5
+              text: "     "
+              digs: []
+        limits_processing:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: " "
+              digs: []
+        keylength:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 5
+              text: "     "
+              digs: []
+        record_address_type:
+          Ok:
+            value: K
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: K
+              digs: []
+        file_organization:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: " "
+              digs: []
+        device:
+          Ok:
+            value: DISK
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 7
+              text: "DISK   "
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
           Idk:
-            value: "     FBornEvt   UF A E           K DISK                                                             "
+            value: "                                                         "
+            meta:
+              span:
+                start:
+                  row: 1
+                  col: 0
+                end:
+                  row: 1
+                  col: 57
+              text: "                                                         "
+              digs: []
+      continuations: []
+  - F:
+      line:
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -73,14 +282,223 @@ specs:
                   col: 0
                 end:
                   row: 2
-                  col: 100
-              text: "     FBornEvt   UF A E           K DISK                                                             "
+                  col: 5
+              text: "     "
               digs: []
-  - Idk:
-      line:
-        idk:
+        form_type:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: F
+              digs: []
+        name:
+          Ok:
+            value: BornEvt
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 10
+              text: "BornEvt   "
+              digs: []
+        filetype:
+          Ok:
+            value: U
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: U
+              digs: []
+        file_designation:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: F
+              digs: []
+        endfile:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: " "
+              digs: []
+        file_addition:
+          Ok:
+            value: A
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: A
+              digs: []
+        file_sequence:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: " "
+              digs: []
+        file_format:
+          Ok:
+            value: E
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: E
+              digs: []
+        record_length:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 5
+              text: "     "
+              digs: []
+        limits_processing:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: " "
+              digs: []
+        keylength:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 5
+              text: "     "
+              digs: []
+        record_address_type:
+          Ok:
+            value: K
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: K
+              digs: []
+        file_organization:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: " "
+              digs: []
+        device:
+          Ok:
+            value: DISK
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 7
+              text: "DISK   "
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
           Idk:
-            value: "     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        "
+            value: "                                                         "
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 57
+              text: "                                                         "
+              digs: []
+      continuations: []
+  - F:
+      line:
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -88,9 +506,218 @@ specs:
                   col: 0
                 end:
                   row: 3
-                  col: 100
-              text: "     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        "
+                  col: 5
+              text: "     "
               digs: []
+        form_type:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: F
+              digs: []
+        name:
+          Ok:
+            value: CowEvtL2
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 10
+              text: "CowEvtL2  "
+              digs: []
+        filetype:
+          Ok:
+            value: I
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: I
+              digs: []
+        file_designation:
+          Ok:
+            value: F
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: F
+              digs: []
+        endfile:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        file_addition:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        file_sequence:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        file_format:
+          Ok:
+            value: E
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: E
+              digs: []
+        record_length:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 5
+              text: "     "
+              digs: []
+        limits_processing:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        keylength:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 5
+              text: "     "
+              digs: []
+        record_address_type:
+          Ok:
+            value: K
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: K
+              digs: []
+        file_organization:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        device:
+          Ok:
+            value: DISK
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 7
+              text: "DISK   "
+              digs: []
+        reserved:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 1
+              text: " "
+              digs: []
+        keywords:
+          Idk:
+            value: " Rename(EVTFMT:VEVTFMT) Prefix(V)                        "
+            meta:
+              span:
+                start:
+                  row: 3
+                  col: 0
+                end:
+                  row: 3
+                  col: 57
+              text: " Rename(EVTFMT:VEVTFMT) Prefix(V)                        "
+              digs: []
+      continuations: []
   - Comment:
       line:
         sequence:
