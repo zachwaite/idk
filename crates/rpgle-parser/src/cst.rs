@@ -125,7 +125,8 @@ mod tests {
      H OPTION(*nodebugio:*srcstmt)                                                                  
      FCowEvt    UF A E           K DISK                                                             
      FBornEvt   UF A E           K DISK                                                             
-     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT) Prefix(V)                        
+     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT)                                  
+     F                                     Prefix(V)                                                
      F**********************************************************************************************
      D**********************************************************************************************
      D LastId          S              8  0                                                          
