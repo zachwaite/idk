@@ -1,8 +1,8 @@
 use std::{collections::HashSet, fmt::Display};
 
 use super::{
-    CommentSpecLine, DSpecLine, DSpecLineContinuation, FSpecLine, FSpecLineContinuation, HSpecLine,
-    IdkSpecLine,
+    CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, FSpecLine, FSpecLineContinuation,
+    HSpecLine, IdkSpecLine, TraditionalCSpecLine,
 };
 
 pub enum SpecLine {
@@ -13,6 +13,7 @@ pub enum SpecLine {
     FSpecContinuation(FSpecLineContinuation),
     DSpec(DSpecLine),
     DSpecContinuation(DSpecLineContinuation),
+    CSpec(CSpecLine),
 }
 
 impl From<(usize, &[char; 100])> for SpecLine {
@@ -41,8 +42,19 @@ impl From<(usize, &[char; 100])> for SpecLine {
                 }
             }
             ('D', _) => {
-                let line = DSpecLine::from((idx, chars));
-                SpecLine::DSpec(line)
+                let unique_chars = chars[6..42].iter().collect::<HashSet<&char>>();
+                if unique_chars.len() == 1 && unique_chars.contains(&' ') {
+                    let line = DSpecLineContinuation::from((idx, chars));
+                    SpecLine::DSpecContinuation(line)
+                } else {
+                    let line = DSpecLine::from((idx, chars));
+                    SpecLine::DSpec(line)
+                }
+            }
+            ('C', _) => {
+                let traditional = TraditionalCSpecLine::from((idx, chars));
+                let line = CSpecLine::Traditional(traditional);
+                SpecLine::CSpec(line)
             }
             _ => {
                 let line = IdkSpecLine::from((idx, chars));
@@ -62,6 +74,7 @@ impl Display for SpecLine {
             Self::FSpecContinuation(line) => write!(f, "{}", line.to_string()),
             Self::DSpec(line) => write!(f, "{}", line.to_string()),
             Self::DSpecContinuation(line) => write!(f, "{}", line.to_string()),
+            Self::CSpec(line) => write!(f, "{}", line.to_string()),
         }
     }
 }
@@ -76,6 +89,7 @@ impl SpecLine {
             Self::FSpecContinuation(_) => "FSpecLineContinuation".to_string(),
             Self::DSpec(_) => "DSpecLine".to_string(),
             Self::DSpecContinuation(_) => "DSpecLineContinuation".to_string(),
+            Self::CSpec(_) => "CSpecLine".to_string(),
         }
     }
 }

@@ -17,8 +17,27 @@ impl Display for CommentField {
     }
 }
 
+// for line comment
 impl From<(Position, &[char; 94])> for FieldResult<CommentField> {
     fn from(value: (Position, &[char; 94])) -> Self {
+        let chars = value.1;
+        let meta = Meta::from((value.0, chars.as_slice()));
+        match chars[0] {
+            '*' => {
+                let value = chars.iter().collect::<String>();
+                Self::Ok(CommentField { value, meta })
+            }
+            _ => {
+                let fld = IdkField::from((value.0, chars.as_slice()));
+                Self::Idk(fld)
+            }
+        }
+    }
+}
+
+// for cspec inline comment
+impl From<(Position, &[char; 26])> for FieldResult<CommentField> {
+    fn from(value: (Position, &[char; 26])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         match chars[0] {

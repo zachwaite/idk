@@ -1,6 +1,7 @@
 use crate::line::{IdkSpecLine, SpecLine};
-use crate::spec::{CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
+use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::fmt::Display;
 use thiserror::Error;
 
@@ -138,6 +139,14 @@ impl From<Vec<SpecLine>> for CST {
                         i += 1;
                     }
                 }
+                SpecLine::CSpec(line) => {
+                    let spec = CSpec {
+                        line: line.clone(),
+                        continuations: vec![],
+                    };
+                    i += 1;
+                    specs.push(Spec::C(spec));
+                }
             };
         }
 
@@ -206,15 +215,17 @@ mod tests {
         insta::assert_yaml_snapshot!(cst);
         let observed = cst.to_string();
         let expected = input;
-        // let _ = std::fs::write("/tmp/observed.rpgle", &observed);
-        // let _ = std::fs::write("/tmp/expected.rpgle", &expected);
-        // let _ = std::fs::write(
-        //     "/tmp/specs.txt",
-        //     cst.specs
-        //         .iter()
-        //         .map(|spec| format!("{}\n", spec.kind()))
-        //         .collect::<String>(),
-        // );
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write("/tmp/observed.rpgle", &observed);
+            let _ = std::fs::write("/tmp/expected.rpgle", &expected);
+            let _ = std::fs::write(
+                "/tmp/specs.txt",
+                cst.specs
+                    .iter()
+                    .map(|spec| format!("{}\n", spec.kind()))
+                    .collect::<String>(),
+            );
+        }
         assert_eq!(observed, expected);
     }
 }
