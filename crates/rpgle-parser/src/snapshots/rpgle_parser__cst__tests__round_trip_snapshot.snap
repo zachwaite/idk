@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 193
+assertion_line: 215
 expression: cst
 ---
 specs:
@@ -1789,21 +1789,166 @@ specs:
                   col: 100
               text: "                                                                                                    "
               digs: []
-  - Idk:
+  - C:
       line:
-        idk:
-          Idk:
-            value: "     C     $CrtBRNEVT    BegSr                                                                      "
-            meta:
-              span:
-                start:
-                  row: 29
-                  col: 0
-                end:
-                  row: 29
-                  col: 100
-              text: "     C     $CrtBRNEVT    BegSr                                                                      "
-              digs: []
+        Traditional:
+          nothing:
+            Ok:
+              value: "     "
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 5
+                text: "     "
+                digs: []
+          form_type:
+            Ok:
+              value: C
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 1
+                text: C
+                digs: []
+          control_level:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 2
+                text: "  "
+                digs: []
+          indicators:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 3
+                text: "   "
+                digs: []
+          factor1:
+            Ok:
+              value: $CrtBRNEVT
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 13
+                text: "$CrtBRNEVT   "
+                digs: []
+          operation:
+            Ok:
+              value: BegSr
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 10
+                text: " BegSr    "
+                digs: []
+          factor2:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 15
+                text: "               "
+                digs: []
+          result:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 13
+                text: "             "
+                digs: []
+          result_length:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 5
+                text: "     "
+                digs: []
+          decimals:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 2
+                text: "  "
+                digs: []
+          resulting_indicators:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 5
+                text: "     "
+                digs: []
+          comments:
+            Idk:
+              value: "                          "
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 0
+                  end:
+                    row: 29
+                    col: 26
+                text: "                          "
+                digs: []
+      continuations: []
   - Idk:
       line:
         idk:
@@ -1864,21 +2009,166 @@ specs:
                   col: 100
               text: "         Write BORNFMT;                                                                             "
               digs: []
-  - Idk:
+  - C:
       line:
-        idk:
-          Idk:
-            value: "     C                   ENDSR                                                                      "
-            meta:
-              span:
-                start:
-                  row: 34
-                  col: 0
-                end:
-                  row: 34
-                  col: 100
-              text: "     C                   ENDSR                                                                      "
-              digs: []
+        Traditional:
+          nothing:
+            Ok:
+              value: "     "
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 5
+                text: "     "
+                digs: []
+          form_type:
+            Ok:
+              value: C
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 1
+                text: C
+                digs: []
+          control_level:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 2
+                text: "  "
+                digs: []
+          indicators:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 3
+                text: "   "
+                digs: []
+          factor1:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 13
+                text: "             "
+                digs: []
+          operation:
+            Ok:
+              value: ENDSR
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 10
+                text: " ENDSR    "
+                digs: []
+          factor2:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 15
+                text: "               "
+                digs: []
+          result:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 13
+                text: "             "
+                digs: []
+          result_length:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 5
+                text: "     "
+                digs: []
+          decimals:
+            Ok:
+              value: Empty
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 2
+                text: "  "
+                digs: []
+          resulting_indicators:
+            Ok:
+              value: ""
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 5
+                text: "     "
+                digs: []
+          comments:
+            Idk:
+              value: "                          "
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 0
+                  end:
+                    row: 34
+                    col: 26
+                text: "                          "
+                digs: []
+      continuations: []
   - Idk:
       line:
         idk:

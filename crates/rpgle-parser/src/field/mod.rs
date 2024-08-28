@@ -58,7 +58,7 @@ pub use keywords_field::KeywordsField;
 pub use limits_processing_field::{LimitsProcessing, LimitsProcessingField};
 pub use name_field::NameField;
 pub use nothing_field::NothingField;
-pub use operation_field::OperationField;
+pub use operation_field::{has_extf2_optoken, OperationField};
 pub use position_field::{POSField, POS};
 pub use record_address_type_field::{RecordAddressType, RecordAddressTypeField};
 pub use record_length_field::RecordLengthField;

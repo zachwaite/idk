@@ -1,9 +1,11 @@
 use std::{collections::HashSet, fmt::Display};
 
 use super::{
-    CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, FSpecLine, FSpecLineContinuation,
-    HSpecLine, IdkSpecLine, TraditionalCSpecLine,
+    CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, ExtF2CSpecLine, FSpecLine,
+    FSpecLineContinuation, HSpecLine, IdkSpecLine, TraditionalCSpecLine,
 };
+use crate::field::has_extf2_optoken;
+use crate::meta::pluck_array3 as pluck;
 
 pub enum SpecLine {
     Idk(IdkSpecLine),
@@ -52,8 +54,13 @@ impl From<(usize, &[char; 100])> for SpecLine {
                 }
             }
             ('C', _) => {
-                let traditional = TraditionalCSpecLine::from((idx, chars));
-                let line = CSpecLine::Traditional(traditional);
+                let line = if has_extf2_optoken(chars) {
+                    let extf2 = ExtF2CSpecLine::from((idx, chars));
+                    CSpecLine::ExtF2(extf2)
+                } else {
+                    let traditional = TraditionalCSpecLine::from((idx, chars));
+                    CSpecLine::Traditional(traditional)
+                };
                 SpecLine::CSpec(line)
             }
             _ => {

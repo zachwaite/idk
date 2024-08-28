@@ -66,12 +66,45 @@ impl Display for TraditionalCSpecLine {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExtF2CSpecLine {}
+pub struct ExtF2CSpecLine {
+    pub nothing: FieldResult<NothingField>,
+    pub form_type: FieldResult<FormtypeField>,
+    pub control_level: FieldResult<ControlLevelField>,
+    pub indicators: FieldResult<IndicatorsField>,
+    pub factor1: FieldResult<Factor1Field>,
+    pub operation: FieldResult<OperationField>,
+    pub factor2: FieldResult<Factor2Field>,
+}
 
 impl Display for ExtF2CSpecLine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut msg = String::new();
+        msg.push_str(&self.nothing.to_string());
+        msg.push_str(&self.form_type.to_string());
+        msg.push_str(&self.control_level.to_string());
+        msg.push_str(&self.indicators.to_string());
+        msg.push_str(&self.factor1.to_string());
+        msg.push_str(&self.operation.to_string());
+        msg.push_str(&self.factor2.to_string());
         write!(f, "{}", msg)
+    }
+}
+
+impl From<(usize, &[char; 100])> for ExtF2CSpecLine {
+    fn from(value: (usize, &[char; 100])) -> Self {
+        let row = value.0;
+        let start = Position::from((row, 0));
+        let chars = value.1;
+        let line = ExtF2CSpecLine {
+            nothing: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
+            control_level: FieldResult::from((start, pluck::<100, 6, 2, 92>(chars))),
+            indicators: FieldResult::from((start, pluck::<100, 8, 3, 89>(chars))),
+            factor1: FieldResult::from((start, pluck::<100, 11, 13, 76>(chars))),
+            operation: FieldResult::from((start, pluck::<100, 24, 10, 66>(chars))),
+            factor2: FieldResult::from((start, pluck::<100, 34, 66, 0>(chars))),
+        };
+        line
     }
 }
 
