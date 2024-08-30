@@ -1,6 +1,7 @@
 use crate::field::{
-    CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field, FieldResult,
-    FormtypeField, IndicatorsField, NothingField, OperationField, ResultField, ResultLengthField,
+    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field,
+    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, ResultField,
+    ResultLengthField,
 };
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::Position;
@@ -109,12 +110,30 @@ impl From<(usize, &[char; 100])> for ExtF2CSpecLine {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FreeCSpecLine {}
+pub struct FreeCSpecLine {
+    pub nothing: FieldResult<NothingField>,
+    pub code: FieldResult<CodeField>,
+}
 
 impl Display for FreeCSpecLine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut msg = String::new();
+        msg.push_str(&self.nothing.to_string());
+        msg.push_str(&self.code.to_string());
         write!(f, "{}", msg)
+    }
+}
+
+impl From<(usize, &[char; 100])> for FreeCSpecLine {
+    fn from(value: (usize, &[char; 100])) -> Self {
+        let row = value.0;
+        let start = Position::from((row, 0));
+        let chars = value.1;
+        let line = FreeCSpecLine {
+            nothing: FieldResult::from((start, pluck::<100, 0, 7, 93>(chars))),
+            code: FieldResult::from((start, pluck::<100, 7, 93, 0>(chars))),
+        };
+        line
     }
 }
 

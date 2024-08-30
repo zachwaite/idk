@@ -1,3 +1,4 @@
+mod code_field;
 mod comment_field;
 mod control_level_field;
 mod datastructure_type_field;
@@ -33,6 +34,7 @@ mod result_field;
 mod result_length_field;
 mod sequence_field;
 
+pub use code_field::CodeField;
 pub use comment_field::CommentField;
 pub use control_level_field::{ControlLevel, ControlLevelField};
 pub use datastructure_type_field::{DatastructureType, DatastructureTypeField};

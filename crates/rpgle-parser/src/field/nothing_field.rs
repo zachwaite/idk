@@ -48,3 +48,18 @@ impl From<(Position, &[char; 5])> for FieldResult<NothingField> {
         }
     }
 }
+
+impl From<(Position, &[char; 7])> for FieldResult<NothingField> {
+    fn from(value: (Position, &[char; 7])) -> Self {
+        let chars = value.1;
+        let meta = Meta::from((value.0, chars.as_slice()));
+        let unique_chars = chars.iter().collect::<HashSet<&char>>();
+        if unique_chars.len() == 1 && unique_chars.contains(&' ') {
+            let value = chars.iter().collect::<String>();
+            Self::Ok(NothingField { value, meta })
+        } else {
+            let fld = IdkField::from((value.0, chars.as_slice()));
+            Self::Idk(fld)
+        }
+    }
+}
