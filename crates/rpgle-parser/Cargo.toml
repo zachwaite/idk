@@ -10,10 +10,7 @@ authors.workspace = true
 
 [dependencies]
 thiserror.workspace = true
-log.workspace = true
-env_logger.workspace = true
 serde.workspace = true
 
 [dev-dependencies]
-indoc.workspace = true
 insta.workspace = true

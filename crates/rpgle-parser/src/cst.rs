@@ -158,6 +158,7 @@ impl From<Vec<SpecLine>> for CST {
 mod tests {
     use super::*;
     use insta;
+    use std::env;
 
     #[test]
     fn test_round_trip_snapshot() {

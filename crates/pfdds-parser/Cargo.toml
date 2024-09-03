@@ -10,10 +10,6 @@ authors.workspace = true
 
 [dependencies]
 thiserror.workspace = true
-log.workspace = true
-env_logger.workspace = true
 
 pfdds-lexer = { path="../pfdds-lexer" }
 
-[dev-dependencies]
-indoc.workspace = true

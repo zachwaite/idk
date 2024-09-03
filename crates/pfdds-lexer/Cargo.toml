@@ -10,8 +10,3 @@ authors.workspace = true
 
 [dependencies]
 thiserror.workspace = true
-log.workspace = true
-env_logger.workspace = true
-
-[dev-dependencies]
-indoc.workspace = true

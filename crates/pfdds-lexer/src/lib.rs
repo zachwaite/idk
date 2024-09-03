@@ -1,4 +1,3 @@
-// use log;
 use std::{cell::RefCell, fmt};
 use thiserror::Error;
 

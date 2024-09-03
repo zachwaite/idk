@@ -4,15 +4,8 @@ resolver = "2"
 members = [
   "crates/pfdds-lexer",        # lib
   "crates/pfdds-parser",       # lib
-  # "crates/lfdds-lexer",      # lib
-  # "crates/lfdds-parser",     # lib
-  # "crates/dspf-lexer",       # lib
-  # "crates/dspf-parser",      # lib
-  "crates/rpgle-lexer",      # lib
-  "crates/rpgle-parser",     # lib
-  # "crates/idklib",           # lib - core domain
-  # "crates/idk",              # cli for idklib
-  # "crates/idk-lsp",          # language server
+  "crates/rpgle-lexer",        # lib
+  "crates/rpgle-parser",       # lib
   "crates/idk-nvim",           # nvim-oxi plugin
   "crates/idk-graph",          # source graph cli tool
   ]
@@ -26,9 +19,6 @@ authors = ["Zach Waite<zach@waiteperspectives.com>"]
 [workspace.dependencies]
 thiserror = "1.0.58"
 clap = { version = "4.5.3", features = ["derive"] }
-indoc = "2.0.5"
-log = "0.4.21"
-env_logger = "0.11.3"
 nvim-oxi = { git="https://github.com/zachwaite/nvim-oxi.git", features=["neovim-0-9"]}
 insta = { version = "1.38.0", features = ["yaml"] }
 serde = { version = "1.0.206", features = ["derive"] }

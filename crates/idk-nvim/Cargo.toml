@@ -13,10 +13,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 thiserror.workspace = true
-log.workspace = true
-env_logger.workspace = true
 nvim-oxi.workspace = true
 rpgle-lexer = { path="../rpgle-lexer" }
-
-[dev-dependencies]
-indoc.workspace = true
+rpgle-parser = { path="../rpgle-parser" }
