@@ -1,3 +1,5 @@
+mod highlight;
+use highlight::{highlight_all, HighlightMeta};
 use nvim_oxi::{self as oxi};
 use rpgle_lexer::{new_lexer, next_token, CompilerDirectiveType, FormType, Token, TokenKind};
 use std::env;
@@ -109,7 +111,6 @@ fn get_hl_group(kind: &TokenKind) -> String {
             "@keyword.directive".to_string()
         }
         TokenKind::Comment(_) => "@comment".to_string(),
-        TokenKind::FormType(_) => "Function".to_string(),
         TokenKind::Name => "Identifier".to_string(),
         TokenKind::FileType(_) => "@keyword.storage".to_string(),
         TokenKind::FileDesignation(_) => "@keyword.directive".to_string(),
@@ -178,36 +179,6 @@ fn get_hl_group(kind: &TokenKind) -> String {
     }
 }
 
-struct HighlightMeta {
-    start_row: usize,
-    start_col: usize,
-    end_row: usize,
-    end_col: usize,
-    hl_group: String,
-}
-
-impl fmt::Display for HighlightMeta {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let s = format!(
-            "({}, {}) -> ({}, {}): {}",
-            self.start_row, self.start_col, self.end_row, self.end_col, self.hl_group
-        );
-        write!(f, "{}", s)
-    }
-}
-
-impl HighlightMeta {
-    fn new(sr: usize, sc: usize, er: usize, ec: usize, hl_group: &str) -> Self {
-        Self {
-            start_row: sr,
-            start_col: sc,
-            end_row: er,
-            end_col: ec,
-            hl_group: hl_group.to_string(),
-        }
-    }
-}
-
 struct Highlighter {
     buf: oxi::api::Buffer,
     namespace_id: u32,
@@ -241,7 +212,7 @@ impl Highlighter {
         Ok(())
     }
 
-    fn highlight_all(&mut self) -> oxi::Result<()> {
+    fn apply_highlights(&mut self) -> oxi::Result<()> {
         let count = self.buf.line_count()?;
         let lines = self.buf.get_lines(0..count, true)?;
         let mut input = String::new();
@@ -249,6 +220,8 @@ impl Highlighter {
             input.push_str(&line.to_string());
             input.push_str("\n");
         }
+
+        // legacy rpgle-lexer based
         let lexer = new_lexer(&input);
         let mut front_kind = TokenKind::Eof;
         if let Ok(tok) = next_token(&lexer) {
@@ -283,6 +256,12 @@ impl Highlighter {
         }
         if env::var("DEBUG").is_ok() {
             oxi::print!("{}: {}\n", counter, front_kind);
+        }
+
+        // rpgle-parser based
+        let metas = highlight_all(&input);
+        for meta in metas.iter() {
+            self.highlight(meta)?;
         }
         Ok(())
     }
@@ -342,7 +321,7 @@ fn idk() -> oxi::Result<oxi::Dictionary> {
             buf: oxi::api::Buffer::current(),
             namespace_id: oxi::api::create_namespace("RPGLENamespace"),
         };
-        if let Err(e) = highlighter.highlight_all() {
+        if let Err(e) = highlighter.apply_highlights() {
             oxi::print!("ERROR");
             oxi::print!("\n");
             oxi::print!("{}", e);

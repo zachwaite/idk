@@ -5,3 +5,5 @@ mod meta;
 mod spec;
 
 pub use cst::CST;
+pub use meta::Span;
+pub use spec::Spec;

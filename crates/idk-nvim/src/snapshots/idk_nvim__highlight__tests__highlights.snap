@@ -1,0 +1,6 @@
+---
+source: crates/idk-nvim/src/highlight.rs
+assertion_line: 100
+expression: highlights
+---
+[]

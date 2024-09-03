@@ -4,6 +4,7 @@ use super::d_spec::DSpec;
 use super::f_spec::FSpec;
 use super::h_spec::HSpec;
 use super::idk_spec::IdkSpec;
+use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -41,5 +42,9 @@ impl Spec {
             Self::D(_) => "DSpec".to_string(),
             Self::C(_) => "CSpec".to_string(),
         }
+    }
+
+    pub fn highlight(&self) -> Vec<(Span, String)> {
+        vec![]
     }
 }
