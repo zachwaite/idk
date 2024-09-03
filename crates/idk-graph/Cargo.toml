@@ -13,6 +13,5 @@ name = "idk-graph"
 path = "src/main.rs"
 
 [dependencies]
-thiserror.workspace = true
 clap.workspace = true
 rpgle-lexer = { path="../rpgle-lexer" }

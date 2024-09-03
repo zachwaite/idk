@@ -1,13 +1,22 @@
-use std::{cell::RefCell, fmt};
-use thiserror::Error;
+use std::{
+    cell::RefCell,
+    fmt::{self, Display},
+};
 
 // use this for unrecoverable errors
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum IllegalLexerState {
-    #[error("attempted to read beyond EOF")]
     ReadBeyondEOF,
-    #[error("Impossible Destination!")]
     ImpossibleDestination,
+}
+
+impl Display for IllegalLexerState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::ReadBeyondEOF => write!(f, "{}", format!("ReadBeyondEOF")),
+            Self::ImpossibleDestination => write!(f, "{}", format!("ImpossibleDestination")),
+        }
+    }
 }
 
 // use this for diagnostics

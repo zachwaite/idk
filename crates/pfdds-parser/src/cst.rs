@@ -1,12 +1,17 @@
 use core::fmt;
 
 use pfdds_lexer::{Span, Token};
-use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum EntryAttributeError {
-    #[error("Missing Required Attribute: {0}")]
     MissingRequiredAttribute(String),
+}
+
+impl EntryAttributeError {
+    pub fn missing_required_attribute(txt: &str) -> Self {
+        let msg = format!("Missing Required Attribute: {}", txt);
+        Self::MissingRequiredAttribute(msg)
+    }
 }
 
 #[derive(PartialEq, Clone)]

@@ -1,14 +1,18 @@
 use crate::line::{IdkSpecLine, SpecLine};
 use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
-use std::env;
 use std::fmt::Display;
-use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum ParserException {
-    #[error("This line is too long to coerce to 100 chars: {0}")]
     LongLineException(String),
+}
+
+impl ParserException {
+    pub fn long_line(line: &str) -> Self {
+        let msg = format!("This line is too long to coerce to 100 chars: {}", line);
+        Self::LongLineException(msg)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -50,7 +54,7 @@ impl TryFrom<&str> for CST {
                 }
                 padded_lines.push(rs);
             } else {
-                return Err(ParserException::LongLineException(line.to_string()));
+                return Err(ParserException::long_line(line));
             }
         }
 

@@ -9,7 +9,5 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-thiserror.workspace = true
-
 pfdds-lexer = { path="../pfdds-lexer" }
 

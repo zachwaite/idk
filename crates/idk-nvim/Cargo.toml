@@ -12,7 +12,6 @@ authors.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-thiserror.workspace = true
 nvim-oxi.workspace = true
 rpgle-lexer = { path="../rpgle-lexer" }
 rpgle-parser = { path="../rpgle-parser" }

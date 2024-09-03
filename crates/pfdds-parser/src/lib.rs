@@ -1,29 +1,46 @@
 mod cst;
+use std::error::Error;
+use std::fmt;
+use std::fmt::Display;
 
 use cst::{
     Comment, DDSEntry, EntryAttributeError, EntryMeta, Field, Idk, Key, PhysicalFile, RecordFormat,
 };
-use pfdds_lexer::{
-    CommentType, IllegalLexerState, Lexer, NameType, Span, Token, TokenKind, TokenMeta,
-};
+use pfdds_lexer::{CommentType, Lexer, NameType, Span, Token, TokenKind, TokenMeta};
 use std::{cell::RefCell, collections::VecDeque};
-use thiserror::Error;
 
 // use this for unrecoverable errors
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum IllegalParserState {
-    #[error("lexer error")]
-    IllegalLexerStateError(#[from] IllegalLexerState),
-    #[error("empty token buffer")]
+    IllegalLexerStateError,
     EmptyTokenBufferError,
-    #[error("attempted to access nonexistant token")]
     TokenBufferIndexError,
-    #[error("Token for {0} is required and not found")]
-    MissingRequiredTokenError(TokenKind),
-    #[error("DDSEntry parsing must end on EOL or EOF token. Found {0}")]
-    ExpectedEolEofError(TokenKind),
-    #[error("Reached Impossible Destination!")]
+    MissingRequiredTokenError,
+    ExpectedEolEofError,
     ImpossibleDestinationError,
+}
+
+impl Display for IllegalParserState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::IllegalLexerStateError => write!(f, "{}", format!("IllegalLexerStateError")),
+            Self::EmptyTokenBufferError => write!(f, "{}", format!("EmptyTokenBufferError")),
+            Self::TokenBufferIndexError => write!(f, "{}", format!("TokenBufferIndexError")),
+            Self::MissingRequiredTokenError => {
+                write!(f, "{}", format!("MissingRequiredTokenError"))
+            }
+            Self::ExpectedEolEofError => write!(f, "{}", format!("ExpectedEolEofError")),
+            Self::ImpossibleDestinationError => {
+                write!(f, "{}", format!("ImpossibleDestinationError"))
+            }
+        }
+    }
+}
+
+impl Error for IllegalParserState {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
 }
 
 pub struct Parser<'a> {
@@ -35,8 +52,17 @@ pub struct Parser<'a> {
 impl<'a> Parser<'a> {
     pub fn new(lexer: &'a Lexer) -> Result<Self, IllegalParserState> {
         let mut active_buffer = VecDeque::new();
-        active_buffer.push_back(lexer.next_token()?);
-        active_buffer.push_back(lexer.next_token()?);
+        if let Ok(tok) = lexer.next_token() {
+            active_buffer.push_back(tok);
+        } else {
+            return Err(IllegalParserState::IllegalLexerStateError);
+        };
+        // 2x
+        if let Ok(tok) = lexer.next_token() {
+            active_buffer.push_back(tok);
+        } else {
+            return Err(IllegalParserState::IllegalLexerStateError);
+        };
         let idk_buffer = VecDeque::new();
         let parser = Self {
             lexer,
@@ -127,9 +153,8 @@ impl<'a> Parser<'a> {
                 ..
             })
         ) {
-            return Err(IllegalParserState::MissingRequiredTokenError(
-                TokenKind::Comment(CommentType::LineComment),
-            ));
+            // let kind = TokenKind::Comment(CommentType::LineComment);
+            return Err(IllegalParserState::MissingRequiredTokenError);
         }
 
         meta.push_token(self.pop_active_buffer()?); // sequence
@@ -155,9 +180,8 @@ impl<'a> Parser<'a> {
                 ..
             })
         ) {
-            return Err(IllegalParserState::MissingRequiredTokenError(
-                TokenKind::NameType(NameType::RecordFormat),
-            ));
+            // let kind = TokenKind::NameType(NameType::RecordFormat);
+            return Err(IllegalParserState::MissingRequiredTokenError);
         }
 
         meta.push_token(self.pop_active_buffer()?); // sequence
@@ -198,9 +222,8 @@ impl<'a> Parser<'a> {
                 ..
             })
         ) {
-            return Err(IllegalParserState::MissingRequiredTokenError(
-                TokenKind::NameType(NameType::Key),
-            ));
+            // let kind = TokenKind::NameType(NameType::Key);
+            return Err(IllegalParserState::MissingRequiredTokenError);
         }
 
         meta.push_token(self.pop_active_buffer()?); // sequence
@@ -241,9 +264,8 @@ impl<'a> Parser<'a> {
                 ..
             })
         ) {
-            return Err(IllegalParserState::MissingRequiredTokenError(
-                TokenKind::Name,
-            ));
+            // let kind = TokenKind::Name;
+            return Err(IllegalParserState::MissingRequiredTokenError);
         }
 
         meta.push_token(self.pop_active_buffer()?); // sequence
@@ -354,7 +376,11 @@ impl<'a> Parser<'a> {
                 // toss the newline, the display of the PhysicalFile assumes it and joins,
                 self.pop_active_buffer()?;
             } else if self.front_kind()? != TokenKind::Eof {
-                return Err(IllegalParserState::ExpectedEolEofError(self.front_kind()?));
+                if let Ok(_) = self.front_kind() {
+                    return Err(IllegalParserState::ExpectedEolEofError);
+                } else {
+                    return Err(IllegalParserState::TokenBufferIndexError);
+                }
             }
         }
 

@@ -2,22 +2,36 @@ use crate::cst::{
     Call, Definition, ExternalPgmCall, Idk, Mutation, Program, Statement, StatementMeta,
     SubroutineCall, SubroutineDefinition,
 };
-use rpgle_lexer::{
-    next_token, CommentType, FormType, IllegalLexerState, Lexer, Span, Token, TokenKind,
-};
+use rpgle_lexer::{next_token, CommentType, FormType, Lexer, Span, Token, TokenKind};
+use std::error::Error;
+use std::fmt::{self, Display};
 use std::{cell::RefCell, collections::VecDeque};
-use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum IllegalParserState {
-    #[error("lexer error")]
-    IllegalLexerStateError(#[from] IllegalLexerState),
-    #[error("empty token buffer")]
+    IllegalLexerStateError,
     EmptyTokenBufferError,
-    #[error("attempted to access nonexistant token")]
     TokenBufferIndexError,
-    #[error("Impossible Destination!")]
     ImpossibleDestinationError,
+}
+
+impl Display for IllegalParserState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::IllegalLexerStateError => write!(f, "{}", format!("IllegalLexerStateError")),
+            Self::EmptyTokenBufferError => write!(f, "{}", format!("EmptyTokenBufferError")),
+            Self::TokenBufferIndexError => write!(f, "{}", format!("TokenBufferIndexError")),
+            Self::ImpossibleDestinationError => {
+                write!(f, "{}", format!("ImpossibleDestinationError"))
+            }
+        }
+    }
+}
+
+impl Error for IllegalParserState {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
 }
 
 pub struct Parser<'a> {
@@ -29,8 +43,17 @@ pub struct Parser<'a> {
 impl<'a> Parser<'a> {
     pub fn new(lexer: &'a Lexer) -> Result<Self, IllegalParserState> {
         let mut active_buffer = VecDeque::new();
-        active_buffer.push_back(next_token(lexer)?);
-        active_buffer.push_back(next_token(lexer)?);
+        if let Ok(tok) = next_token(lexer) {
+            active_buffer.push_back(tok);
+        } else {
+            return Err(IllegalParserState::IllegalLexerStateError);
+        }
+        // 2 calls
+        if let Ok(tok) = next_token(lexer) {
+            active_buffer.push_back(tok);
+        } else {
+            return Err(IllegalParserState::IllegalLexerStateError);
+        }
         let idk_buffer = VecDeque::new();
         let parser = Self {
             lexer,

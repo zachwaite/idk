@@ -1,12 +1,9 @@
 use std::{cell::RefCell, fmt};
-use thiserror::Error;
 
 // use this for unrecoverable errors
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum IllegalLexerState {
-    #[error("attempted to read beyond EOF")]
     ReadBeyondEOF,
-    #[error("not implemented")]
     NotImplemented,
 }
 
