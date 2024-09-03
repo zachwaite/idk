@@ -1,3 +1,5 @@
+use crate::field::Field;
+use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -17,5 +19,25 @@ impl Display for CSpec {
         }
         let out = outs.join("\n");
         write!(f, "{}", out)
+    }
+}
+
+impl Field for CSpec {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = self.line.highlight();
+        for cont in &self.continuations {
+            out.append(&mut cont.highlight())
+        }
+        out
+    }
+
+    fn span(&self) -> Span {
+        if self.continuations.len() == 0 {
+            self.line.span()
+        } else {
+            let start = self.line.span();
+            let end = self.continuations.last().expect("CSpec expected").span();
+            Span::from((start, end))
+        }
     }
 }

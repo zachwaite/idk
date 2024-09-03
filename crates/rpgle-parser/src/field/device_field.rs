@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use super::result::FieldResult;
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -62,5 +62,15 @@ impl From<(Position, &[char; 7])> for FieldResult<DeviceField> {
             let fld = IdkField::from((value.0, chars.as_slice()));
             Self::Idk(fld)
         }
+    }
+}
+
+impl Field for DeviceField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "@keyword.storage".to_string())]
     }
 }

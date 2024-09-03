@@ -4,7 +4,7 @@ use super::{
     CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, ExtF2CSpecLine, FSpecLine,
     FSpecLineContinuation, FreeCSpecLine, HSpecLine, IdkSpecLine, TraditionalCSpecLine,
 };
-use crate::field::has_extf2_optoken;
+use crate::field::{has_extf2_optoken, Field};
 
 pub enum SpecLine {
     Idk(IdkSpecLine),
@@ -101,6 +101,33 @@ impl SpecLine {
             Self::DSpec(_) => "DSpecLine".to_string(),
             Self::DSpecContinuation(_) => "DSpecLineContinuation".to_string(),
             Self::CSpec(_) => "CSpecLine".to_string(),
+        }
+    }
+}
+impl Field for SpecLine {
+    fn highlight(&self) -> Vec<(crate::Span, String)> {
+        match self {
+            SpecLine::Idk(line) => line.highlight(),
+            SpecLine::Comment(line) => line.highlight(),
+            SpecLine::HSpec(line) => line.highlight(),
+            SpecLine::FSpec(line) => line.highlight(),
+            SpecLine::FSpecContinuation(line) => line.highlight(),
+            SpecLine::DSpec(line) => line.highlight(),
+            SpecLine::DSpecContinuation(line) => line.highlight(),
+            SpecLine::CSpec(line) => line.highlight(),
+        }
+    }
+
+    fn span(&self) -> crate::Span {
+        match self {
+            SpecLine::Idk(line) => line.span(),
+            SpecLine::Comment(line) => line.span(),
+            SpecLine::HSpec(line) => line.span(),
+            SpecLine::FSpec(line) => line.span(),
+            SpecLine::FSpecContinuation(line) => line.span(),
+            SpecLine::DSpec(line) => line.span(),
+            SpecLine::DSpecContinuation(line) => line.span(),
+            SpecLine::CSpec(line) => line.span(),
         }
     }
 }

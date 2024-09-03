@@ -1,10 +1,10 @@
 use crate::field::{
     DatastructureTypeField, DatatypeField, DecimalsField, DefinitionTypeField,
-    ExternalDescriptionField, FieldResult, FormtypeField, KeywordsField, NameField, NothingField,
-    POSField, ReservedField, SequenceField,
+    ExternalDescriptionField, Field, FieldResult, FormtypeField, KeywordsField, NameField,
+    NothingField, POSField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::Position;
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -46,22 +46,73 @@ impl Display for DSpecLine {
 impl From<(usize, &[char; 100])> for DSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         Self {
-            sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            name: FieldResult::from((start, pluck::<100, 6, 15, 79>(chars))),
-            external_description: FieldResult::from((start, pluck::<100, 21, 1, 78>(chars))),
-            datastructure_type: FieldResult::from((start, pluck::<100, 22, 1, 77>(chars))),
-            definition_type: FieldResult::from((start, pluck::<100, 23, 2, 75>(chars))),
-            from_position: FieldResult::from((start, pluck::<100, 25, 7, 68>(chars))),
-            to_length: FieldResult::from((start, pluck::<100, 32, 7, 61>(chars))),
-            datatype: FieldResult::from((start, pluck::<100, 39, 1, 60>(chars))),
-            decimals: FieldResult::from((start, pluck::<100, 40, 2, 58>(chars))),
-            reserved: FieldResult::from((start, pluck::<100, 42, 1, 57>(chars))),
-            keywords: FieldResult::from((start, pluck::<100, 43, 57, 0>(chars))),
+            sequence: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            name: FieldResult::from((Position::from((row, 6)), pluck::<100, 6, 15, 79>(chars))),
+            external_description: FieldResult::from((
+                Position::from((row, 21)),
+                pluck::<100, 21, 1, 78>(chars),
+            )),
+            datastructure_type: FieldResult::from((
+                Position::from((row, 22)),
+                pluck::<100, 22, 1, 77>(chars),
+            )),
+            definition_type: FieldResult::from((
+                Position::from((row, 23)),
+                pluck::<100, 23, 2, 75>(chars),
+            )),
+            from_position: FieldResult::from((
+                Position::from((row, 25)),
+                pluck::<100, 25, 7, 68>(chars),
+            )),
+            to_length: FieldResult::from((
+                Position::from((row, 32)),
+                pluck::<100, 32, 7, 61>(chars),
+            )),
+            datatype: FieldResult::from((
+                Position::from((row, 39)),
+                pluck::<100, 39, 1, 60>(chars),
+            )),
+            decimals: FieldResult::from((
+                Position::from((row, 40)),
+                pluck::<100, 40, 2, 58>(chars),
+            )),
+            reserved: FieldResult::from((
+                Position::from((row, 42)),
+                pluck::<100, 42, 1, 57>(chars),
+            )),
+            keywords: FieldResult::from((
+                Position::from((row, 43)),
+                pluck::<100, 43, 57, 0>(chars),
+            )),
         }
+    }
+}
+
+impl Field for DSpecLine {
+    fn span(&self) -> Span {
+        let start = self.sequence.span();
+        let end = self.keywords.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.sequence.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.name.highlight());
+        out.append(&mut self.external_description.highlight());
+        out.append(&mut self.datastructure_type.highlight());
+        out.append(&mut self.definition_type.highlight());
+        out.append(&mut self.from_position.highlight());
+        out.append(&mut self.to_length.highlight());
+        out.append(&mut self.datatype.highlight());
+        out.append(&mut self.decimals.highlight());
+        out.append(&mut self.reserved.highlight());
+        out.append(&mut self.keywords.highlight());
+        out
     }
 }
 
@@ -109,5 +160,21 @@ impl DSpecLineContinuation {
         let msg = "Expect DSpecLineContinuation.to_string() to yield exactly 100 chars";
         let chars100: [char; 100] = chars.try_into().expect(msg);
         (start, chars100)
+    }
+}
+
+impl Field for DSpecLineContinuation {
+    fn span(&self) -> Span {
+        let start = self.sequence.span();
+        let end = self.keywords.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.sequence.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.keywords.highlight());
+        out
     }
 }

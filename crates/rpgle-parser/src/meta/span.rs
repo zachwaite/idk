@@ -27,6 +27,15 @@ impl From<((usize, usize), (usize, usize))> for Span {
     }
 }
 
+impl From<(Span, Span)> for Span {
+    fn from(value: (Span, Span)) -> Self {
+        Self::from((
+            (value.0.start.row, value.0.start.col),
+            (value.1.end.row, value.1.end.col),
+        ))
+    }
+}
+
 impl Span {
     pub fn empty() -> Self {
         Self {

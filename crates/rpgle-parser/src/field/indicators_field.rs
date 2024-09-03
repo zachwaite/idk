@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -32,5 +32,14 @@ impl From<(Position, &[char; 5])> for FieldResult<IndicatorsField> {
         let meta = Meta::from((value.0, chars.as_slice()));
         let value = chars.iter().filter(|c| **c != ' ').collect::<String>();
         Self::Ok(IndicatorsField { value, meta })
+    }
+}
+
+impl Field for IndicatorsField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
     }
 }

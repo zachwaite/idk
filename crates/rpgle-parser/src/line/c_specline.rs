@@ -1,10 +1,10 @@
 use crate::field::{
-    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field,
+    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field, Field,
     FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, ResultField,
     ResultLengthField,
 };
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::Position;
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -27,21 +27,47 @@ pub struct TraditionalCSpecLine {
 impl From<(usize, &[char; 100])> for TraditionalCSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         let line = TraditionalCSpecLine {
-            nothing: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            control_level: FieldResult::from((start, pluck::<100, 6, 2, 92>(chars))),
-            indicators: FieldResult::from((start, pluck::<100, 8, 3, 89>(chars))),
-            factor1: FieldResult::from((start, pluck::<100, 11, 13, 76>(chars))),
-            operation: FieldResult::from((start, pluck::<100, 24, 10, 66>(chars))),
-            factor2: FieldResult::from((start, pluck::<100, 34, 15, 51>(chars))),
-            result: FieldResult::from((start, pluck::<100, 49, 13, 38>(chars))),
-            result_length: FieldResult::from((start, pluck::<100, 62, 5, 33>(chars))),
-            decimals: FieldResult::from((start, pluck::<100, 67, 2, 31>(chars))),
-            resulting_indicators: FieldResult::from((start, pluck::<100, 69, 5, 26>(chars))),
-            comments: FieldResult::from((start, pluck::<100, 74, 26, 0>(chars))),
+            nothing: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            control_level: FieldResult::from((
+                Position::from((row, 6)),
+                pluck::<100, 6, 2, 92>(chars),
+            )),
+            indicators: FieldResult::from((
+                Position::from((row, 8)),
+                pluck::<100, 8, 3, 89>(chars),
+            )),
+            factor1: FieldResult::from((
+                Position::from((row, 11)),
+                pluck::<100, 11, 13, 76>(chars),
+            )),
+            operation: FieldResult::from((
+                Position::from((row, 24)),
+                pluck::<100, 24, 10, 66>(chars),
+            )),
+            factor2: FieldResult::from((
+                Position::from((row, 34)),
+                pluck::<100, 34, 15, 51>(chars),
+            )),
+            result: FieldResult::from((Position::from((row, 49)), pluck::<100, 49, 13, 38>(chars))),
+            result_length: FieldResult::from((
+                Position::from((row, 62)),
+                pluck::<100, 62, 5, 33>(chars),
+            )),
+            decimals: FieldResult::from((
+                Position::from((row, 67)),
+                pluck::<100, 67, 2, 31>(chars),
+            )),
+            resulting_indicators: FieldResult::from((
+                Position::from((row, 69)),
+                pluck::<100, 69, 5, 26>(chars),
+            )),
+            comments: FieldResult::from((
+                Position::from((row, 74)),
+                pluck::<100, 74, 26, 0>(chars),
+            )),
         };
         line
     }
@@ -63,6 +89,31 @@ impl Display for TraditionalCSpecLine {
         msg.push_str(&self.resulting_indicators.to_string());
         msg.push_str(&self.comments.to_string());
         write!(f, "{}", msg)
+    }
+}
+
+impl Field for TraditionalCSpecLine {
+    fn span(&self) -> Span {
+        let start = self.nothing.span();
+        let end = self.comments.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.nothing.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.control_level.highlight());
+        out.append(&mut self.indicators.highlight());
+        out.append(&mut self.factor1.highlight());
+        out.append(&mut self.operation.highlight());
+        out.append(&mut self.factor2.highlight());
+        out.append(&mut self.result.highlight());
+        out.append(&mut self.result_length.highlight());
+        out.append(&mut self.decimals.highlight());
+        out.append(&mut self.resulting_indicators.highlight());
+        out.append(&mut self.comments.highlight());
+        out
     }
 }
 
@@ -94,18 +145,49 @@ impl Display for ExtF2CSpecLine {
 impl From<(usize, &[char; 100])> for ExtF2CSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         let line = ExtF2CSpecLine {
-            nothing: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            control_level: FieldResult::from((start, pluck::<100, 6, 2, 92>(chars))),
-            indicators: FieldResult::from((start, pluck::<100, 8, 3, 89>(chars))),
-            factor1: FieldResult::from((start, pluck::<100, 11, 13, 76>(chars))),
-            operation: FieldResult::from((start, pluck::<100, 24, 10, 66>(chars))),
-            factor2: FieldResult::from((start, pluck::<100, 34, 66, 0>(chars))),
+            nothing: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            control_level: FieldResult::from((
+                Position::from((row, 6)),
+                pluck::<100, 6, 2, 92>(chars),
+            )),
+            indicators: FieldResult::from((
+                Position::from((row, 8)),
+                pluck::<100, 8, 3, 89>(chars),
+            )),
+            factor1: FieldResult::from((
+                Position::from((row, 11)),
+                pluck::<100, 11, 13, 76>(chars),
+            )),
+            operation: FieldResult::from((
+                Position::from((row, 24)),
+                pluck::<100, 24, 10, 66>(chars),
+            )),
+            factor2: FieldResult::from((Position::from((row, 34)), pluck::<100, 34, 66, 0>(chars))),
         };
         line
+    }
+}
+
+impl Field for ExtF2CSpecLine {
+    fn span(&self) -> Span {
+        let start = self.nothing.span();
+        let end = self.factor2.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.nothing.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.control_level.highlight());
+        out.append(&mut self.indicators.highlight());
+        out.append(&mut self.factor1.highlight());
+        out.append(&mut self.operation.highlight());
+        out.append(&mut self.factor2.highlight());
+        out
     }
 }
 
@@ -127,13 +209,27 @@ impl Display for FreeCSpecLine {
 impl From<(usize, &[char; 100])> for FreeCSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         let line = FreeCSpecLine {
-            nothing: FieldResult::from((start, pluck::<100, 0, 7, 93>(chars))),
-            code: FieldResult::from((start, pluck::<100, 7, 93, 0>(chars))),
+            nothing: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 7, 93>(chars))),
+            code: FieldResult::from((Position::from((row, 7)), pluck::<100, 7, 93, 0>(chars))),
         };
         line
+    }
+}
+
+impl Field for FreeCSpecLine {
+    fn span(&self) -> Span {
+        let start = self.nothing.span();
+        let end = self.code.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.nothing.highlight());
+        out.append(&mut self.code.highlight());
+        out
     }
 }
 
@@ -158,11 +254,45 @@ impl Display for CSpecLine {
     }
 }
 
+impl Field for CSpecLine {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        match self {
+            CSpecLine::Traditional(line) => line.highlight(),
+            CSpecLine::ExtF2(line) => line.highlight(),
+            CSpecLine::Free(line) => line.highlight(),
+        }
+    }
+
+    fn span(&self) -> Span {
+        todo!()
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExtF2CSpecLineContinuation {}
 
+impl Field for ExtF2CSpecLineContinuation {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        todo!()
+    }
+
+    fn span(&self) -> Span {
+        todo!()
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FreeCSpecLineContinuation {}
+
+impl Field for FreeCSpecLineContinuation {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        todo!()
+    }
+
+    fn span(&self) -> Span {
+        todo!()
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum CSpecLineContinuation {
@@ -172,7 +302,23 @@ pub enum CSpecLineContinuation {
 
 impl Display for CSpecLineContinuation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut msg = String::new();
+        let msg = String::new();
         write!(f, "{}", msg)
+    }
+}
+
+impl Field for CSpecLineContinuation {
+    fn span(&self) -> Span {
+        match self {
+            CSpecLineContinuation::ExtF2(c) => c.span(),
+            CSpecLineContinuation::Free(c) => c.span(),
+        }
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        match self {
+            CSpecLineContinuation::ExtF2(c) => c.highlight(),
+            CSpecLineContinuation::Free(c) => c.highlight(),
+        }
     }
 }

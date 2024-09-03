@@ -1,3 +1,5 @@
+use crate::field::Field;
+use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -16,5 +18,25 @@ impl Display for HSpec {
             out.push_str(&cont.to_string());
         }
         write!(f, "{}", out)
+    }
+}
+
+impl Field for HSpec {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = self.line.highlight();
+        for cont in &self.continuations {
+            out.append(&mut cont.highlight())
+        }
+        out
+    }
+
+    fn span(&self) -> Span {
+        if self.continuations.len() == 0 {
+            self.line.span()
+        } else {
+            let start = self.line.span();
+            let end = self.continuations.last().expect("HSpec expected").span();
+            Span::from((start, end))
+        }
     }
 }

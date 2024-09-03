@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -26,5 +26,15 @@ impl From<(Position, &[char; 5])> for FieldResult<SequenceField> {
             meta,
         };
         Self::Ok(fld)
+    }
+}
+
+impl Field for SequenceField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
     }
 }

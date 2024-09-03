@@ -16,29 +16,10 @@ impl From<(Position, &[char])> for Meta {
         let start = value.0;
         let chars = value.1;
         let text = chars.iter().collect::<String>();
-        let end = Position::from((start.row, chars.len()));
+        let end = Position::from((start.row, start.col + chars.len()));
         let span = Span { start, end };
         let digs = vec![];
         let hlgroup = Hlgroup::Normal;
-        Self {
-            span,
-            text,
-            digs,
-            hlgroup,
-        }
-    }
-}
-
-impl From<(Position, &[char], Hlgroup)> for Meta {
-    fn from(value: (Position, &[char], Hlgroup)) -> Self {
-        let start = value.0;
-        let chars = value.1;
-        let hl = value.2;
-        let text = chars.iter().collect::<String>();
-        let end = Position::from((start.row, chars.len()));
-        let span = Span { start, end };
-        let digs = vec![];
-        let hlgroup = hl;
         Self {
             span,
             text,

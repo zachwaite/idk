@@ -1,7 +1,8 @@
 use std::fmt::Display;
 
-use super::{result::FieldResult, IdkField};
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use super::IdkField;
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,5 +69,15 @@ impl From<(Position, &[char; 58])> for FieldResult<KeywordsField> {
                 Self::Idk(fld)
             }
         }
+    }
+}
+
+impl Field for KeywordsField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Error".to_string())]
     }
 }

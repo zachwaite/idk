@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 215
+assertion_line: 249
 expression: cst
 ---
 specs:
@@ -19,6 +19,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: H
@@ -26,12 +27,13 @@ specs:
               span:
                 start:
                   row: 0
-                  col: 0
+                  col: 5
                 end:
                   row: 0
-                  col: 1
+                  col: 6
               text: H
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: " OPTION(*nodebugio:*srcstmt)                                                                  "
@@ -39,12 +41,13 @@ specs:
               span:
                 start:
                   row: 0
-                  col: 0
+                  col: 6
                 end:
                   row: 0
-                  col: 94
+                  col: 100
               text: " OPTION(*nodebugio:*srcstmt)                                                                  "
               digs: []
+              hlgroup: Normal
       continuations: []
   - F:
       line:
@@ -61,6 +64,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: F
@@ -68,12 +72,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 5
                 end:
                   row: 1
-                  col: 1
+                  col: 6
               text: F
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: CowEvt
@@ -81,12 +86,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 6
                 end:
                   row: 1
-                  col: 10
+                  col: 16
               text: "CowEvt    "
               digs: []
+              hlgroup: Normal
         filetype:
           Ok:
             value: U
@@ -94,12 +100,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 16
                 end:
                   row: 1
-                  col: 1
+                  col: 17
               text: U
               digs: []
+              hlgroup: Normal
         file_designation:
           Ok:
             value: F
@@ -107,12 +114,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 17
                 end:
                   row: 1
-                  col: 1
+                  col: 18
               text: F
               digs: []
+              hlgroup: Normal
         endfile:
           Ok:
             value: Empty
@@ -120,12 +128,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 18
                 end:
                   row: 1
-                  col: 1
+                  col: 19
               text: " "
               digs: []
+              hlgroup: Normal
         file_addition:
           Ok:
             value: A
@@ -133,12 +142,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 19
                 end:
                   row: 1
-                  col: 1
+                  col: 20
               text: A
               digs: []
+              hlgroup: Normal
         file_sequence:
           Ok:
             value: Empty
@@ -146,12 +156,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 20
                 end:
                   row: 1
-                  col: 1
+                  col: 21
               text: " "
               digs: []
+              hlgroup: Normal
         file_format:
           Ok:
             value: E
@@ -159,12 +170,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 21
                 end:
                   row: 1
-                  col: 1
+                  col: 22
               text: E
               digs: []
+              hlgroup: Normal
         record_length:
           Ok:
             value: Empty
@@ -172,12 +184,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 22
                 end:
                   row: 1
-                  col: 5
+                  col: 27
               text: "     "
               digs: []
+              hlgroup: Normal
         limits_processing:
           Ok:
             value: Empty
@@ -185,12 +198,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 27
                 end:
                   row: 1
-                  col: 1
+                  col: 28
               text: " "
               digs: []
+              hlgroup: Normal
         keylength:
           Ok:
             value: Empty
@@ -198,12 +212,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 28
                 end:
                   row: 1
-                  col: 5
+                  col: 33
               text: "     "
               digs: []
+              hlgroup: Normal
         record_address_type:
           Ok:
             value: K
@@ -211,12 +226,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 33
                 end:
                   row: 1
-                  col: 1
+                  col: 34
               text: K
               digs: []
+              hlgroup: Normal
         file_organization:
           Ok:
             value: Empty
@@ -224,12 +240,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 34
                 end:
                   row: 1
-                  col: 1
+                  col: 35
               text: " "
               digs: []
+              hlgroup: Normal
         device:
           Ok:
             value: DISK
@@ -237,12 +254,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 35
                 end:
                   row: 1
-                  col: 7
+                  col: 42
               text: "DISK   "
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -250,12 +268,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 42
                 end:
                   row: 1
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "                                                         "
@@ -263,12 +282,13 @@ specs:
               span:
                 start:
                   row: 1
-                  col: 0
+                  col: 43
                 end:
                   row: 1
-                  col: 57
+                  col: 100
               text: "                                                         "
               digs: []
+              hlgroup: Normal
       continuations: []
   - F:
       line:
@@ -285,6 +305,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: F
@@ -292,12 +313,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 5
                 end:
                   row: 2
-                  col: 1
+                  col: 6
               text: F
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: BornEvt
@@ -305,12 +327,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 6
                 end:
                   row: 2
-                  col: 10
+                  col: 16
               text: "BornEvt   "
               digs: []
+              hlgroup: Normal
         filetype:
           Ok:
             value: U
@@ -318,12 +341,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 16
                 end:
                   row: 2
-                  col: 1
+                  col: 17
               text: U
               digs: []
+              hlgroup: Normal
         file_designation:
           Ok:
             value: F
@@ -331,12 +355,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 17
                 end:
                   row: 2
-                  col: 1
+                  col: 18
               text: F
               digs: []
+              hlgroup: Normal
         endfile:
           Ok:
             value: Empty
@@ -344,12 +369,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 18
                 end:
                   row: 2
-                  col: 1
+                  col: 19
               text: " "
               digs: []
+              hlgroup: Normal
         file_addition:
           Ok:
             value: A
@@ -357,12 +383,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 19
                 end:
                   row: 2
-                  col: 1
+                  col: 20
               text: A
               digs: []
+              hlgroup: Normal
         file_sequence:
           Ok:
             value: Empty
@@ -370,12 +397,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 20
                 end:
                   row: 2
-                  col: 1
+                  col: 21
               text: " "
               digs: []
+              hlgroup: Normal
         file_format:
           Ok:
             value: E
@@ -383,12 +411,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 21
                 end:
                   row: 2
-                  col: 1
+                  col: 22
               text: E
               digs: []
+              hlgroup: Normal
         record_length:
           Ok:
             value: Empty
@@ -396,12 +425,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 22
                 end:
                   row: 2
-                  col: 5
+                  col: 27
               text: "     "
               digs: []
+              hlgroup: Normal
         limits_processing:
           Ok:
             value: Empty
@@ -409,12 +439,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 27
                 end:
                   row: 2
-                  col: 1
+                  col: 28
               text: " "
               digs: []
+              hlgroup: Normal
         keylength:
           Ok:
             value: Empty
@@ -422,12 +453,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 28
                 end:
                   row: 2
-                  col: 5
+                  col: 33
               text: "     "
               digs: []
+              hlgroup: Normal
         record_address_type:
           Ok:
             value: K
@@ -435,12 +467,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 33
                 end:
                   row: 2
-                  col: 1
+                  col: 34
               text: K
               digs: []
+              hlgroup: Normal
         file_organization:
           Ok:
             value: Empty
@@ -448,12 +481,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 34
                 end:
                   row: 2
-                  col: 1
+                  col: 35
               text: " "
               digs: []
+              hlgroup: Normal
         device:
           Ok:
             value: DISK
@@ -461,12 +495,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 35
                 end:
                   row: 2
-                  col: 7
+                  col: 42
               text: "DISK   "
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -474,12 +509,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 42
                 end:
                   row: 2
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "                                                         "
@@ -487,12 +523,13 @@ specs:
               span:
                 start:
                   row: 2
-                  col: 0
+                  col: 43
                 end:
                   row: 2
-                  col: 57
+                  col: 100
               text: "                                                         "
               digs: []
+              hlgroup: Normal
       continuations: []
   - F:
       line:
@@ -509,6 +546,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: F
@@ -516,12 +554,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 5
                 end:
                   row: 3
-                  col: 1
+                  col: 6
               text: F
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: CowEvtL2
@@ -529,12 +568,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 6
                 end:
                   row: 3
-                  col: 10
+                  col: 16
               text: "CowEvtL2  "
               digs: []
+              hlgroup: Normal
         filetype:
           Ok:
             value: I
@@ -542,12 +582,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 16
                 end:
                   row: 3
-                  col: 1
+                  col: 17
               text: I
               digs: []
+              hlgroup: Normal
         file_designation:
           Ok:
             value: F
@@ -555,12 +596,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 17
                 end:
                   row: 3
-                  col: 1
+                  col: 18
               text: F
               digs: []
+              hlgroup: Normal
         endfile:
           Ok:
             value: Empty
@@ -568,12 +610,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 18
                 end:
                   row: 3
-                  col: 1
+                  col: 19
               text: " "
               digs: []
+              hlgroup: Normal
         file_addition:
           Ok:
             value: Empty
@@ -581,12 +624,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 19
                 end:
                   row: 3
-                  col: 1
+                  col: 20
               text: " "
               digs: []
+              hlgroup: Normal
         file_sequence:
           Ok:
             value: Empty
@@ -594,12 +638,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 20
                 end:
                   row: 3
-                  col: 1
+                  col: 21
               text: " "
               digs: []
+              hlgroup: Normal
         file_format:
           Ok:
             value: E
@@ -607,12 +652,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 21
                 end:
                   row: 3
-                  col: 1
+                  col: 22
               text: E
               digs: []
+              hlgroup: Normal
         record_length:
           Ok:
             value: Empty
@@ -620,12 +666,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 22
                 end:
                   row: 3
-                  col: 5
+                  col: 27
               text: "     "
               digs: []
+              hlgroup: Normal
         limits_processing:
           Ok:
             value: Empty
@@ -633,12 +680,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 27
                 end:
                   row: 3
-                  col: 1
+                  col: 28
               text: " "
               digs: []
+              hlgroup: Normal
         keylength:
           Ok:
             value: Empty
@@ -646,12 +694,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 28
                 end:
                   row: 3
-                  col: 5
+                  col: 33
               text: "     "
               digs: []
+              hlgroup: Normal
         record_address_type:
           Ok:
             value: K
@@ -659,12 +708,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 33
                 end:
                   row: 3
-                  col: 1
+                  col: 34
               text: K
               digs: []
+              hlgroup: Normal
         file_organization:
           Ok:
             value: Empty
@@ -672,12 +722,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 34
                 end:
                   row: 3
-                  col: 1
+                  col: 35
               text: " "
               digs: []
+              hlgroup: Normal
         device:
           Ok:
             value: DISK
@@ -685,12 +736,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 35
                 end:
                   row: 3
-                  col: 7
+                  col: 42
               text: "DISK   "
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -698,12 +750,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 42
                 end:
                   row: 3
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: " Rename(EVTFMT:VEVTFMT)                                  "
@@ -711,12 +764,13 @@ specs:
               span:
                 start:
                   row: 3
-                  col: 0
+                  col: 43
                 end:
                   row: 3
-                  col: 57
+                  col: 100
               text: " Rename(EVTFMT:VEVTFMT)                                  "
               digs: []
+              hlgroup: Normal
       continuations:
         - sequence:
             Ok:
@@ -731,6 +785,7 @@ specs:
                     col: 5
                 text: "     "
                 digs: []
+                hlgroup: Normal
           form_type:
             Ok:
               value: F
@@ -738,12 +793,13 @@ specs:
                 span:
                   start:
                     row: 4
-                    col: 0
+                    col: 5
                   end:
                     row: 4
-                    col: 1
+                    col: 6
                 text: F
                 digs: []
+                hlgroup: Normal
           nothing:
             Ok:
               value: "                                     "
@@ -751,12 +807,13 @@ specs:
                 span:
                   start:
                     row: 4
-                    col: 0
+                    col: 6
                   end:
                     row: 4
-                    col: 37
+                    col: 43
                 text: "                                     "
                 digs: []
+                hlgroup: Normal
           keywords:
             Idk:
               value: "Prefix(V)                                                "
@@ -764,12 +821,13 @@ specs:
                 span:
                   start:
                     row: 4
-                    col: 0
+                    col: 43
                   end:
                     row: 4
-                    col: 57
+                    col: 100
                 text: "Prefix(V)                                                "
                 digs: []
+                hlgroup: Normal
   - Comment:
       line:
         sequence:
@@ -785,6 +843,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: F
@@ -792,12 +851,13 @@ specs:
               span:
                 start:
                   row: 5
-                  col: 0
+                  col: 5
                 end:
                   row: 5
-                  col: 1
+                  col: 6
               text: F
               digs: []
+              hlgroup: Normal
         comment:
           Ok:
             value: "**********************************************************************************************"
@@ -805,12 +865,13 @@ specs:
               span:
                 start:
                   row: 5
-                  col: 0
+                  col: 6
                 end:
                   row: 5
-                  col: 94
+                  col: 100
               text: "**********************************************************************************************"
               digs: []
+              hlgroup: Normal
   - Comment:
       line:
         sequence:
@@ -826,6 +887,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: D
@@ -833,12 +895,13 @@ specs:
               span:
                 start:
                   row: 6
-                  col: 0
+                  col: 5
                 end:
                   row: 6
-                  col: 1
+                  col: 6
               text: D
               digs: []
+              hlgroup: Normal
         comment:
           Ok:
             value: "**********************************************************************************************"
@@ -846,12 +909,13 @@ specs:
               span:
                 start:
                   row: 6
-                  col: 0
+                  col: 6
                 end:
                   row: 6
-                  col: 94
+                  col: 100
               text: "**********************************************************************************************"
               digs: []
+              hlgroup: Normal
   - D:
       line:
         sequence:
@@ -867,6 +931,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: D
@@ -874,12 +939,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 5
                 end:
                   row: 7
-                  col: 1
+                  col: 6
               text: D
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: LastId
@@ -887,12 +953,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 6
                 end:
                   row: 7
-                  col: 15
+                  col: 21
               text: " LastId        "
               digs: []
+              hlgroup: Normal
         external_description:
           Ok:
             value: Empty
@@ -900,12 +967,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 21
                 end:
                   row: 7
-                  col: 1
+                  col: 22
               text: " "
               digs: []
+              hlgroup: Normal
         datastructure_type:
           Ok:
             value: Empty
@@ -913,12 +981,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 22
                 end:
                   row: 7
-                  col: 1
+                  col: 23
               text: " "
               digs: []
+              hlgroup: Normal
         definition_type:
           Ok:
             value: S
@@ -926,12 +995,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 23
                 end:
                   row: 7
-                  col: 2
+                  col: 25
               text: "S "
               digs: []
+              hlgroup: Normal
         from_position:
           Ok:
             value: Empty
@@ -939,12 +1009,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 25
                 end:
                   row: 7
-                  col: 7
+                  col: 32
               text: "       "
               digs: []
+              hlgroup: Normal
         to_length:
           Ok:
             value:
@@ -953,12 +1024,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 32
                 end:
                   row: 7
-                  col: 7
+                  col: 39
               text: "      8"
               digs: []
+              hlgroup: Normal
         datatype:
           Ok:
             value: Empty
@@ -966,12 +1038,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 39
                 end:
                   row: 7
-                  col: 1
+                  col: 40
               text: " "
               digs: []
+              hlgroup: Normal
         decimals:
           Ok:
             value:
@@ -980,12 +1053,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 40
                 end:
                   row: 7
-                  col: 2
+                  col: 42
               text: " 0"
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -993,12 +1067,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 42
                 end:
                   row: 7
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "                                                         "
@@ -1006,12 +1081,13 @@ specs:
               span:
                 start:
                   row: 7
-                  col: 0
+                  col: 43
                 end:
                   row: 7
-                  col: 57
+                  col: 100
               text: "                                                         "
               digs: []
+              hlgroup: Normal
       continuations: []
   - D:
       line:
@@ -1028,6 +1104,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: D
@@ -1035,12 +1112,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 5
                 end:
                   row: 8
-                  col: 1
+                  col: 6
               text: D
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: QCmdExc
@@ -1048,12 +1126,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 6
                 end:
                   row: 8
-                  col: 15
+                  col: 21
               text: " QCmdExc       "
               digs: []
+              hlgroup: Normal
         external_description:
           Ok:
             value: Empty
@@ -1061,12 +1140,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 21
                 end:
                   row: 8
-                  col: 1
+                  col: 22
               text: " "
               digs: []
+              hlgroup: Normal
         datastructure_type:
           Ok:
             value: Empty
@@ -1074,12 +1154,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 22
                 end:
                   row: 8
-                  col: 1
+                  col: 23
               text: " "
               digs: []
+              hlgroup: Normal
         definition_type:
           Ok:
             value: PR
@@ -1087,12 +1168,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 23
                 end:
                   row: 8
-                  col: 2
+                  col: 25
               text: PR
               digs: []
+              hlgroup: Normal
         from_position:
           Ok:
             value: Empty
@@ -1100,12 +1182,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 25
                 end:
                   row: 8
-                  col: 7
+                  col: 32
               text: "       "
               digs: []
+              hlgroup: Normal
         to_length:
           Ok:
             value: Empty
@@ -1113,12 +1196,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 32
                 end:
                   row: 8
-                  col: 7
+                  col: 39
               text: "       "
               digs: []
+              hlgroup: Normal
         datatype:
           Ok:
             value: Empty
@@ -1126,12 +1210,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 39
                 end:
                   row: 8
-                  col: 1
+                  col: 40
               text: " "
               digs: []
+              hlgroup: Normal
         decimals:
           Ok:
             value: Empty
@@ -1139,12 +1224,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 40
                 end:
                   row: 8
-                  col: 2
+                  col: 42
               text: "  "
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -1152,12 +1238,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 42
                 end:
                   row: 8
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "EXTPGM('QCMDEXC')                                        "
@@ -1165,12 +1252,13 @@ specs:
               span:
                 start:
                   row: 8
-                  col: 0
+                  col: 43
                 end:
                   row: 8
-                  col: 57
+                  col: 100
               text: "EXTPGM('QCMDEXC')                                        "
               digs: []
+              hlgroup: Normal
       continuations: []
   - D:
       line:
@@ -1187,6 +1275,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: D
@@ -1194,12 +1283,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 5
                 end:
                   row: 9
-                  col: 1
+                  col: 6
               text: D
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: Command
@@ -1207,12 +1297,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 6
                 end:
                   row: 9
-                  col: 15
+                  col: 21
               text: "  Command      "
               digs: []
+              hlgroup: Normal
         external_description:
           Ok:
             value: Empty
@@ -1220,12 +1311,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 21
                 end:
                   row: 9
-                  col: 1
+                  col: 22
               text: " "
               digs: []
+              hlgroup: Normal
         datastructure_type:
           Ok:
             value: Empty
@@ -1233,12 +1325,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 22
                 end:
                   row: 9
-                  col: 1
+                  col: 23
               text: " "
               digs: []
+              hlgroup: Normal
         definition_type:
           Ok:
             value: Empty
@@ -1246,12 +1339,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 23
                 end:
                   row: 9
-                  col: 2
+                  col: 25
               text: "  "
               digs: []
+              hlgroup: Normal
         from_position:
           Ok:
             value: Empty
@@ -1259,12 +1353,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 25
                 end:
                   row: 9
-                  col: 7
+                  col: 32
               text: "       "
               digs: []
+              hlgroup: Normal
         to_length:
           Ok:
             value:
@@ -1273,12 +1368,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 32
                 end:
                   row: 9
-                  col: 7
+                  col: 39
               text: "   2000"
               digs: []
+              hlgroup: Normal
         datatype:
           Ok:
             value: Empty
@@ -1286,12 +1382,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 39
                 end:
                   row: 9
-                  col: 1
+                  col: 40
               text: " "
               digs: []
+              hlgroup: Normal
         decimals:
           Ok:
             value: Empty
@@ -1299,12 +1396,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 40
                 end:
                   row: 9
-                  col: 2
+                  col: 42
               text: "  "
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -1312,12 +1410,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 42
                 end:
                   row: 9
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "                                                         "
@@ -1325,12 +1424,13 @@ specs:
               span:
                 start:
                   row: 9
-                  col: 0
+                  col: 43
                 end:
                   row: 9
-                  col: 57
+                  col: 100
               text: "                                                         "
               digs: []
+              hlgroup: Normal
       continuations: []
   - D:
       line:
@@ -1347,6 +1447,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: D
@@ -1354,12 +1455,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 5
                 end:
                   row: 10
-                  col: 1
+                  col: 6
               text: D
               digs: []
+              hlgroup: Normal
         name:
           Ok:
             value: Length
@@ -1367,12 +1469,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 6
                 end:
                   row: 10
-                  col: 15
+                  col: 21
               text: "  Length       "
               digs: []
+              hlgroup: Normal
         external_description:
           Ok:
             value: Empty
@@ -1380,12 +1483,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 21
                 end:
                   row: 10
-                  col: 1
+                  col: 22
               text: " "
               digs: []
+              hlgroup: Normal
         datastructure_type:
           Ok:
             value: Empty
@@ -1393,12 +1497,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 22
                 end:
                   row: 10
-                  col: 1
+                  col: 23
               text: " "
               digs: []
+              hlgroup: Normal
         definition_type:
           Ok:
             value: Empty
@@ -1406,12 +1511,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 23
                 end:
                   row: 10
-                  col: 2
+                  col: 25
               text: "  "
               digs: []
+              hlgroup: Normal
         from_position:
           Ok:
             value: Empty
@@ -1419,12 +1525,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 25
                 end:
                   row: 10
-                  col: 7
+                  col: 32
               text: "       "
               digs: []
+              hlgroup: Normal
         to_length:
           Ok:
             value:
@@ -1433,12 +1540,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 32
                 end:
                   row: 10
-                  col: 7
+                  col: 39
               text: "     15"
               digs: []
+              hlgroup: Normal
         datatype:
           Ok:
             value: Empty
@@ -1446,12 +1554,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 39
                 end:
                   row: 10
-                  col: 1
+                  col: 40
               text: " "
               digs: []
+              hlgroup: Normal
         decimals:
           Ok:
             value:
@@ -1460,12 +1569,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 40
                 end:
                   row: 10
-                  col: 2
+                  col: 42
               text: " 5"
               digs: []
+              hlgroup: Normal
         reserved:
           Ok:
             value: Empty
@@ -1473,12 +1583,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 42
                 end:
                   row: 10
-                  col: 1
+                  col: 43
               text: " "
               digs: []
+              hlgroup: Normal
         keywords:
           Idk:
             value: "                                                         "
@@ -1486,12 +1597,13 @@ specs:
               span:
                 start:
                   row: 10
-                  col: 0
+                  col: 43
                 end:
                   row: 10
-                  col: 57
+                  col: 100
               text: "                                                         "
               digs: []
+              hlgroup: Normal
       continuations: []
   - Comment:
       line:
@@ -1508,6 +1620,7 @@ specs:
                   col: 5
               text: "     "
               digs: []
+              hlgroup: Normal
         form_type:
           Ok:
             value: C
@@ -1515,12 +1628,13 @@ specs:
               span:
                 start:
                   row: 11
-                  col: 0
+                  col: 5
                 end:
                   row: 11
-                  col: 1
+                  col: 6
               text: C
               digs: []
+              hlgroup: Normal
         comment:
           Ok:
             value: "**********************************************************************************************"
@@ -1528,12 +1642,13 @@ specs:
               span:
                 start:
                   row: 11
-                  col: 0
+                  col: 6
                 end:
                   row: 11
-                  col: 94
+                  col: 100
               text: "**********************************************************************************************"
               digs: []
+              hlgroup: Normal
   - Idk:
       line:
         idk:
@@ -1549,6 +1664,7 @@ specs:
                   col: 100
               text: "      /free                                                                                         "
               digs: []
+              hlgroup: Normal
   - C:
       line:
         Free:
@@ -1565,6 +1681,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Exsr $SetLstId;
@@ -1572,12 +1689,13 @@ specs:
                 span:
                   start:
                     row: 13
-                    col: 0
+                    col: 7
                   end:
                     row: 13
-                    col: 93
+                    col: 100
                 text: "Exsr $SetLstId;                                                                              "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1595,6 +1713,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Exsr $CrtEvts;
@@ -1602,12 +1721,13 @@ specs:
                 span:
                   start:
                     row: 14
-                    col: 0
+                    col: 7
                   end:
                     row: 14
-                    col: 93
+                    col: 100
                 text: "Exsr $CrtEvts;                                                                               "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1625,6 +1745,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: "QCmdExc(Foo:Bar);"
@@ -1632,12 +1753,13 @@ specs:
                 span:
                   start:
                     row: 15
-                    col: 0
+                    col: 7
                   end:
                     row: 15
-                    col: 93
+                    col: 100
                 text: "QCmdExc(Foo:Bar);                                                                            "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1655,6 +1777,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: "*inlr = *on;"
@@ -1662,12 +1785,13 @@ specs:
                 span:
                   start:
                     row: 16
-                    col: 0
+                    col: 7
                   end:
                     row: 16
-                    col: 93
+                    col: 100
                 text: "*inlr = *on;                                                                                 "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1685,6 +1809,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: ""
@@ -1692,12 +1817,13 @@ specs:
                 span:
                   start:
                     row: 17
-                    col: 0
+                    col: 7
                   end:
                     row: 17
-                    col: 93
+                    col: 100
                 text: "                                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1715,6 +1841,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Begsr $SetLstId;
@@ -1722,12 +1849,13 @@ specs:
                 span:
                   start:
                     row: 18
-                    col: 0
+                    col: 7
                   end:
                     row: 18
-                    col: 93
+                    col: 100
                 text: "Begsr $SetLstId;                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1745,6 +1873,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: SetLL *Loval CowEvtL2;
@@ -1752,12 +1881,13 @@ specs:
                 span:
                   start:
                     row: 19
-                    col: 0
+                    col: 7
                   end:
                     row: 19
-                    col: 93
+                    col: 100
                 text: "  SetLL *Loval CowEvtL2;                                                                     "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1775,6 +1905,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: If Not %Eof;
@@ -1782,12 +1913,13 @@ specs:
                 span:
                   start:
                     row: 20
-                    col: 0
+                    col: 7
                   end:
                     row: 20
-                    col: 93
+                    col: 100
                 text: "  If Not %Eof;                                                                               "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1805,6 +1937,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Read CowEvtL2;
@@ -1812,12 +1945,13 @@ specs:
                 span:
                   start:
                     row: 21
-                    col: 0
+                    col: 7
                   end:
                     row: 21
-                    col: 93
+                    col: 100
                 text: "    Read CowEvtL2;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1835,6 +1969,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: "QCmdExc(FOO:BaR);"
@@ -1842,12 +1977,13 @@ specs:
                 span:
                   start:
                     row: 22
-                    col: 0
+                    col: 7
                   end:
                     row: 22
-                    col: 93
+                    col: 100
                 text: "      QCmdExc(FOO:BaR);                                                                      "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1865,6 +2001,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: LastId = Vid;
@@ -1872,12 +2009,13 @@ specs:
                 span:
                   start:
                     row: 23
-                    col: 0
+                    col: 7
                   end:
                     row: 23
-                    col: 93
+                    col: 100
                 text: "    LastId = Vid;                                                                            "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1895,6 +2033,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Else;
@@ -1902,12 +2041,13 @@ specs:
                 span:
                   start:
                     row: 24
-                    col: 0
+                    col: 7
                   end:
                     row: 24
-                    col: 93
+                    col: 100
                 text: "  Else;                                                                                      "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1925,6 +2065,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: LastId = 1;
@@ -1932,12 +2073,13 @@ specs:
                 span:
                   start:
                     row: 25
-                    col: 0
+                    col: 7
                   end:
                     row: 25
-                    col: 93
+                    col: 100
                 text: "   LastId = 1;                                                                               "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1955,6 +2097,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Endif;
@@ -1962,12 +2105,13 @@ specs:
                 span:
                   start:
                     row: 26
-                    col: 0
+                    col: 7
                   end:
                     row: 26
-                    col: 93
+                    col: 100
                 text: "  Endif;                                                                                     "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -1985,6 +2129,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Endsr;
@@ -1992,12 +2137,13 @@ specs:
                 span:
                   start:
                     row: 27
-                    col: 0
+                    col: 7
                   end:
                     row: 27
-                    col: 93
+                    col: 100
                 text: "Endsr;                                                                                       "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2015,6 +2161,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: ""
@@ -2022,12 +2169,13 @@ specs:
                 span:
                   start:
                     row: 28
-                    col: 0
+                    col: 7
                   end:
                     row: 28
-                    col: 93
+                    col: 100
                 text: "                                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2045,6 +2193,7 @@ specs:
                     col: 5
                 text: "     "
                 digs: []
+                hlgroup: Normal
           form_type:
             Ok:
               value: C
@@ -2052,12 +2201,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 5
                   end:
                     row: 29
-                    col: 1
+                    col: 6
                 text: C
                 digs: []
+                hlgroup: Normal
           control_level:
             Ok:
               value: Empty
@@ -2065,12 +2215,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 6
                   end:
                     row: 29
-                    col: 2
+                    col: 8
                 text: "  "
                 digs: []
+                hlgroup: Normal
           indicators:
             Ok:
               value: ""
@@ -2078,12 +2229,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 8
                   end:
                     row: 29
-                    col: 3
+                    col: 11
                 text: "   "
                 digs: []
+                hlgroup: Normal
           factor1:
             Ok:
               value: $CrtBRNEVT
@@ -2091,12 +2243,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 11
                   end:
                     row: 29
-                    col: 13
+                    col: 24
                 text: "$CrtBRNEVT   "
                 digs: []
+                hlgroup: Normal
           operation:
             Ok:
               value: BegSr
@@ -2104,12 +2257,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 24
                   end:
                     row: 29
-                    col: 10
+                    col: 34
                 text: " BegSr    "
                 digs: []
+                hlgroup: Normal
           factor2:
             Ok:
               value: ""
@@ -2117,12 +2271,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 34
                   end:
                     row: 29
-                    col: 15
+                    col: 49
                 text: "               "
                 digs: []
+                hlgroup: Normal
           result:
             Ok:
               value: ""
@@ -2130,12 +2285,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 49
                   end:
                     row: 29
-                    col: 13
+                    col: 62
                 text: "             "
                 digs: []
+                hlgroup: Normal
           result_length:
             Ok:
               value: Empty
@@ -2143,12 +2299,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 62
                   end:
                     row: 29
-                    col: 5
+                    col: 67
                 text: "     "
                 digs: []
+                hlgroup: Normal
           decimals:
             Ok:
               value: Empty
@@ -2156,12 +2313,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 67
                   end:
                     row: 29
-                    col: 2
+                    col: 69
                 text: "  "
                 digs: []
+                hlgroup: Normal
           resulting_indicators:
             Ok:
               value: ""
@@ -2169,12 +2327,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 69
                   end:
                     row: 29
-                    col: 5
+                    col: 74
                 text: "     "
                 digs: []
+                hlgroup: Normal
           comments:
             Idk:
               value: "                          "
@@ -2182,12 +2341,13 @@ specs:
                 span:
                   start:
                     row: 29
-                    col: 0
+                    col: 74
                   end:
                     row: 29
-                    col: 26
+                    col: 100
                 text: "                          "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2205,6 +2365,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: EID = Id;
@@ -2212,12 +2373,13 @@ specs:
                 span:
                   start:
                     row: 30
-                    col: 0
+                    col: 7
                   end:
                     row: 30
-                    col: 93
+                    col: 100
                 text: "  EID = Id;                                                                                  "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2235,6 +2397,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: "BNAME = 'BESSE';"
@@ -2242,12 +2405,13 @@ specs:
                 span:
                   start:
                     row: 31
-                    col: 0
+                    col: 7
                   end:
                     row: 31
-                    col: 93
+                    col: 100
                 text: "  BNAME = 'BESSE';                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2265,6 +2429,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: BDAT = 20240101;
@@ -2272,12 +2437,13 @@ specs:
                 span:
                   start:
                     row: 32
-                    col: 0
+                    col: 7
                   end:
                     row: 32
-                    col: 93
+                    col: 100
                 text: "  BDAT = 20240101;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2295,6 +2461,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Write BORNFMT;
@@ -2302,12 +2469,13 @@ specs:
                 span:
                   start:
                     row: 33
-                    col: 0
+                    col: 7
                   end:
                     row: 33
-                    col: 93
+                    col: 100
                 text: "  Write BORNFMT;                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2325,6 +2493,7 @@ specs:
                     col: 5
                 text: "     "
                 digs: []
+                hlgroup: Normal
           form_type:
             Ok:
               value: C
@@ -2332,12 +2501,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 5
                   end:
                     row: 34
-                    col: 1
+                    col: 6
                 text: C
                 digs: []
+                hlgroup: Normal
           control_level:
             Ok:
               value: Empty
@@ -2345,12 +2515,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 6
                   end:
                     row: 34
-                    col: 2
+                    col: 8
                 text: "  "
                 digs: []
+                hlgroup: Normal
           indicators:
             Ok:
               value: ""
@@ -2358,12 +2529,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 8
                   end:
                     row: 34
-                    col: 3
+                    col: 11
                 text: "   "
                 digs: []
+                hlgroup: Normal
           factor1:
             Ok:
               value: ""
@@ -2371,12 +2543,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 11
                   end:
                     row: 34
-                    col: 13
+                    col: 24
                 text: "             "
                 digs: []
+                hlgroup: Normal
           operation:
             Ok:
               value: ENDSR
@@ -2384,12 +2557,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 24
                   end:
                     row: 34
-                    col: 10
+                    col: 34
                 text: " ENDSR    "
                 digs: []
+                hlgroup: Normal
           factor2:
             Ok:
               value: ""
@@ -2397,12 +2571,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 34
                   end:
                     row: 34
-                    col: 15
+                    col: 49
                 text: "               "
                 digs: []
+                hlgroup: Normal
           result:
             Ok:
               value: ""
@@ -2410,12 +2585,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 49
                   end:
                     row: 34
-                    col: 13
+                    col: 62
                 text: "             "
                 digs: []
+                hlgroup: Normal
           result_length:
             Ok:
               value: Empty
@@ -2423,12 +2599,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 62
                   end:
                     row: 34
-                    col: 5
+                    col: 67
                 text: "     "
                 digs: []
+                hlgroup: Normal
           decimals:
             Ok:
               value: Empty
@@ -2436,12 +2613,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 67
                   end:
                     row: 34
-                    col: 2
+                    col: 69
                 text: "  "
                 digs: []
+                hlgroup: Normal
           resulting_indicators:
             Ok:
               value: ""
@@ -2449,12 +2627,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 69
                   end:
                     row: 34
-                    col: 5
+                    col: 74
                 text: "     "
                 digs: []
+                hlgroup: Normal
           comments:
             Idk:
               value: "                          "
@@ -2462,12 +2641,13 @@ specs:
                 span:
                   start:
                     row: 34
-                    col: 0
+                    col: 74
                   end:
                     row: 34
-                    col: 26
+                    col: 100
                 text: "                          "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2485,6 +2665,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: ""
@@ -2492,12 +2673,13 @@ specs:
                 span:
                   start:
                     row: 35
-                    col: 0
+                    col: 7
                   end:
                     row: 35
-                    col: 93
+                    col: 100
                 text: "                                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2515,6 +2697,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Begsr $CrtCowEvt;
@@ -2522,12 +2705,13 @@ specs:
                 span:
                   start:
                     row: 36
-                    col: 0
+                    col: 7
                   end:
                     row: 36
-                    col: 93
+                    col: 100
                 text: "Begsr $CrtCowEvt;                                                                            "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2545,6 +2729,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Id = LastId + 1;
@@ -2552,12 +2737,13 @@ specs:
                 span:
                   start:
                     row: 37
-                    col: 0
+                    col: 7
                   end:
                     row: 37
-                    col: 93
+                    col: 100
                 text: "  Id = LastId + 1;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2575,6 +2761,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Edat = 20240101;
@@ -2582,12 +2769,13 @@ specs:
                 span:
                   start:
                     row: 38
-                    col: 0
+                    col: 7
                   end:
                     row: 38
-                    col: 93
+                    col: 100
                 text: "  Edat = 20240101;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2605,6 +2793,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Etim = 125959;
@@ -2612,12 +2801,13 @@ specs:
                 span:
                   start:
                     row: 39
-                    col: 0
+                    col: 7
                   end:
                     row: 39
-                    col: 93
+                    col: 100
                 text: "  Etim = 125959;                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2635,6 +2825,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: "Etyp = 'BORN';"
@@ -2642,12 +2833,13 @@ specs:
                 span:
                   start:
                     row: 40
-                    col: 0
+                    col: 7
                   end:
                     row: 40
-                    col: 93
+                    col: 100
                 text: "  Etyp = 'BORN';                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2665,6 +2857,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Write EVTFMT;
@@ -2672,12 +2865,13 @@ specs:
                 span:
                   start:
                     row: 41
-                    col: 0
+                    col: 7
                   end:
                     row: 41
-                    col: 93
+                    col: 100
                 text: "  Write EVTFMT;                                                                              "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2695,6 +2889,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Endsr;
@@ -2702,12 +2897,13 @@ specs:
                 span:
                   start:
                     row: 42
-                    col: 0
+                    col: 7
                   end:
                     row: 42
-                    col: 93
+                    col: 100
                 text: "Endsr;                                                                                       "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2725,6 +2921,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: ""
@@ -2732,12 +2929,13 @@ specs:
                 span:
                   start:
                     row: 43
-                    col: 0
+                    col: 7
                   end:
                     row: 43
-                    col: 93
+                    col: 100
                 text: "                                                                                             "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2755,6 +2953,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Begsr $CrtEvts;
@@ -2762,12 +2961,13 @@ specs:
                 span:
                   start:
                     row: 44
-                    col: 0
+                    col: 7
                   end:
                     row: 44
-                    col: 93
+                    col: 100
                 text: "Begsr $CrtEvts;                                                                              "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2785,6 +2985,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Exsr $CrtCowEvt;
@@ -2792,12 +2993,13 @@ specs:
                 span:
                   start:
                     row: 45
-                    col: 0
+                    col: 7
                   end:
                     row: 45
-                    col: 93
+                    col: 100
                 text: "  Exsr $CrtCowEvt;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2815,6 +3017,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Exsr $CrtBrnEvt;
@@ -2822,12 +3025,13 @@ specs:
                 span:
                   start:
                     row: 46
-                    col: 0
+                    col: 7
                   end:
                     row: 46
-                    col: 93
+                    col: 100
                 text: "  Exsr $CrtBrnEvt;                                                                           "
                 digs: []
+                hlgroup: Normal
       continuations: []
   - C:
       line:
@@ -2845,6 +3049,7 @@ specs:
                     col: 7
                 text: "       "
                 digs: []
+                hlgroup: Normal
           code:
             Ok:
               value: Endsr;
@@ -2852,10 +3057,11 @@ specs:
                 span:
                   start:
                     row: 47
-                    col: 0
+                    col: 7
                   end:
                     row: 47
-                    col: 93
+                    col: 100
                 text: "Endsr;                                                                                       "
                 digs: []
+                hlgroup: Normal
       continuations: []

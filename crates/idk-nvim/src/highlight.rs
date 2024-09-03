@@ -1,4 +1,4 @@
-use rpgle_parser::{Span, Spec, CST};
+use rpgle_parser::{highlight_cst, Span, CST};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
@@ -49,9 +49,8 @@ impl From<(Span, String)> for HighlightMeta {
 // main
 pub fn highlight_all(txt: &str) -> Vec<HighlightMeta> {
     if let Ok(cst) = CST::try_from(txt) {
-        cst.specs
-            .iter()
-            .flat_map(|s| s.highlight())
+        highlight_cst(cst)
+            .into_iter()
             .map(|tup| HighlightMeta::from(tup))
             .collect::<Vec<HighlightMeta>>()
     } else {

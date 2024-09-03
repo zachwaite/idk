@@ -1,4 +1,6 @@
+use crate::field::Field;
 use crate::line::{IdkSpecLine, SpecLine};
+use crate::meta::Span;
 use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -32,6 +34,31 @@ impl Display for CST {
     }
 }
 
+impl Field for CST {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        self.specs
+            .iter()
+            .flat_map(|s| s.highlight())
+            .collect::<Vec<(Span, String)>>()
+    }
+
+    fn span(&self) -> Span {
+        if self.specs.len() == 0 {
+            Span::empty()
+        } else if self.specs.len() == 1 {
+            self.specs[0].span()
+        } else {
+            let start = self.specs[0].span();
+            let end = self.specs.last().expect("Expected Span").span();
+            Span::from((start, end))
+        }
+    }
+}
+
+pub fn highlight_cst(cst: CST) -> Vec<(Span, String)> {
+    cst.highlight()
+}
+
 impl TryFrom<&str> for CST {
     type Error = ParserException;
 
@@ -43,12 +70,14 @@ impl TryFrom<&str> for CST {
             if line.len() == 100 {
                 let rs: [char; 100] = line.chars().collect::<Vec<char>>().try_into().unwrap();
                 padded_lines.push(rs);
+            } else if line.len() == 0 {
+                continue;
             } else if line.len() < 100 {
                 let mut rs: [char; 100] = std::iter::repeat(' ')
                     .take(100)
                     .collect::<Vec<char>>()
                     .try_into()
-                    .unwrap();
+                    .expect("Line shorter than 100 chars");
                 for (i, char) in line.chars().enumerate() {
                     rs[i] = char;
                 }

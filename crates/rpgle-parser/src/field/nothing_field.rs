@@ -1,7 +1,8 @@
 use std::{collections::HashSet, fmt::Display};
 
-use super::{result::FieldResult, IdkField};
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use super::IdkField;
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -61,5 +62,15 @@ impl From<(Position, &[char; 7])> for FieldResult<NothingField> {
             let fld = IdkField::from((value.0, chars.as_slice()));
             Self::Idk(fld)
         }
+    }
+}
+
+impl Field for NothingField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
     }
 }

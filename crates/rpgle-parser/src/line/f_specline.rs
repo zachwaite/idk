@@ -1,11 +1,11 @@
 use crate::field::{
-    DeviceField, EndfileField, FieldResult, FileAdditionField, FileDesignationField,
+    DeviceField, EndfileField, Field, FieldResult, FileAdditionField, FileDesignationField,
     FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField, FormtypeField,
-    IdkField, KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField,
+    KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField,
     RecordAddressTypeField, RecordLengthField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::{Meta, Position};
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -57,27 +57,92 @@ impl Display for FSpecLine {
 impl From<(usize, &[char; 100])> for FSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         Self {
-            sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            name: FieldResult::from((start, pluck::<100, 6, 10, 84>(chars))),
-            filetype: FieldResult::from((start, pluck::<100, 16, 1, 83>(chars))),
-            file_designation: FieldResult::from((start, pluck::<100, 17, 1, 82>(chars))),
-            endfile: FieldResult::from((start, pluck::<100, 18, 1, 81>(chars))),
-            file_addition: FieldResult::from((start, pluck::<100, 19, 1, 80>(chars))),
-            file_sequence: FieldResult::from((start, pluck::<100, 20, 1, 79>(chars))),
-            file_format: FieldResult::from((start, pluck::<100, 21, 1, 78>(chars))),
-            record_length: FieldResult::from((start, pluck::<100, 22, 5, 73>(chars))),
-            limits_processing: FieldResult::from((start, pluck::<100, 27, 1, 72>(chars))),
-            keylength: FieldResult::from((start, pluck::<100, 28, 5, 67>(chars))),
-            record_address_type: FieldResult::from((start, pluck::<100, 33, 1, 66>(chars))),
-            file_organization: FieldResult::from((start, pluck::<100, 34, 1, 65>(chars))),
-            device: FieldResult::from((start, pluck::<100, 35, 7, 58>(chars))),
-            reserved: FieldResult::from((start, pluck::<100, 42, 1, 57>(chars))),
-            keywords: FieldResult::from((start, pluck::<100, 43, 57, 0>(chars))),
+            sequence: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            name: FieldResult::from((Position::from((row, 6)), pluck::<100, 6, 10, 84>(chars))),
+            filetype: FieldResult::from((
+                Position::from((row, 16)),
+                pluck::<100, 16, 1, 83>(chars),
+            )),
+            file_designation: FieldResult::from((
+                Position::from((row, 17)),
+                pluck::<100, 17, 1, 82>(chars),
+            )),
+            endfile: FieldResult::from((Position::from((row, 18)), pluck::<100, 18, 1, 81>(chars))),
+            file_addition: FieldResult::from((
+                Position::from((row, 19)),
+                pluck::<100, 19, 1, 80>(chars),
+            )),
+            file_sequence: FieldResult::from((
+                Position::from((row, 20)),
+                pluck::<100, 20, 1, 79>(chars),
+            )),
+            file_format: FieldResult::from((
+                Position::from((row, 21)),
+                pluck::<100, 21, 1, 78>(chars),
+            )),
+            record_length: FieldResult::from((
+                Position::from((row, 22)),
+                pluck::<100, 22, 5, 73>(chars),
+            )),
+            limits_processing: FieldResult::from((
+                Position::from((row, 27)),
+                pluck::<100, 27, 1, 72>(chars),
+            )),
+            keylength: FieldResult::from((
+                Position::from((row, 28)),
+                pluck::<100, 28, 5, 67>(chars),
+            )),
+            record_address_type: FieldResult::from((
+                Position::from((row, 33)),
+                pluck::<100, 33, 1, 66>(chars),
+            )),
+            file_organization: FieldResult::from((
+                Position::from((row, 34)),
+                pluck::<100, 34, 1, 65>(chars),
+            )),
+            device: FieldResult::from((Position::from((row, 35)), pluck::<100, 35, 7, 58>(chars))),
+            reserved: FieldResult::from((
+                Position::from((row, 42)),
+                pluck::<100, 42, 1, 57>(chars),
+            )),
+            keywords: FieldResult::from((
+                Position::from((row, 43)),
+                pluck::<100, 43, 57, 0>(chars),
+            )),
         }
+    }
+}
+
+impl Field for FSpecLine {
+    fn span(&self) -> Span {
+        let start = self.sequence.span();
+        let end = self.keywords.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.sequence.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.name.highlight());
+        out.append(&mut self.filetype.highlight());
+        out.append(&mut self.file_designation.highlight());
+        out.append(&mut self.endfile.highlight());
+        out.append(&mut self.file_addition.highlight());
+        out.append(&mut self.file_sequence.highlight());
+        out.append(&mut self.file_format.highlight());
+        out.append(&mut self.record_length.highlight());
+        out.append(&mut self.limits_processing.highlight());
+        out.append(&mut self.keylength.highlight());
+        out.append(&mut self.record_address_type.highlight());
+        out.append(&mut self.file_organization.highlight());
+        out.append(&mut self.device.highlight());
+        out.append(&mut self.reserved.highlight());
+        out.append(&mut self.keywords.highlight());
+        out
     }
 }
 
@@ -103,13 +168,15 @@ impl Display for FSpecLineContinuation {
 impl From<(usize, &[char; 100])> for FSpecLineContinuation {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         Self {
-            sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            nothing: FieldResult::from((start, pluck::<100, 6, 37, 57>(chars))),
-            keywords: FieldResult::from((start, pluck::<100, 43, 57, 0>(chars))),
+            sequence: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            nothing: FieldResult::from((Position::from((row, 6)), pluck::<100, 6, 37, 57>(chars))),
+            keywords: FieldResult::from((
+                Position::from((row, 43)),
+                pluck::<100, 43, 57, 0>(chars),
+            )),
         }
     }
 }
@@ -125,5 +192,21 @@ impl FSpecLineContinuation {
         let msg = "Expect FSpecLineContinuation.to_string() to yield exactly 100 chars";
         let chars100: [char; 100] = chars.try_into().expect(msg);
         (start, chars100)
+    }
+}
+
+impl Field for FSpecLineContinuation {
+    fn span(&self) -> Span {
+        let start = self.sequence.span();
+        let end = self.keywords.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.sequence.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.keywords.highlight());
+        out
     }
 }

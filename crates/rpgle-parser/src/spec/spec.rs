@@ -4,6 +4,7 @@ use super::d_spec::DSpec;
 use super::f_spec::FSpec;
 use super::h_spec::HSpec;
 use super::idk_spec::IdkSpec;
+use crate::field::Field;
 use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -43,8 +44,28 @@ impl Spec {
             Self::C(_) => "CSpec".to_string(),
         }
     }
+}
 
-    pub fn highlight(&self) -> Vec<(Span, String)> {
-        vec![]
+impl Field for Spec {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        match self {
+            Spec::Idk(spec) => spec.highlight(),
+            Spec::Comment(spec) => spec.highlight(),
+            Spec::H(spec) => spec.highlight(),
+            Spec::F(spec) => spec.highlight(),
+            Spec::D(spec) => spec.highlight(),
+            Spec::C(spec) => spec.highlight(),
+        }
+    }
+
+    fn span(&self) -> Span {
+        match self {
+            Spec::Idk(spec) => spec.span(),
+            Spec::Comment(spec) => spec.span(),
+            Spec::H(spec) => spec.span(),
+            Spec::F(spec) => spec.span(),
+            Spec::D(spec) => spec.span(),
+            Spec::C(spec) => spec.span(),
+        }
     }
 }

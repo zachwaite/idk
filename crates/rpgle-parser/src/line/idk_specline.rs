@@ -1,5 +1,5 @@
-use crate::field::FieldResult;
-use crate::{field::IdkField, meta::Position};
+use crate::field::{Field, FieldResult, IdkField};
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -23,5 +23,15 @@ impl From<(usize, &[char; 100])> for IdkSpecLine {
         Self {
             idk: FieldResult::from((start, chars.as_slice())),
         }
+    }
+}
+
+impl Field for IdkSpecLine {
+    fn span(&self) -> Span {
+        self.idk.span()
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        self.idk.highlight()
     }
 }

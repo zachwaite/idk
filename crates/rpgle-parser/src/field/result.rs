@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
+use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,6 +18,30 @@ where
         match self {
             Self::Ok(fld) => write!(f, "{}", fld.to_string()),
             Self::Idk(fld) => write!(f, "{}", fld.to_string()),
+        }
+    }
+}
+
+pub trait Field {
+    fn highlight(&self) -> Vec<(Span, String)>;
+    fn span(&self) -> Span;
+}
+
+impl<T> Field for FieldResult<T>
+where
+    T: Field,
+{
+    fn highlight(&self) -> Vec<(Span, String)> {
+        match self {
+            FieldResult::Ok(fld) => fld.highlight(),
+            FieldResult::Idk(fld) => fld.highlight(),
+        }
+    }
+
+    fn span(&self) -> Span {
+        match self {
+            FieldResult::Ok(fld) => fld.span(),
+            FieldResult::Idk(fld) => fld.span(),
         }
     }
 }

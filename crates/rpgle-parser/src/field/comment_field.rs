@@ -1,7 +1,8 @@
 use std::fmt::Display;
 
-use super::{result::FieldResult, IdkField};
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use super::IdkField;
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -14,6 +15,16 @@ impl Display for CommentField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
+    }
+}
+
+impl Field for CommentField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "@comment".to_string())]
     }
 }
 

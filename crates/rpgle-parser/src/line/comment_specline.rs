@@ -1,6 +1,6 @@
-use crate::field::{CommentField, FieldResult, FormtypeField, SequenceField};
+use crate::field::{CommentField, Field, FieldResult, FormtypeField, SequenceField};
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::Position;
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -24,13 +24,28 @@ impl Display for CommentSpecLine {
 impl From<(usize, &[char; 100])> for CommentSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         Self {
-            sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            comment: FieldResult::from((start, pluck::<100, 6, 94, 0>(chars))),
+            sequence: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            comment: FieldResult::from((Position::from((row, 6)), pluck::<100, 6, 94, 0>(chars))),
         }
+    }
+}
+
+impl Field for CommentSpecLine {
+    fn span(&self) -> Span {
+        let start = self.sequence.span();
+        let end = self.comment.span();
+        Span::from((start, end))
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.sequence.highlight());
+        out.append(&mut self.form_type.highlight());
+        out.append(&mut self.comment.highlight());
+        out
     }
 }
 

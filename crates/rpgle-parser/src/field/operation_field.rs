@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
-use crate::meta::{Meta, Position};
+use super::result::{Field, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 // #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -54,5 +54,15 @@ pub fn has_extf2_optoken(chars: &[char; 100]) -> bool {
         ['D', 'O', 'U', ..] => true,
         // ...
         _ => false,
+    }
+}
+
+impl Field for OperationField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Identifier".to_string())]
     }
 }
