@@ -10,17 +10,25 @@ pub struct KeywordsField {
     pub value: String,
     pub meta: Meta,
 }
-
 impl Display for KeywordsField {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
+impl PMixin for KeywordsField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
 
-// for f-spec keywords
-impl From<(Position, &[char; 57])> for FieldResult<KeywordsField> {
-    fn from(value: (Position, &[char; 57])) -> Self {
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Error".to_string())]
+    }
+}
+
+// TODO: for f-spec continuation keywords
+impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
+    fn from(value: (Position, &[char; 94])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         match chars[0] {
@@ -36,9 +44,9 @@ impl From<(Position, &[char; 57])> for FieldResult<KeywordsField> {
     }
 }
 
-// TODO: for f-spec continuation keywords
-impl From<(Position, &[char; 94])> for FieldResult<KeywordsField> {
-    fn from(value: (Position, &[char; 94])) -> Self {
+// for f-spec keywords
+impl From<(Position, &[char; 57])> for FieldResult<KeywordsField> {
+    fn from(value: (Position, &[char; 57])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         match chars[0] {
@@ -69,15 +77,5 @@ impl From<(Position, &[char; 58])> for FieldResult<KeywordsField> {
                 Self::Idk(fld)
             }
         }
-    }
-}
-
-impl PMixin for KeywordsField {
-    fn span(&self) -> Span {
-        self.meta.span
-    }
-
-    fn highlight(&self) -> Vec<(Span, String)> {
-        vec![(self.span(), "Error".to_string())]
     }
 }
