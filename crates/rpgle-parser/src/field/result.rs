@@ -22,14 +22,14 @@ where
     }
 }
 
-pub trait Field {
+pub trait PMixin {
     fn highlight(&self) -> Vec<(Span, String)>;
     fn span(&self) -> Span;
 }
 
-impl<T> Field for FieldResult<T>
+impl<T> PMixin for FieldResult<T>
 where
-    T: Field,
+    T: PMixin,
 {
     fn highlight(&self) -> Vec<(Span, String)> {
         match self {

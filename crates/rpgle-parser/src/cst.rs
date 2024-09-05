@@ -1,4 +1,4 @@
-use crate::field::Field;
+use crate::field::PMixin;
 use crate::line::{IdkSpecLine, SpecLine};
 use crate::meta::Span;
 use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
@@ -34,7 +34,7 @@ impl Display for CST {
     }
 }
 
-impl Field for CST {
+impl PMixin for CST {
     fn highlight(&self) -> Vec<(Span, String)> {
         self.specs
             .iter()

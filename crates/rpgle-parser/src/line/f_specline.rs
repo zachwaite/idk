@@ -1,7 +1,7 @@
 use crate::field::{
-    DeviceField, EndfileField, Field, FieldResult, FileAdditionField, FileDesignationField,
+    DeviceField, EndfileField, FieldResult, FileAdditionField, FileDesignationField,
     FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField, FormtypeField,
-    KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField,
+    KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField, PMixin,
     RecordAddressTypeField, RecordLengthField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
@@ -116,7 +116,7 @@ impl From<(usize, &[char; 100])> for FSpecLine {
     }
 }
 
-impl Field for FSpecLine {
+impl PMixin for FSpecLine {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();
@@ -195,7 +195,7 @@ impl FSpecLineContinuation {
     }
 }
 
-impl Field for FSpecLineContinuation {
+impl PMixin for FSpecLineContinuation {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();

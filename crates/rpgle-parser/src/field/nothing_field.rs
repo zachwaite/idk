@@ -1,6 +1,6 @@
 use std::{collections::HashSet, fmt::Display};
 
-use super::result::{Field, FieldResult};
+use super::result::{FieldResult, PMixin};
 use super::IdkField;
 use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
@@ -65,7 +65,7 @@ impl From<(Position, &[char; 7])> for FieldResult<NothingField> {
     }
 }
 
-impl Field for NothingField {
+impl PMixin for NothingField {
     fn span(&self) -> Span {
         self.meta.span
     }

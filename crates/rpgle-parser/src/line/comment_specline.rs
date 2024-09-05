@@ -1,4 +1,4 @@
-use crate::field::{CommentField, Field, FieldResult, FormtypeField, SequenceField};
+use crate::field::{CommentField, FieldResult, FormtypeField, PMixin, SequenceField};
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
@@ -33,7 +33,7 @@ impl From<(usize, &[char; 100])> for CommentSpecLine {
     }
 }
 
-impl Field for CommentSpecLine {
+impl PMixin for CommentSpecLine {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.comment.span();

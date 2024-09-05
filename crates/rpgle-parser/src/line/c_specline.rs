@@ -1,6 +1,6 @@
 use crate::field::{
-    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field, Field,
-    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, ResultField,
+    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field,
+    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, PMixin, ResultField,
     ResultLengthField,
 };
 use crate::meta::pluck_array3 as pluck;
@@ -92,7 +92,7 @@ impl Display for TraditionalCSpecLine {
     }
 }
 
-impl Field for TraditionalCSpecLine {
+impl PMixin for TraditionalCSpecLine {
     fn span(&self) -> Span {
         let start = self.nothing.span();
         let end = self.comments.span();
@@ -171,7 +171,7 @@ impl From<(usize, &[char; 100])> for ExtF2CSpecLine {
     }
 }
 
-impl Field for ExtF2CSpecLine {
+impl PMixin for ExtF2CSpecLine {
     fn span(&self) -> Span {
         let start = self.nothing.span();
         let end = self.factor2.span();
@@ -218,7 +218,7 @@ impl From<(usize, &[char; 100])> for FreeCSpecLine {
     }
 }
 
-impl Field for FreeCSpecLine {
+impl PMixin for FreeCSpecLine {
     fn span(&self) -> Span {
         let start = self.nothing.span();
         let end = self.code.span();
@@ -254,7 +254,7 @@ impl Display for CSpecLine {
     }
 }
 
-impl Field for CSpecLine {
+impl PMixin for CSpecLine {
     fn highlight(&self) -> Vec<(Span, String)> {
         match self {
             CSpecLine::Traditional(line) => line.highlight(),
@@ -271,7 +271,7 @@ impl Field for CSpecLine {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExtF2CSpecLineContinuation {}
 
-impl Field for ExtF2CSpecLineContinuation {
+impl PMixin for ExtF2CSpecLineContinuation {
     fn highlight(&self) -> Vec<(Span, String)> {
         todo!()
     }
@@ -284,7 +284,7 @@ impl Field for ExtF2CSpecLineContinuation {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FreeCSpecLineContinuation {}
 
-impl Field for FreeCSpecLineContinuation {
+impl PMixin for FreeCSpecLineContinuation {
     fn highlight(&self) -> Vec<(Span, String)> {
         todo!()
     }
@@ -307,7 +307,7 @@ impl Display for CSpecLineContinuation {
     }
 }
 
-impl Field for CSpecLineContinuation {
+impl PMixin for CSpecLineContinuation {
     fn span(&self) -> Span {
         match self {
             CSpecLineContinuation::ExtF2(c) => c.span(),

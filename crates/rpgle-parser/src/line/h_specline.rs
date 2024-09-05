@@ -1,4 +1,4 @@
-use crate::field::{Field, FieldResult, FormtypeField, KeywordsField, SequenceField};
+use crate::field::{FieldResult, FormtypeField, KeywordsField, PMixin, SequenceField};
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
@@ -33,7 +33,7 @@ impl From<(usize, &[char; 100])> for HSpecLine {
     }
 }
 
-impl Field for HSpecLine {
+impl PMixin for HSpecLine {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();
@@ -65,7 +65,7 @@ impl Display for HSpecLineContinuation {
     }
 }
 
-impl Field for HSpecLineContinuation {
+impl PMixin for HSpecLineContinuation {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();

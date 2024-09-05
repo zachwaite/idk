@@ -4,7 +4,7 @@ use super::d_spec::DSpec;
 use super::f_spec::FSpec;
 use super::h_spec::HSpec;
 use super::idk_spec::IdkSpec;
-use crate::field::Field;
+use crate::field::PMixin;
 use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -46,7 +46,7 @@ impl Spec {
     }
 }
 
-impl Field for Spec {
+impl PMixin for Spec {
     fn highlight(&self) -> Vec<(Span, String)> {
         match self {
             Spec::Idk(spec) => spec.highlight(),

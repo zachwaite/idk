@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use super::result::{Field, FieldResult};
+use super::result::{FieldResult, PMixin};
 use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
@@ -35,7 +35,7 @@ impl From<(Position, &[char; 66])> for FieldResult<Factor2Field> {
     }
 }
 
-impl Field for Factor2Field {
+impl PMixin for Factor2Field {
     fn span(&self) -> Span {
         self.meta.span
     }

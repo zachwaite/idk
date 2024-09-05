@@ -1,4 +1,4 @@
-use crate::field::Field;
+use crate::field::PMixin;
 use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -22,7 +22,7 @@ impl Display for CSpec {
     }
 }
 
-impl Field for CSpec {
+impl PMixin for CSpec {
     fn highlight(&self) -> Vec<(Span, String)> {
         let mut out = self.line.highlight();
         for cont in &self.continuations {

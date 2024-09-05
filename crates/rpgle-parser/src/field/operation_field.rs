@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use super::result::{Field, FieldResult};
+use super::result::{FieldResult, PMixin};
 use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
@@ -57,7 +57,7 @@ pub fn has_extf2_optoken(chars: &[char; 100]) -> bool {
     }
 }
 
-impl Field for OperationField {
+impl PMixin for OperationField {
     fn span(&self) -> Span {
         self.meta.span
     }

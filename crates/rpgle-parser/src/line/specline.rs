@@ -4,7 +4,7 @@ use super::{
     CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, ExtF2CSpecLine, FSpecLine,
     FSpecLineContinuation, FreeCSpecLine, HSpecLine, IdkSpecLine, TraditionalCSpecLine,
 };
-use crate::field::{has_extf2_optoken, Field};
+use crate::field::{has_extf2_optoken, PMixin};
 
 pub enum SpecLine {
     Idk(IdkSpecLine),
@@ -104,7 +104,7 @@ impl SpecLine {
         }
     }
 }
-impl Field for SpecLine {
+impl PMixin for SpecLine {
     fn highlight(&self) -> Vec<(crate::Span, String)> {
         match self {
             SpecLine::Idk(line) => line.highlight(),

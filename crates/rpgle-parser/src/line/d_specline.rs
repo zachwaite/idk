@@ -1,7 +1,7 @@
 use crate::field::{
     DatastructureTypeField, DatatypeField, DecimalsField, DefinitionTypeField,
-    ExternalDescriptionField, Field, FieldResult, FormtypeField, KeywordsField, NameField,
-    NothingField, POSField, ReservedField, SequenceField,
+    ExternalDescriptionField, FieldResult, FormtypeField, KeywordsField, NameField, NothingField,
+    PMixin, POSField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::{Position, Span};
@@ -91,7 +91,7 @@ impl From<(usize, &[char; 100])> for DSpecLine {
     }
 }
 
-impl Field for DSpecLine {
+impl PMixin for DSpecLine {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();
@@ -163,7 +163,7 @@ impl DSpecLineContinuation {
     }
 }
 
-impl Field for DSpecLineContinuation {
+impl PMixin for DSpecLineContinuation {
     fn span(&self) -> Span {
         let start = self.sequence.span();
         let end = self.keywords.span();

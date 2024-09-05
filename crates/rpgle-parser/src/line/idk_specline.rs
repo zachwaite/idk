@@ -1,4 +1,4 @@
-use crate::field::{Field, FieldResult, IdkField};
+use crate::field::{FieldResult, IdkField, PMixin};
 use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -26,7 +26,7 @@ impl From<(usize, &[char; 100])> for IdkSpecLine {
     }
 }
 
-impl Field for IdkSpecLine {
+impl PMixin for IdkSpecLine {
     fn span(&self) -> Span {
         self.idk.span()
     }

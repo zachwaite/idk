@@ -1,4 +1,4 @@
-use crate::field::Field;
+use crate::field::PMixin;
 use crate::meta::Span;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -17,7 +17,7 @@ impl Display for CommentSpec {
     }
 }
 
-impl Field for CommentSpec {
+impl PMixin for CommentSpec {
     fn highlight(&self) -> Vec<(Span, String)> {
         self.line.highlight()
     }

@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use super::result::{Field, FieldResult};
+use super::result::{FieldResult, PMixin};
 use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
@@ -56,7 +56,7 @@ impl From<(Position, &[char; 2])> for FieldResult<DecimalsField> {
     }
 }
 
-impl Field for DecimalsField {
+impl PMixin for DecimalsField {
     fn span(&self) -> Span {
         self.meta.span
     }
