@@ -79,6 +79,6 @@ impl PMixin for FormtypeField {
     }
 
     fn highlight(&self) -> Vec<(Span, String)> {
-        vec![(self.span(), "Error".to_string())]
+        vec![(self.span(), "@keyword.directive".to_string())]
     }
 }

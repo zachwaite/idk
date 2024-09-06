@@ -35,7 +35,10 @@ impl PMixin for HKeywordsField {
     }
 
     fn highlight(&self) -> Vec<(Span, String)> {
-        vec![(self.span(), "Error".to_string())]
+        self.tokens
+            .iter()
+            .flat_map(|t| t.highlight())
+            .collect::<Vec<(Span, String)>>()
     }
 }
 impl From<(Position, &[char; 94])> for FieldResult<HKeywordsField> {
