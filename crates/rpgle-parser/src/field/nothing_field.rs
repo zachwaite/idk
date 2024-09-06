@@ -1,8 +1,8 @@
 use std::{collections::HashSet, fmt::Display};
 
-use super::result::{FieldResult, PMixin};
+use super::result::FieldResult;
 use super::IdkField;
-use crate::meta::{Meta, Position, Span};
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

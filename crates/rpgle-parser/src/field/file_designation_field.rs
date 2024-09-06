@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use super::result::{FieldResult, PMixin};
-use crate::meta::{Meta, Position, Span};
+use super::result::FieldResult;
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]

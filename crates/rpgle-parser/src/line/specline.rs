@@ -4,7 +4,8 @@ use super::{
     CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, ExtF2CSpecLine, FSpecLine,
     FSpecLineContinuation, FreeCSpecLine, HSpecLine, IdkSpecLine, TraditionalCSpecLine,
 };
-use crate::field::{has_extf2_optoken, PMixin};
+use crate::field::has_extf2_optoken;
+use crate::meta::PMixin;
 
 pub enum SpecLine {
     Idk(IdkSpecLine),

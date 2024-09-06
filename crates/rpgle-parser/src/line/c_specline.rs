@@ -1,10 +1,10 @@
 use crate::field::{
     CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field,
-    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, PMixin, ResultField,
+    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, ResultField,
     ResultLengthField,
 };
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::{Position, Span};
+use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

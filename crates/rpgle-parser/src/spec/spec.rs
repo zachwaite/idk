@@ -4,8 +4,7 @@ use super::d_spec::DSpec;
 use super::f_spec::FSpec;
 use super::h_spec::HSpec;
 use super::idk_spec::IdkSpec;
-use crate::field::PMixin;
-use crate::meta::Span;
+use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

@@ -1,6 +1,5 @@
-use crate::field::PMixin;
 use crate::line::{IdkSpecLine, SpecLine};
-use crate::meta::Span;
+use crate::meta::{PMixin, Span};
 use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;

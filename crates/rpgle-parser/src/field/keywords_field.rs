@@ -1,9 +1,9 @@
 use std::fmt::Display;
 
-use super::result::{FieldResult, PMixin};
+use super::result::FieldResult;
 use super::IdkField;
 use crate::free::{tokenize, HToken};
-use crate::meta::{Meta, Position, Span};
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
 // hspec

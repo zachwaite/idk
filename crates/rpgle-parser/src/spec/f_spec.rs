@@ -1,5 +1,4 @@
-use crate::field::PMixin;
-use crate::meta::Span;
+use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

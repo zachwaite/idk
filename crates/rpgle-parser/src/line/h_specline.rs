@@ -1,6 +1,6 @@
-use crate::field::{FieldResult, FormtypeField, HKeywordsField, PMixin, SequenceField};
+use crate::field::{FieldResult, FormtypeField, HKeywordsField, SequenceField};
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::{Position, Span};
+use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

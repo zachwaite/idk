@@ -1,5 +1,4 @@
-use crate::field::PMixin;
-use crate::meta::{Meta, Position, Span};
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::fmt;

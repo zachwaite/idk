@@ -1,11 +1,11 @@
 use crate::field::{
     DeviceField, EndfileField, FieldResult, FileAdditionField, FileDesignationField,
     FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField, FormtypeField,
-    KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField, PMixin,
+    KeyLengthField, KeywordsField, LimitsProcessingField, NameField, NothingField,
     RecordAddressTypeField, RecordLengthField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
-use crate::meta::{Position, Span};
+use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

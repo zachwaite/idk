@@ -1,5 +1,5 @@
-use crate::field::{FieldResult, IdkField, PMixin};
-use crate::meta::{Position, Span};
+use crate::field::{FieldResult, IdkField};
+use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 

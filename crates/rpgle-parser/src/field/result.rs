@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use crate::meta::Span;
+use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -20,11 +20,6 @@ where
             Self::Idk(fld) => write!(f, "{}", fld.to_string()),
         }
     }
-}
-
-pub trait PMixin {
-    fn highlight(&self) -> Vec<(Span, String)>;
-    fn span(&self) -> Span;
 }
 
 impl<T> PMixin for FieldResult<T>
