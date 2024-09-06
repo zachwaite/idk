@@ -1,3 +1,7 @@
+use super::lexer::{
+    ch, is_identifier_char, peek_n, read_all, read_char, read_identifier, read_spaces_or_tabs,
+    Lexer, LexerState,
+};
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -45,68 +49,6 @@ impl PMixin for HToken {
     fn span(&self) -> crate::Span {
         self.meta.span
     }
-}
-
-struct LexerState {
-    origin: Position,
-    col: usize,
-}
-
-struct Lexer {
-    state: RefCell<LexerState>,
-    input: Vec<char>,
-}
-
-fn ch(lexer: &Lexer) -> Option<&char> {
-    let idx = lexer.state.borrow().col;
-    lexer.input.get(idx)
-}
-
-fn is_identifier_char(ch: &char) -> bool {
-    ch.is_alphanumeric() || *ch == '@' || *ch == '$' || *ch == '-' || *ch == '#'
-}
-
-pub fn is_space_or_tab(ch: &char) -> bool {
-    match ch {
-        ' ' => true,
-        '\t' => true,
-        _ => false,
-    }
-}
-
-fn peek_n(lexer: &Lexer, n: usize) -> Option<&char> {
-    let idx = lexer.state.borrow().col;
-    lexer.input.get(idx + n)
-}
-
-fn read_char(lexer: &Lexer) -> char {
-    let out = *ch(lexer).expect("read_char() requires a length check prior to call");
-    lexer.state.borrow_mut().col += 1;
-    out
-}
-
-fn read_all(lexer: &Lexer) -> Vec<char> {
-    let mut out = vec![];
-    while ch(lexer).is_some() {
-        out.push(read_char(lexer));
-    }
-    out
-}
-
-fn read_spaces_or_tabs(lexer: &Lexer) -> Vec<char> {
-    let mut out = vec![];
-    while ch(lexer).is_some() && is_space_or_tab(&ch(lexer).unwrap()) {
-        out.push(read_char(lexer));
-    }
-    out
-}
-
-fn read_identifier(lexer: &Lexer) -> Vec<char> {
-    let mut out = vec![];
-    while ch(lexer).is_some() && is_identifier_char(&ch(lexer).unwrap()) {
-        out.push(read_char(lexer));
-    }
-    out
 }
 
 fn next_token(lexer: &Lexer) -> Option<HToken> {
