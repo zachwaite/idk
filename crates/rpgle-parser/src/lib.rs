@@ -1,5 +1,6 @@
 mod cst;
 mod field;
+mod free;
 mod line;
 mod meta;
 mod spec;

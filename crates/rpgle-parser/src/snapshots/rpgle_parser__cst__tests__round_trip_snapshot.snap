@@ -35,19 +35,20 @@ specs:
               digs: []
               hlgroup: Normal
         keywords:
-          Idk:
-            value: " OPTION(*nodebugio:*srcstmt)                                                                  "
-            meta:
-              span:
-                start:
-                  row: 0
-                  col: 6
-                end:
-                  row: 0
-                  col: 100
-              text: " OPTION(*nodebugio:*srcstmt)                                                                  "
-              digs: []
-              hlgroup: Normal
+          Ok:
+            tokens:
+              - kind: Idk
+                meta:
+                  span:
+                    start:
+                      row: 0
+                      col: 6
+                    end:
+                      row: 0
+                      col: 100
+                  text: " OPTION(*nodebugio:*srcstmt)                                                                  "
+                  digs: []
+                  hlgroup: Normal
       continuations: []
   - F:
       line:
