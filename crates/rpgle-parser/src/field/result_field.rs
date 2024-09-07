@@ -32,6 +32,6 @@ impl PMixin for ResultField {
     }
 
     fn highlight(&self) -> Vec<(Span, String)> {
-        vec![(self.span(), "Normal".to_string())]
+        vec![(self.span(), "Identifier".to_string())]
     }
 }
