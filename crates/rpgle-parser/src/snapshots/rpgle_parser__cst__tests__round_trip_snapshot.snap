@@ -1110,17 +1110,18 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "                                                         "
-            meta:
-              span:
-                start:
-                  row: 7
-                  col: 43
-                end:
-                  row: 7
-                  col: 100
-              text: "                                                         "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 7
+                      col: 43
+                    end:
+                      row: 7
+                      col: 100
+                  text: "                                                         "
       continuations: []
   - D:
       line:
@@ -1257,17 +1258,58 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "EXTPGM('QCMDEXC')                                        "
-            meta:
-              span:
-                start:
-                  row: 8
-                  col: 43
-                end:
-                  row: 8
-                  col: 100
-              text: "EXTPGM('QCMDEXC')                                        "
+          Ok:
+            tokens:
+              - kind: Identifier
+                meta:
+                  span:
+                    start:
+                      row: 8
+                      col: 43
+                    end:
+                      row: 8
+                      col: 49
+                  text: EXTPGM
+              - kind: LParen
+                meta:
+                  span:
+                    start:
+                      row: 8
+                      col: 49
+                    end:
+                      row: 8
+                      col: 50
+                  text: (
+              - kind: StringLiteral
+                meta:
+                  span:
+                    start:
+                      row: 8
+                      col: 50
+                    end:
+                      row: 8
+                      col: 59
+                  text: "'QCMDEXC'"
+              - kind: RParen
+                meta:
+                  span:
+                    start:
+                      row: 8
+                      col: 59
+                    end:
+                      row: 8
+                      col: 60
+                  text: )
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 8
+                      col: 60
+                    end:
+                      row: 8
+                      col: 100
+                  text: "                                        "
       continuations: []
   - D:
       line:
@@ -1405,17 +1447,18 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "                                                         "
-            meta:
-              span:
-                start:
-                  row: 9
-                  col: 43
-                end:
-                  row: 9
-                  col: 100
-              text: "                                                         "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 9
+                      col: 43
+                    end:
+                      row: 9
+                      col: 100
+                  text: "                                                         "
       continuations: []
   - D:
       line:
@@ -1554,17 +1597,18 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "                                                         "
-            meta:
-              span:
-                start:
-                  row: 10
-                  col: 43
-                end:
-                  row: 10
-                  col: 100
-              text: "                                                         "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 10
+                      col: 43
+                    end:
+                      row: 10
+                      col: 100
+                  text: "                                                         "
       continuations: []
   - Comment:
       line:

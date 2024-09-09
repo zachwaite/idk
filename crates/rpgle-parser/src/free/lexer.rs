@@ -33,6 +33,27 @@ pub fn peek_n(lexer: &Lexer, n: usize) -> Option<&char> {
     lexer.input.get(idx + n)
 }
 
+pub fn peek_until(lexer: &Lexer, x: char) -> Option<&char> {
+    let mut c = 1;
+    loop {
+        if let Some(xx) = peek_n(lexer, c) {
+            if *xx == x {
+                return Some(xx);
+            } else {
+                c += 1;
+                if c < 1000 {
+                    continue;
+                } else {
+                    todo!()
+                }
+            };
+        } else {
+            return None;
+        }
+    }
+}
+
+// `read_X()` functions expect you to verify they are valid before calling
 pub fn read_char(lexer: &Lexer) -> char {
     let out = *ch(lexer).expect("read_char() requires a length check prior to call");
     lexer.state.borrow_mut().col += 1;
@@ -43,6 +64,32 @@ pub fn read_all(lexer: &Lexer) -> Vec<char> {
     let mut out = vec![];
     while ch(lexer).is_some() {
         out.push(read_char(lexer));
+    }
+    out
+}
+
+pub fn read_until(lexer: &Lexer, x: char) -> Vec<char> {
+    let mut c = 0;
+    let mut out = vec![];
+    loop {
+        match ch(lexer) {
+            Some(xx) => {
+                if *xx == x {
+                    break;
+                } else {
+                    out.push(read_char(lexer));
+                    c += 1;
+                    if c < 1000 {
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            None => {
+                break;
+            }
+        }
     }
     out
 }
@@ -60,5 +107,20 @@ pub fn read_identifier(lexer: &Lexer) -> Vec<char> {
     while ch(lexer).is_some() && is_identifier_char(&ch(lexer).unwrap()) {
         out.push(read_char(lexer));
     }
+    out
+}
+
+pub fn read_string_literal(lexer: &Lexer) -> Vec<char> {
+    let mut out = vec![];
+    // The caller must check the first char is a quote
+    // AND the last char is a quote - see `peek_until()`
+    let first_quote = read_char(lexer);
+    out.push(first_quote);
+
+    let mut literals = read_until(lexer, '\'');
+    out.append(&mut literals);
+
+    let last_quote = read_char(lexer);
+    out.push(last_quote);
     out
 }
