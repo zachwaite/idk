@@ -20,6 +20,10 @@ pub fn is_identifier_char(ch: &char) -> bool {
     ch.is_alphanumeric() || *ch == '@' || *ch == '$' || *ch == '-' || *ch == '#'
 }
 
+pub fn is_numeric(ch: &char) -> bool {
+    ch.is_numeric()
+}
+
 pub fn is_space_or_tab(ch: &char) -> bool {
     match ch {
         ' ' => true,
@@ -105,6 +109,14 @@ pub fn read_spaces_or_tabs(lexer: &Lexer) -> Vec<char> {
 pub fn read_identifier(lexer: &Lexer) -> Vec<char> {
     let mut out = vec![];
     while ch(lexer).is_some() && is_identifier_char(&ch(lexer).unwrap()) {
+        out.push(read_char(lexer));
+    }
+    out
+}
+
+pub fn read_number(lexer: &Lexer) -> Vec<char> {
+    let mut out = vec![];
+    while ch(lexer).is_some() && is_numeric(&ch(lexer).unwrap()) {
         out.push(read_char(lexer));
     }
     out
