@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 249
+assertion_line: 248
 expression: cst
 ---
 specs:
@@ -309,17 +309,18 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "                                                         "
-            meta:
-              span:
-                start:
-                  row: 1
-                  col: 43
-                end:
-                  row: 1
-                  col: 100
-              text: "                                                         "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 1
+                      col: 43
+                    end:
+                      row: 1
+                      col: 100
+                  text: "                                                         "
       continuations: []
   - F:
       line:
@@ -516,17 +517,18 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: "                                                         "
-            meta:
-              span:
-                start:
-                  row: 2
-                  col: 43
-                end:
-                  row: 2
-                  col: 100
-              text: "                                                         "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 2
+                      col: 43
+                    end:
+                      row: 2
+                      col: 100
+                  text: "                                                         "
       continuations: []
   - F:
       line:
@@ -723,17 +725,88 @@ specs:
                   col: 43
               text: " "
         keywords:
-          Idk:
-            value: " Rename(EVTFMT:VEVTFMT)                                  "
-            meta:
-              span:
-                start:
-                  row: 3
-                  col: 43
-                end:
-                  row: 3
-                  col: 100
-              text: " Rename(EVTFMT:VEVTFMT)                                  "
+          Ok:
+            tokens:
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 43
+                    end:
+                      row: 3
+                      col: 44
+                  text: " "
+              - kind: Identifier
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 44
+                    end:
+                      row: 3
+                      col: 50
+                  text: Rename
+              - kind: LParen
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 50
+                    end:
+                      row: 3
+                      col: 51
+                  text: (
+              - kind: Identifier
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 51
+                    end:
+                      row: 3
+                      col: 57
+                  text: EVTFMT
+              - kind: Colon
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 57
+                    end:
+                      row: 3
+                      col: 58
+                  text: ":"
+              - kind: Identifier
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 58
+                    end:
+                      row: 3
+                      col: 65
+                  text: VEVTFMT
+              - kind: RParen
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 65
+                    end:
+                      row: 3
+                      col: 66
+                  text: )
+              - kind: Whitespace
+                meta:
+                  span:
+                    start:
+                      row: 3
+                      col: 66
+                    end:
+                      row: 3
+                      col: 100
+                  text: "                                  "
       continuations:
         - sequence:
             Ok:
@@ -772,17 +845,58 @@ specs:
                     col: 43
                 text: "                                     "
           keywords:
-            Idk:
-              value: "Prefix(V)                                                "
-              meta:
-                span:
-                  start:
-                    row: 4
-                    col: 43
-                  end:
-                    row: 4
-                    col: 100
-                text: "Prefix(V)                                                "
+            Ok:
+              tokens:
+                - kind: Identifier
+                  meta:
+                    span:
+                      start:
+                        row: 4
+                        col: 43
+                      end:
+                        row: 4
+                        col: 49
+                    text: Prefix
+                - kind: LParen
+                  meta:
+                    span:
+                      start:
+                        row: 4
+                        col: 49
+                      end:
+                        row: 4
+                        col: 50
+                    text: (
+                - kind: Identifier
+                  meta:
+                    span:
+                      start:
+                        row: 4
+                        col: 50
+                      end:
+                        row: 4
+                        col: 51
+                    text: V
+                - kind: RParen
+                  meta:
+                    span:
+                      start:
+                        row: 4
+                        col: 51
+                      end:
+                        row: 4
+                        col: 52
+                    text: )
+                - kind: Whitespace
+                  meta:
+                    span:
+                      start:
+                        row: 4
+                        col: 52
+                      end:
+                        row: 4
+                        col: 100
+                    text: "                                                "
   - Comment:
       line:
         sequence:

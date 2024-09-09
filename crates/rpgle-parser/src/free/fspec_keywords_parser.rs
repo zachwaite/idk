@@ -9,7 +9,7 @@ use std::fmt;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum HTokenKind {
+pub enum FTokenKind {
     Idk,
     Whitespace,
     Identifier,
@@ -20,28 +20,28 @@ pub enum HTokenKind {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HToken {
-    pub kind: HTokenKind,
+pub struct FToken {
+    pub kind: FTokenKind,
     pub meta: Meta,
 }
 
-impl Display for HToken {
+impl Display for FToken {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let out = &self.meta.text;
         write!(f, "{}", out)
     }
 }
 
-impl PMixin for HToken {
+impl PMixin for FToken {
     fn highlight(&self) -> Vec<(Span, String)> {
         let hlgroup = match self.kind {
-            HTokenKind::Idk => "Normal",
-            HTokenKind::Whitespace => "Normal",
-            HTokenKind::Colon => "Normal",
-            HTokenKind::Identifier => "Identifier",
-            HTokenKind::Indicator => "@variable.builtin",
-            HTokenKind::LParen => "Normal",
-            HTokenKind::RParen => "Normal",
+            FTokenKind::Idk => "Normal",
+            FTokenKind::Whitespace => "Normal",
+            FTokenKind::Colon => "Normal",
+            FTokenKind::Identifier => "Identifier",
+            FTokenKind::Indicator => "@variable.builtin",
+            FTokenKind::LParen => "Normal",
+            FTokenKind::RParen => "Normal",
         };
         vec![(self.span(), hlgroup.to_string())]
     }
@@ -51,7 +51,7 @@ impl PMixin for HToken {
     }
 }
 
-fn next_token(lexer: &Lexer) -> Option<HToken> {
+fn next_token(lexer: &Lexer) -> Option<FToken> {
     // guard
     if ch(lexer).is_none() {
         return None;
@@ -67,25 +67,25 @@ fn next_token(lexer: &Lexer) -> Option<HToken> {
         // whitespace
         Some(' ') | Some('\t') => {
             let chars = read_spaces_or_tabs(lexer);
-            let kind = HTokenKind::Whitespace;
+            let kind = FTokenKind::Whitespace;
             (kind, chars)
         }
         // lparen
         Some('(') => {
             let chars = vec![read_char(lexer)];
-            let kind = HTokenKind::LParen;
+            let kind = FTokenKind::LParen;
             (kind, chars)
         }
         // rparen
         Some(')') => {
             let chars = vec![read_char(lexer)];
-            let kind = HTokenKind::RParen;
+            let kind = FTokenKind::RParen;
             (kind, chars)
         }
         // colon
         Some(':') => {
             let chars = vec![read_char(lexer)];
-            let kind = HTokenKind::Colon;
+            let kind = FTokenKind::Colon;
             (kind, chars)
         }
         // asterisk
@@ -97,17 +97,17 @@ fn next_token(lexer: &Lexer) -> Option<HToken> {
                         let _ = read_char(lexer);
                         let mut chars = vec!['*'];
                         chars.append(&mut read_identifier(lexer));
-                        let kind = HTokenKind::Indicator;
+                        let kind = FTokenKind::Indicator;
                         (kind, chars)
                     } else {
                         let chars = read_all(lexer);
-                        let kind = HTokenKind::Idk;
+                        let kind = FTokenKind::Idk;
                         (kind, chars)
                     }
                 }
                 None => {
                     let chars = read_all(lexer);
-                    let kind = HTokenKind::Idk;
+                    let kind = FTokenKind::Idk;
                     (kind, chars)
                 }
             }
@@ -116,27 +116,27 @@ fn next_token(lexer: &Lexer) -> Option<HToken> {
         Some(x) => match is_identifier_char(&x) {
             true => {
                 let chars = read_identifier(lexer);
-                let kind = HTokenKind::Identifier;
+                let kind = FTokenKind::Identifier;
                 (kind, chars)
             }
             false => {
                 let chars = read_all(lexer);
-                let kind = HTokenKind::Idk;
+                let kind = FTokenKind::Idk;
                 (kind, chars)
             }
         },
         _ => {
             let chars = read_all(lexer);
-            let kind = HTokenKind::Idk;
+            let kind = FTokenKind::Idk;
             (kind, chars)
         }
     };
     let meta = Meta::from((start, chars.as_slice()));
-    let tok = HToken { kind, meta };
+    let tok = FToken { kind, meta };
     Some(tok)
 }
 
-pub fn tokenize_hspec_kw(pos: Position, chars: &[char; 94]) -> Vec<HToken> {
+pub fn tokenize_fspec_kw(pos: Position, chars: &[char; 57]) -> Vec<FToken> {
     let state = LexerState {
         origin: pos,
         col: 0,
