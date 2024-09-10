@@ -1,8 +1,9 @@
 use std::{collections::HashSet, fmt::Display};
 
 use super::{
-    CSpecLine, CommentSpecLine, DSpecLine, DSpecLineContinuation, ExtF2CSpecLine, FSpecLine,
-    FSpecLineContinuation, FreeCSpecLine, HSpecLine, IdkSpecLine, TraditionalCSpecLine,
+    CSpecLine, CommentSpecLine, CompilerDirectiveSpecLine, DSpecLine, DSpecLineContinuation,
+    ExtF2CSpecLine, FSpecLine, FSpecLineContinuation, FreeCSpecLine, HSpecLine, IdkSpecLine,
+    TraditionalCSpecLine,
 };
 use crate::field::has_extf2_optoken;
 use crate::meta::PMixin;
@@ -10,6 +11,7 @@ use crate::meta::PMixin;
 pub enum SpecLine {
     Idk(IdkSpecLine),
     Comment(CommentSpecLine),
+    CompilerDirective(CompilerDirectiveSpecLine),
     HSpec(HSpecLine),
     FSpec(FSpecLine),
     FSpecContinuation(FSpecLineContinuation),
@@ -28,6 +30,10 @@ impl From<(usize, &[char; 100])> for SpecLine {
             (_, '*') => {
                 let line = CommentSpecLine::from((idx, chars));
                 SpecLine::Comment(line)
+            }
+            (_, '/') => {
+                let line = CompilerDirectiveSpecLine::from((idx, chars));
+                SpecLine::CompilerDirective(line)
             }
             ('H', _) => {
                 let line = HSpecLine::from((idx, chars));
@@ -81,6 +87,7 @@ impl Display for SpecLine {
         match self {
             Self::Idk(line) => write!(f, "{}", line.to_string()),
             Self::Comment(line) => write!(f, "{}", line.to_string()),
+            Self::CompilerDirective(line) => write!(f, "{}", line.to_string()),
             Self::HSpec(line) => write!(f, "{}", line.to_string()),
             Self::FSpec(line) => write!(f, "{}", line.to_string()),
             Self::FSpecContinuation(line) => write!(f, "{}", line.to_string()),
@@ -96,6 +103,7 @@ impl SpecLine {
         match self {
             Self::Idk(_) => "IdkSpecLine".to_string(),
             Self::Comment(_) => "CommentSpecLine".to_string(),
+            Self::CompilerDirective(_) => "CompilerDirectiveSpecLine".to_string(),
             Self::HSpec(_) => "HSpecLine".to_string(),
             Self::FSpec(_) => "FSpecLine".to_string(),
             Self::FSpecContinuation(_) => "FSpecLineContinuation".to_string(),
@@ -110,6 +118,7 @@ impl PMixin for SpecLine {
         match self {
             SpecLine::Idk(line) => line.highlight(),
             SpecLine::Comment(line) => line.highlight(),
+            SpecLine::CompilerDirective(line) => line.highlight(),
             SpecLine::HSpec(line) => line.highlight(),
             SpecLine::FSpec(line) => line.highlight(),
             SpecLine::FSpecContinuation(line) => line.highlight(),
@@ -123,6 +132,7 @@ impl PMixin for SpecLine {
         match self {
             SpecLine::Idk(line) => line.span(),
             SpecLine::Comment(line) => line.span(),
+            SpecLine::CompilerDirective(line) => line.span(),
             SpecLine::HSpec(line) => line.span(),
             SpecLine::FSpec(line) => line.span(),
             SpecLine::FSpecContinuation(line) => line.span(),

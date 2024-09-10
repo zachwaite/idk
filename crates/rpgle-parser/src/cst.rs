@@ -1,6 +1,6 @@
 use crate::line::{IdkSpecLine, SpecLine};
 use crate::meta::{PMixin, Span};
-use crate::spec::{CSpec, CommentSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
+use crate::spec::{CSpec, CommentSpec, CompilerDirectiveSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -117,6 +117,11 @@ impl From<Vec<SpecLine>> for CST {
                 SpecLine::Comment(line) => {
                     let spec = CommentSpec { line: line.clone() };
                     specs.push(Spec::Comment(spec));
+                    i += 1;
+                }
+                SpecLine::CompilerDirective(line) => {
+                    let spec = CompilerDirectiveSpec { line: line.clone() };
+                    specs.push(Spec::CompilerDirective(spec));
                     i += 1;
                 }
                 SpecLine::HSpec(line) => {

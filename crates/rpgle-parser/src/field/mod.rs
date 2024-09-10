@@ -1,5 +1,6 @@
 mod code_field;
 mod comment_field;
+mod compiler_directive_field;
 mod control_level_field;
 mod datastructure_type_field;
 mod datatype_field;
@@ -36,6 +37,7 @@ mod sequence_field;
 
 pub use code_field::CodeField;
 pub use comment_field::CommentField;
+pub use compiler_directive_field::CompilerDirectiveField;
 pub use control_level_field::{ControlLevel, ControlLevelField};
 pub use datastructure_type_field::{DatastructureType, DatastructureTypeField};
 pub use datatype_field::{Datatype, DatatypeField};

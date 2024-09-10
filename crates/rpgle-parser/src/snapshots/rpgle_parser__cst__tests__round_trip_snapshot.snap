@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/cst.rs
-assertion_line: 248
+assertion_line: 253
 expression: cst
 ---
 specs:
@@ -1648,11 +1648,11 @@ specs:
                   row: 11
                   col: 100
               text: "**********************************************************************************************"
-  - Idk:
+  - CompilerDirective:
       line:
-        idk:
-          Idk:
-            value: "      /free                                                                                         "
+        sequence:
+          Ok:
+            value: "     "
             meta:
               span:
                 start:
@@ -1660,8 +1660,33 @@ specs:
                   col: 0
                 end:
                   row: 12
-                  col: 100
-              text: "      /free                                                                                         "
+                  col: 5
+              text: "     "
+        form_type:
+          Ok:
+            value: Empty
+            meta:
+              span:
+                start:
+                  row: 12
+                  col: 5
+                end:
+                  row: 12
+                  col: 6
+              text: " "
+        directive:
+          Ok:
+            tokens:
+              - kind: Idk
+                meta:
+                  span:
+                    start:
+                      row: 12
+                      col: 6
+                    end:
+                      row: 12
+                      col: 100
+                  text: "/free                                                                                         "
   - C:
       line:
         Free:

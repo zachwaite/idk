@@ -1,5 +1,6 @@
 mod c_specline;
 mod comment_specline;
+mod compiler_directive_specline;
 mod d_specline;
 mod f_specline;
 mod h_specline;
@@ -11,6 +12,7 @@ pub use c_specline::{
     CSpecLine, CSpecLineContinuation, ExtF2CSpecLine, FreeCSpecLine, TraditionalCSpecLine,
 };
 pub use comment_specline::CommentSpecLine;
+pub use compiler_directive_specline::CompilerDirectiveSpecLine;
 pub use d_specline::{DSpecLine, DSpecLineContinuation};
 pub use f_specline::{FSpecLine, FSpecLineContinuation};
 pub use h_specline::{HSpecLine, HSpecLineContinuation};
