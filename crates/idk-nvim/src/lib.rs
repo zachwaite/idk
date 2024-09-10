@@ -202,13 +202,27 @@ impl Highlighter {
             }
         }
         // add new mark
-        let opts = oxi::api::opts::SetExtmarkOpts::builder()
-            .end_row(meta.end_row)
-            .end_col(meta.end_col)
-            .hl_group(&meta.hl_group)
-            .build();
-        self.buf
-            .set_extmark(self.namespace_id, meta.start_row, meta.start_col, &opts)?;
+        // line length can be shorter than the end_col if formatting hasn't happened
+        let maxlen = self
+            .buf
+            .get_lines(meta.start_row..=meta.end_row, true)?
+            .map(|line| line.len())
+            .max()
+            .expect("This should be the max length of lines...");
+        if meta.start_col <= maxlen {
+            let endcol = if meta.end_col <= maxlen {
+                meta.end_col
+            } else {
+                maxlen
+            };
+            let opts = oxi::api::opts::SetExtmarkOpts::builder()
+                .end_row(meta.end_row)
+                .end_col(endcol)
+                .hl_group(&meta.hl_group)
+                .build();
+            self.buf
+                .set_extmark(self.namespace_id, meta.start_row, meta.start_col, &opts)?;
+        }
         Ok(())
     }
 
@@ -220,54 +234,21 @@ impl Highlighter {
             input.push_str(&line.to_string());
             input.push_str("\n");
         }
-
-        // legacy rpgle-lexer based
-        // let lexer = new_lexer(&input);
-        // let mut front_kind = TokenKind::Eof;
-        // if let Ok(tok) = next_token(&lexer) {
-        //     front_kind = tok.kind;
-        // }
-        // let mut counter = 0;
-        // while front_kind != TokenKind::Eof && counter < 1000000 {
-        //     match next_token(&lexer) {
-        //         Ok(tok) => {
-        //             front_kind = tok.kind;
-        //             let grp = get_hl_group(&tok.kind);
-        //             if grp != "Normal" {
-        //                 let meta = HighlightMeta::new(
-        //                     tok.span.start.row,
-        //                     tok.span.start.col,
-        //                     tok.span.end.row,
-        //                     tok.span.end.col,
-        //                     &grp,
-        //                 );
-        //                 if env::var("DEBUG").is_ok() {
-        //                     oxi::print!("{}: {} {}...{}\n", counter, front_kind, &meta, tok.text);
-        //                 }
-        //                 self.highlight(&meta)?;
-        //             }
-        //             counter += 1;
-        //         }
-        //         Err(e) => {
-        //             oxi::print!("{}\n", e);
-        //             return Ok(());
-        //         }
-        //     }
-        // }
-        // if env::var("DEBUG").is_ok() {
-        //     oxi::print!("{}: {}\n", counter, front_kind);
-        // }
-
-        // rpgle-parser based
         let metas = highlight_all(&input);
         if env::var("DEBUG").is_ok() {
-            oxi::print!("----------------------------");
-            oxi::print!("==={}===", metas.len());
+            let _ = std::fs::write(
+                "/tmp/highlights.txt",
+                metas
+                    .iter()
+                    .map(|m| {
+                        let mut out = m.to_string();
+                        out.push_str("\n");
+                        out
+                    })
+                    .collect::<String>(),
+            );
         }
         for meta in metas.iter() {
-            if env::var("DEBUG").is_ok() {
-                oxi::print!("{}", meta);
-            }
             self.highlight(meta)?;
         }
         Ok(())
