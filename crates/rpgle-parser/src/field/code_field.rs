@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
 use super::result::FieldResult;
-use crate::free::{tokenize, Token, TokenKind};
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::free::{tokenize, Token};
+use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -48,11 +48,29 @@ impl From<(Position, &[char; 15])> for FieldResult<OperationField> {
 }
 
 pub fn has_extf2_optoken(chars: &[char; 100]) -> bool {
-    // TODO: extract to free parser
-    match chars[25..=34] {
-        ['C', 'A', 'L', 'L', 'P', ..] => true,
-        ['D', 'O', 'U', ..] => true,
-        // ...
+    let literal = chars[25..=34].iter().collect::<String>();
+    match literal.trim().to_uppercase().as_str() {
+        "CALLP" => true,
+        "DATA-GEN" => true,
+        "DATA-INTO" => true,
+        "DOU" => true,
+        "DOW" => true,
+        "ELSEIF" => true,
+        "EVAL-CORR" => true,
+        "EVALR" => true,
+        "EVAL" => true,
+        "FOR" => true,
+        "FOR-EACH" => true,
+        "IF" => true,
+        "ON-ERROR" => true,
+        "ON-EXCP" => true,
+        "ON-EXIT" => true,
+        "RETURN" => true,
+        "SND-MSG" => true,
+        "SORTA" => true,
+        "WHEN" => true,
+        "XML-INTO" => true,
+        "XML-SAX" => true,
         _ => false,
     }
 }
