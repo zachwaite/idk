@@ -40,6 +40,6 @@ impl PMixin for IndicatorsField {
         self.meta.span
     }
     fn highlight(&self) -> Vec<(Span, String)> {
-        vec![(self.span(), "Normal".to_string())]
+        vec![(self.span(), "@variable.builtin".to_string())]
     }
 }
