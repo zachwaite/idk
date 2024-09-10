@@ -410,7 +410,7 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
     Some(tok)
 }
 
-pub fn tokenize(pos: Position, chars: &[char; 93]) -> Vec<Token> {
+pub fn tokenize(pos: Position, chars: &[char]) -> Vec<Token> {
     let state = LexerState {
         origin: pos,
         col: 0,
