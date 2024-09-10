@@ -1,6 +1,6 @@
 use super::lexer::{
-    ch, is_identifier_char, peek_n, read_all, read_char, read_identifier, read_spaces_or_tabs,
-    Lexer, LexerState,
+    ch, is_identifier_char, peek_n, peek_until, read_all, read_char, read_identifier,
+    read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
@@ -17,6 +17,7 @@ pub enum HTokenKind {
     RParen,
     Indicator,
     Colon,
+    StringLiteral,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -42,6 +43,7 @@ impl PMixin for HToken {
             HTokenKind::Indicator => "@variable.builtin",
             HTokenKind::LParen => "Normal",
             HTokenKind::RParen => "Normal",
+            HTokenKind::StringLiteral => "String",
         };
         vec![(self.span(), hlgroup.to_string())]
     }
@@ -112,6 +114,19 @@ fn next_token(lexer: &Lexer) -> Option<HToken> {
                 }
             }
         }
+        Some('\'') => match peek_until(lexer, '\'') {
+            Some(_) => {
+                let chars = read_string_literal(lexer);
+                let kind = HTokenKind::StringLiteral;
+                (kind, chars)
+            }
+            None => {
+                let mut chars = vec!['\''];
+                chars.append(&mut read_all(lexer));
+                let kind = HTokenKind::Idk;
+                (kind, chars)
+            }
+        },
         // identifier
         Some(x) => match is_identifier_char(&x) {
             true => {
