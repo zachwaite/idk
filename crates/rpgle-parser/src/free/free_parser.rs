@@ -34,6 +34,8 @@ pub enum TokenKind {
     Identifier,
     StringLiteral,
     Indicator,
+    IndicatorValue,
+    FigurativeConstant,
     Builtin,
     // opcodes
     SetLL,
@@ -104,6 +106,8 @@ impl PMixin for Token {
             TokenKind::Identifier => "Identifier",
             TokenKind::StringLiteral => "String",
             TokenKind::Indicator => "@variable.builtin",
+            TokenKind::IndicatorValue => "@boolean",
+            TokenKind::FigurativeConstant => "@constant.builtin",
             TokenKind::Builtin => "@function.builtin",
             // opcodes
             TokenKind::SetLL => "@function.builtin",
@@ -308,8 +312,27 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
                             //indicator
                             let _ = read_char(lexer);
                             let mut chars = vec!['*'];
-                            chars.append(&mut read_identifier(lexer));
-                            let kind = TokenKind::Indicator;
+                            let mut litchars = read_identifier(lexer);
+                            let literal = litchars.iter().collect::<String>();
+                            let kind = match literal.to_uppercase().as_str() {
+                                "ON" => TokenKind::IndicatorValue,
+                                "OFF" => TokenKind::IndicatorValue,
+                                "BLANK" => TokenKind::FigurativeConstant,
+                                "BLANKS" => TokenKind::FigurativeConstant,
+                                "ZERO" => TokenKind::FigurativeConstant,
+                                "ZEROS" => TokenKind::FigurativeConstant,
+                                "HIVAL" => TokenKind::FigurativeConstant,
+                                "LOVAL" => TokenKind::FigurativeConstant,
+                                "NULL" => TokenKind::FigurativeConstant,
+                                x => {
+                                    if x.starts_with("ALL") {
+                                        TokenKind::FigurativeConstant
+                                    } else {
+                                        TokenKind::Indicator
+                                    }
+                                }
+                            };
+                            chars.append(&mut litchars);
                             (kind, chars)
                         }
                         (_, _) => {

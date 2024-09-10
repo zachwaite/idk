@@ -1982,7 +1982,7 @@ specs:
                         row: 16
                         col: 15
                     text: " "
-                - kind: Indicator
+                - kind: IndicatorValue
                   meta:
                     span:
                       start:
@@ -2159,7 +2159,7 @@ specs:
                         row: 19
                         col: 15
                     text: " "
-                - kind: Indicator
+                - kind: FigurativeConstant
                   meta:
                     span:
                       start:
@@ -2968,16 +2968,17 @@ specs:
                 text: " BegSr    "
           factor2:
             Ok:
-              value: ""
-              meta:
-                span:
-                  start:
-                    row: 29
-                    col: 34
-                  end:
-                    row: 29
-                    col: 49
-                text: "               "
+              tokens:
+                - kind: Whitespace
+                  meta:
+                    span:
+                      start:
+                        row: 29
+                        col: 34
+                      end:
+                        row: 29
+                        col: 49
+                    text: "               "
           result:
             Ok:
               value: ""
@@ -3492,16 +3493,17 @@ specs:
                 text: " ENDSR    "
           factor2:
             Ok:
-              value: ""
-              meta:
-                span:
-                  start:
-                    row: 34
-                    col: 34
-                  end:
-                    row: 34
-                    col: 49
-                text: "               "
+              tokens:
+                - kind: Whitespace
+                  meta:
+                    span:
+                      start:
+                        row: 34
+                        col: 34
+                      end:
+                        row: 34
+                        col: 49
+                    text: "               "
           result:
             Ok:
               value: ""
