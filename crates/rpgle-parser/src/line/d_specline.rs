@@ -1,7 +1,7 @@
 use crate::field::{
-    DKeywordsField, DatastructureTypeField, DatatypeField, DecimalsField, DefinitionTypeField,
+    DatastructureTypeField, DatatypeField, DecimalsField, DefinitionTypeField,
     ExternalDescriptionField, FieldResult, FormtypeField, NameField, NothingField, POSField,
-    ReservedField, SequenceField,
+    RawKeywordsField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::{PMixin, Position, Span};
@@ -21,7 +21,7 @@ pub struct DSpecLine {
     pub datatype: FieldResult<DatatypeField>,
     pub decimals: FieldResult<DecimalsField>,
     pub reserved: FieldResult<ReservedField>,
-    pub keywords: FieldResult<DKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for DSpecLine {
@@ -121,7 +121,7 @@ pub struct DSpecLineContinuation {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,
     pub nothing: FieldResult<NothingField>,
-    pub keywords: FieldResult<DKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for DSpecLineContinuation {

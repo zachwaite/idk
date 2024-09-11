@@ -1,12 +1,43 @@
 use std::fmt::Display;
 
 use super::result::FieldResult;
-use super::IdkField;
 use crate::free::{
     tokenize_dspec_kw, tokenize_fspec_kw, tokenize_hspec_kw, DToken, FToken, HToken,
 };
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
+
+// raw
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RawKeywordsField {
+    pub value: String,
+    pub meta: Meta,
+}
+impl Display for RawKeywordsField {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.meta.text)
+    }
+}
+impl PMixin for RawKeywordsField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
+    }
+}
+impl From<(Position, &[char; 57])> for FieldResult<RawKeywordsField> {
+    fn from(value: (Position, &[char; 57])) -> Self {
+        let pos = value.0;
+        let chars = value.1;
+        let meta = Meta::from((pos, chars.as_slice()));
+        Self::Ok(RawKeywordsField {
+            value: chars.iter().collect::<String>(),
+            meta,
+        })
+    }
+}
 
 // hspec
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -129,13 +160,5 @@ impl PMixin for DKeywordsField {
             .iter()
             .flat_map(|t| t.highlight())
             .collect::<Vec<(Span, String)>>()
-    }
-}
-impl From<(Position, &[char; 57])> for FieldResult<DKeywordsField> {
-    fn from(value: (Position, &[char; 57])) -> Self {
-        let pos = value.0;
-        let chars = value.1;
-        let tokens = tokenize_dspec_kw(pos, chars);
-        Self::Ok(DKeywordsField { tokens })
     }
 }

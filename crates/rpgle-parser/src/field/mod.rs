@@ -58,7 +58,7 @@ pub use formtype_field::{Formtype, FormtypeField};
 pub use idk_field::IdkField;
 pub use indicators_field::IndicatorsField;
 pub use keylength_field::{KeyLength, KeyLengthField};
-pub use keywords_field::{DKeywordsField, FKeywordsField, HKeywordsField};
+pub use keywords_field::{DKeywordsField, FKeywordsField, HKeywordsField, RawKeywordsField};
 pub use limits_processing_field::{LimitsProcessing, LimitsProcessingField};
 pub use name_field::NameField;
 pub use nothing_field::NothingField;
