@@ -1,5 +1,6 @@
 use rpgle_parser::{highlight_cst, Span, CST};
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::fmt;
 
 #[derive(Serialize, Deserialize)]
@@ -36,6 +37,9 @@ impl From<(Span, String)> for HighlightMeta {
 // main
 pub fn highlight_all(txt: &str) -> Vec<HighlightMeta> {
     if let Ok(cst) = CST::try_from(txt) {
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
+        }
         highlight_cst(cst)
             .into_iter()
             .map(|tup| HighlightMeta::from(tup))
