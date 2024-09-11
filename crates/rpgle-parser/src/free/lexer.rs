@@ -37,6 +37,23 @@ pub fn peek_n(lexer: &Lexer, n: usize) -> Option<&char> {
     lexer.input.get(idx + n)
 }
 
+pub fn peek_all(lexer: &Lexer) -> Vec<&char> {
+    let mut out = vec![];
+    let mut c = 0;
+    loop {
+        match peek_n(lexer, c) {
+            Some(x) => {
+                out.push(x);
+                c += 1;
+            }
+            None => {
+                break;
+            }
+        }
+    }
+    out
+}
+
 pub fn peek_until(lexer: &Lexer, x: char) -> Option<&char> {
     let mut c = 1;
     loop {
@@ -55,6 +72,18 @@ pub fn peek_until(lexer: &Lexer, x: char) -> Option<&char> {
             return None;
         }
     }
+}
+
+pub fn peek_until_any(lexer: &Lexer, xs: Vec<char>) -> Option<&char> {
+    for x in xs.iter() {
+        match peek_until(lexer, *x) {
+            Some(xx) => return Some(xx),
+            None => {
+                continue;
+            }
+        }
+    }
+    None
 }
 
 // `read_X()` functions expect you to verify they are valid before calling
