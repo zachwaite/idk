@@ -21,19 +21,6 @@ impl fmt::Display for HighlightMeta {
     }
 }
 
-// Deprecate this
-impl HighlightMeta {
-    pub fn new(sr: usize, sc: usize, er: usize, ec: usize, hl_group: &str) -> Self {
-        Self {
-            start_row: sr,
-            start_col: sc,
-            end_row: er,
-            end_col: ec,
-            hl_group: hl_group.to_string(),
-        }
-    }
-}
-
 impl From<(Span, String)> for HighlightMeta {
     fn from(value: (Span, String)) -> Self {
         Self {
