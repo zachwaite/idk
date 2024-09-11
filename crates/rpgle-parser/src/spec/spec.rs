@@ -8,7 +8,7 @@ use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Spec {
     Idk(IdkSpec),
     Comment(CommentSpec),

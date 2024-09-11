@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use crate::line::{DSpecLine, DSpecLineContinuation};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DSpec {
     pub line: DSpecLine,
     pub continuations: Vec<DSpecLineContinuation>,

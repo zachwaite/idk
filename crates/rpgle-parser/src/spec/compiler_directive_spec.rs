@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use crate::line::CompilerDirectiveSpecLine;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CompilerDirectiveSpec {
     pub line: CompilerDirectiveSpecLine,
 }
