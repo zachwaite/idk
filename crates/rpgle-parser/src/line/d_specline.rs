@@ -138,13 +138,15 @@ impl Display for DSpecLineContinuation {
 impl From<(usize, &[char; 100])> for DSpecLineContinuation {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
-        let start = Position::from((row, 0));
         let chars = value.1;
         Self {
-            sequence: FieldResult::from((start, pluck::<100, 0, 5, 95>(chars))),
-            form_type: FieldResult::from((start, pluck::<100, 5, 1, 94>(chars))),
-            nothing: FieldResult::from((start, pluck::<100, 6, 37, 57>(chars))),
-            keywords: FieldResult::from((start, pluck::<100, 43, 57, 0>(chars))),
+            sequence: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
+            form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
+            nothing: FieldResult::from((Position::from((row, 37)), pluck::<100, 6, 37, 57>(chars))),
+            keywords: FieldResult::from((
+                Position::from((row, 43)),
+                pluck::<100, 43, 57, 0>(chars),
+            )),
         }
     }
 }
