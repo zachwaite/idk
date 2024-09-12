@@ -17,8 +17,8 @@ impl Display for Factor1Field {
     }
 }
 
-impl From<(Position, &[char; 13])> for FieldResult<Factor1Field> {
-    fn from(value: (Position, &[char; 13])) -> Self {
+impl From<(Position, &[char; 14])> for FieldResult<Factor1Field> {
+    fn from(value: (Position, &[char; 14])) -> Self {
         let chars = value.1;
         let meta = Meta::from((value.0, chars.as_slice()));
         let value = chars.iter().filter(|c| **c != ' ').collect::<String>();
