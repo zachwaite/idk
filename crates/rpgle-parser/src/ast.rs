@@ -66,8 +66,29 @@ fn next_spec(parser: &Parser) -> Option<Spec> {
                     Some(Spec::H(spec))
                 }
                 SpecLine::FSpec(cur) => {
-                    let spec = FSpec::from((cur, vec![]));
-                    Some(Spec::F(spec))
+                    let mut continuations = vec![];
+                    loop {
+                        match peek_n(parser, 0) {
+                            Some(specline) => match specline {
+                                SpecLine::FSpecContinuation(peeked) => {
+                                    let _ = read_line(parser);
+                                    continuations.push(peeked);
+                                    continue;
+                                }
+                                SpecLine::Idk(_) | SpecLine::Comment(_) => {
+                                    let _ = read_line(parser);
+                                    continue;
+                                }
+                                _ => {
+                                    break;
+                                }
+                            },
+                            None => {
+                                break;
+                            }
+                        }
+                    }
+                    Some(Spec::F(FSpec::from((cur, continuations))))
                 }
                 SpecLine::CSpec(cur) => {
                     let spec = CSpec::from((cur, vec![]));
@@ -94,6 +115,7 @@ impl From<&CST> for AST {
                     SpecLine::DSpec(_) => true,
                     SpecLine::DSpecContinuation(_) => true,
                     SpecLine::FSpec(_) => true,
+                    SpecLine::FSpecContinuation(_) => true,
                     SpecLine::CSpec(_) => true,
                     _ => false,
                 })

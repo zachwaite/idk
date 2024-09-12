@@ -89,27 +89,9 @@ impl PMixin for HKeywordsField {
 pub struct FKeywordsField {
     pub tokens: Vec<FToken>,
 }
-impl Display for FKeywordsField {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let out = self
-            .tokens
-            .iter()
-            .map(|t| t.to_string())
-            .collect::<String>();
-        write!(f, "{}", out)
-    }
-}
 impl PMixin for FKeywordsField {
     fn span(&self) -> Span {
-        if self.tokens.len() == 0 {
-            todo!()
-        } else if self.tokens.len() == 1 {
-            self.tokens[0].span()
-        } else {
-            let start = self.tokens[0].span();
-            let end = self.tokens.last().expect("Token expected").span();
-            Span::from((start, end))
-        }
+        todo!()
     }
 
     fn highlight(&self) -> Vec<(Span, String)> {

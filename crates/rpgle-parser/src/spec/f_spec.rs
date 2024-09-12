@@ -32,38 +32,8 @@ pub struct FSpec {
     pub keywords: FieldResult<FKeywordsField>,
 }
 
-impl Display for FSpec {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut msg = String::new();
-        msg.push_str(&self.sequence.to_string());
-        msg.push_str(&self.form_type.to_string());
-        msg.push_str(&self.name.to_string());
-        msg.push_str(&self.filetype.to_string());
-        msg.push_str(&self.file_designation.to_string());
-        msg.push_str(&self.endfile.to_string());
-        msg.push_str(&self.file_addition.to_string());
-        msg.push_str(&self.file_sequence.to_string());
-        msg.push_str(&self.file_format.to_string());
-        msg.push_str(&self.record_length.to_string());
-        msg.push_str(&self.limits_processing.to_string());
-        msg.push_str(&self.keylength.to_string());
-        msg.push_str(&self.record_address_type.to_string());
-        msg.push_str(&self.file_organization.to_string());
-        msg.push_str(&self.device.to_string());
-        msg.push_str(&self.reserved.to_string());
-        msg.push_str(&self.keywords.to_string());
-        write!(f, "{}", msg)
-    }
-}
-
-impl PMixin for FSpec {
-    fn span(&self) -> Span {
-        let start = self.sequence.span();
-        let end = self.keywords.span();
-        Span::from((start, end))
-    }
-
-    fn highlight(&self) -> Vec<(Span, String)> {
+impl FSpec {
+    pub fn highlight(&self) -> Vec<(Span, String)> {
         let mut out = vec![];
         out.append(&mut self.sequence.highlight());
         out.append(&mut self.form_type.highlight());
