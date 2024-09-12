@@ -1,12 +1,12 @@
-use super::lexer::{
-    ch, is_identifier_char, peek_n, peek_until, read_all, read_char, read_identifier,
-    read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
+use super::core::{
+    ch, cut_into_metas, is_identifier_char, peek_n, peek_until, read_all, read_char,
+    read_identifier, read_spaces_or_tabs, read_string_literal, Lexer, LexerState, MetaChar,
 };
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::field::FieldResult;
+use crate::line::{DSpecLine, DSpecLineContinuation};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
-use std::fmt;
-use std::fmt::Display;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DTokenKind {
@@ -23,18 +23,11 @@ pub enum DTokenKind {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DToken {
     pub kind: DTokenKind,
-    pub meta: Meta,
+    pub metas: Vec<Meta>,
 }
 
-impl Display for DToken {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let out = &self.meta.text;
-        write!(f, "{}", out)
-    }
-}
-
-impl PMixin for DToken {
-    fn highlight(&self) -> Vec<(Span, String)> {
+impl DToken {
+    pub fn highlight(&self) -> Vec<(Span, String)> {
         let hlgroup = match self.kind {
             DTokenKind::Idk => "Normal",
             DTokenKind::Whitespace => "Normal",
@@ -45,11 +38,11 @@ impl PMixin for DToken {
             DTokenKind::RParen => "Normal",
             DTokenKind::StringLiteral => "String",
         };
-        vec![(self.span(), hlgroup.to_string())]
-    }
-
-    fn span(&self) -> crate::Span {
-        self.meta.span
+        let mut out = vec![];
+        for meta in self.metas.iter() {
+            out.push((meta.span, hlgroup.to_string()));
+        }
+        out
     }
 }
 
@@ -59,118 +52,153 @@ fn next_token(lexer: &Lexer) -> Option<DToken> {
         return None;
     }
     // happy path
-    let origin = lexer.state.borrow().origin;
-    let idx = lexer.state.borrow().col;
-    let start = Position {
-        row: origin.row,
-        col: origin.col + idx,
-    };
-    let (kind, chars) = match ch(lexer) {
-        // whitespace
-        Some(' ') | Some('\t') => {
-            let chars = read_spaces_or_tabs(lexer);
-            let kind = DTokenKind::Whitespace;
-            (kind, chars)
-        }
-        // lparen
-        Some('(') => {
-            let chars = vec![read_char(lexer)];
-            let kind = DTokenKind::LParen;
-            (kind, chars)
-        }
-        // rparen
-        Some(')') => {
-            let chars = vec![read_char(lexer)];
-            let kind = DTokenKind::RParen;
-            (kind, chars)
-        }
-        // colon
-        Some(':') => {
-            let chars = vec![read_char(lexer)];
-            let kind = DTokenKind::Colon;
-            (kind, chars)
-        }
-        // asterisk
-        Some('*') => {
-            let peeked = peek_n(lexer, 1);
-            match peeked {
-                Some(x) => {
-                    if is_identifier_char(x) {
-                        let _ = read_char(lexer);
-                        let mut chars = vec!['*'];
-                        chars.append(&mut read_identifier(lexer));
-                        let kind = DTokenKind::Indicator;
-                        (kind, chars)
-                    } else {
+    let (kind, pchars) = match ch(lexer) {
+        Some(MetaChar { value: c, .. }) => match c {
+            // whitespace
+            ' ' | '\t' => {
+                let chars = read_spaces_or_tabs(lexer);
+                let kind = DTokenKind::Whitespace;
+                (kind, chars)
+            }
+            // lparen
+            '(' => {
+                let chars = vec![read_char(lexer)];
+                let kind = DTokenKind::LParen;
+                (kind, chars)
+            }
+            // rparen
+            ')' => {
+                let chars = vec![read_char(lexer)];
+                let kind = DTokenKind::RParen;
+                (kind, chars)
+            }
+            // colon
+            ':' => {
+                let chars = vec![read_char(lexer)];
+                let kind = DTokenKind::Colon;
+                (kind, chars)
+            }
+            // asterisk
+            '*' => {
+                let peeked = peek_n(lexer, 1);
+                match peeked {
+                    Some(x) => {
+                        if is_identifier_char(&x.value) {
+                            let c = read_char(lexer);
+                            let mut chars = vec![c];
+                            chars.append(&mut read_identifier(lexer));
+                            let kind = DTokenKind::Indicator;
+                            (kind, chars)
+                        } else {
+                            let chars = read_all(lexer);
+                            let kind = DTokenKind::Idk;
+                            (kind, chars)
+                        }
+                    }
+                    None => {
                         let chars = read_all(lexer);
                         let kind = DTokenKind::Idk;
                         (kind, chars)
                     }
+                }
+            }
+            // quote
+            '\'' => match peek_until(lexer, '\'') {
+                Some(MetaChar { .. }) => {
+                    let chars = read_string_literal(lexer);
+                    let kind = DTokenKind::StringLiteral;
+                    (kind, chars)
                 }
                 None => {
                     let chars = read_all(lexer);
                     let kind = DTokenKind::Idk;
                     (kind, chars)
                 }
-            }
-        }
-        // quote
-        Some('\'') => match peek_until(lexer, '\'') {
-            Some(_) => {
-                let chars = read_string_literal(lexer);
-                let kind = DTokenKind::StringLiteral;
-                (kind, chars)
-            }
-            None => {
-                let mut chars = vec!['\''];
-                chars.append(&mut read_all(lexer));
-                let kind = DTokenKind::Idk;
-                (kind, chars)
-            }
+            },
+            // identifier
+            x => match is_identifier_char(&x) {
+                true => {
+                    let chars = read_identifier(lexer);
+                    let kind = DTokenKind::Identifier;
+                    (kind, chars)
+                }
+                false => {
+                    let chars = read_all(lexer);
+                    let kind = DTokenKind::Idk;
+                    (kind, chars)
+                }
+            },
         },
-        // identifier
-        Some(x) => match is_identifier_char(&x) {
-            true => {
-                let chars = read_identifier(lexer);
-                let kind = DTokenKind::Identifier;
-                (kind, chars)
-            }
-            false => {
-                let chars = read_all(lexer);
-                let kind = DTokenKind::Idk;
-                (kind, chars)
-            }
-        },
-        _ => {
+        None => {
             let chars = read_all(lexer);
             let kind = DTokenKind::Idk;
             (kind, chars)
         }
     };
-    let meta = Meta::from((start, chars.as_slice()));
-    let tok = DToken { kind, meta };
+    let metas = cut_into_metas(pchars);
+    let tok = DToken { kind, metas };
     Some(tok)
 }
 
-pub fn tokenize_dspec_kw(pos: Position, chars: &[char; 57]) -> Vec<DToken> {
-    let state = LexerState {
-        origin: pos,
-        col: 0,
-    };
-    let lexer = Lexer {
-        state: RefCell::new(state),
-        input: chars.to_vec(),
-    };
-    let mut tokens = vec![];
-    loop {
-        match next_token(&lexer) {
-            Some(token) => {
-                tokens.push(token);
+pub fn tokenize_dspec_kw(
+    line: &DSpecLine,
+    continuations: Vec<&DSpecLineContinuation>,
+) -> Vec<DToken> {
+    let tokens = match &line.keywords {
+        FieldResult::Ok(kw) => {
+            let mut mchars = vec![];
+            // line
+            for (i, c) in kw.value.chars().enumerate() {
+                let p = Position {
+                    row: kw.meta.span.start.row,
+                    col: kw.meta.span.start.col + i,
+                };
+                mchars.push(MetaChar {
+                    value: c,
+                    position: p,
+                });
             }
-            None => {
-                break;
+            // continuations
+            for cont in continuations {
+                match &cont.keywords {
+                    FieldResult::Ok(kw) => {
+                        for (i, c) in kw.value.chars().enumerate() {
+                            let p = Position {
+                                row: kw.meta.span.start.row,
+                                col: kw.meta.span.start.col + i,
+                            };
+                            mchars.push(MetaChar {
+                                value: c,
+                                position: p,
+                            });
+                        }
+                    }
+                    _ => continue,
+                }
             }
+            // process
+            let state = LexerState {
+                position: kw.meta.span.start,
+                idx: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: mchars,
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            tokens
         }
-    }
+        _ => vec![],
+    };
     tokens
 }

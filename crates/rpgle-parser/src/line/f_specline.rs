@@ -1,7 +1,7 @@
 use crate::field::{
-    DeviceField, EndfileField, FKeywordsField, FieldResult, FileAdditionField,
-    FileDesignationField, FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField,
-    FormtypeField, KeyLengthField, LimitsProcessingField, NameField, NothingField,
+    DeviceField, EndfileField, FieldResult, FileAdditionField, FileDesignationField,
+    FileFormatField, FileOrganizationField, FileSequenceField, FiletypeField, FormtypeField,
+    KeyLengthField, LimitsProcessingField, NameField, NothingField, RawKeywordsField,
     RecordAddressTypeField, RecordLengthField, ReservedField, SequenceField,
 };
 use crate::meta::pluck_array3 as pluck;
@@ -27,7 +27,7 @@ pub struct FSpecLine {
     pub file_organization: FieldResult<FileOrganizationField>,
     pub device: FieldResult<DeviceField>,
     pub reserved: FieldResult<ReservedField>,
-    pub keywords: FieldResult<FKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for FSpecLine {
@@ -151,7 +151,7 @@ pub struct FSpecLineContinuation {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,
     pub nothing: FieldResult<NothingField>,
-    pub keywords: FieldResult<FKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for FSpecLineContinuation {

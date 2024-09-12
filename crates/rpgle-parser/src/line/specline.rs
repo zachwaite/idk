@@ -7,7 +7,9 @@ use super::{
 };
 use crate::field::has_extf2_optoken;
 use crate::meta::PMixin;
+use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SpecLine {
     Idk(IdkSpecLine),
     Comment(CommentSpecLine),

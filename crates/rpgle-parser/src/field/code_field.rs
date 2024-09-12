@@ -2,9 +2,43 @@ use std::fmt::Display;
 
 use super::result::FieldResult;
 use crate::free::{tokenize, Token};
-use crate::meta::{PMixin, Position, Span};
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
+// raw
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RawCodeField {
+    pub value: String,
+    pub meta: Meta,
+}
+
+impl Display for RawCodeField {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.meta.text)
+    }
+}
+impl PMixin for RawCodeField {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
+    }
+}
+impl From<(Position, &[char; 93])> for FieldResult<RawCodeField> {
+    fn from(value: (Position, &[char; 93])) -> Self {
+        let pos = value.0;
+        let chars = value.1;
+        let meta = Meta::from((pos, chars.as_slice()));
+        Self::Ok(RawCodeField {
+            value: chars.iter().collect::<String>(),
+            meta,
+        })
+    }
+}
+
+// cooked
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CodeField {
     pub tokens: Vec<Token>,
@@ -38,13 +72,5 @@ impl PMixin for CodeField {
             .iter()
             .flat_map(|t| t.highlight())
             .collect::<Vec<(Span, String)>>()
-    }
-}
-impl From<(Position, &[char; 93])> for FieldResult<CodeField> {
-    fn from(value: (Position, &[char; 93])) -> Self {
-        let pos = value.0;
-        let chars = value.1;
-        let tokens = tokenize(pos, chars);
-        Self::Ok(CodeField { tokens })
     }
 }

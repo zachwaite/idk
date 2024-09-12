@@ -2,6 +2,11 @@ use super::lexer::{
     ch, is_identifier_char, is_numeric, peek_n, peek_until, read_all, read_char, read_identifier,
     read_number, read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
+use crate::field::FieldResult;
+use crate::line::{
+    ExtF2CSpecLine, ExtF2CSpecLineContinuation, FreeCSpecLine, FreeCSpecLineContinuation,
+    TraditionalCSpecLine,
+};
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -432,26 +437,99 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
     let tok = Token { kind, meta };
     Some(tok)
 }
-
-pub fn tokenize(pos: Position, chars: &[char]) -> Vec<Token> {
-    let state = LexerState {
-        origin: pos,
-        col: 0,
-    };
-    let lexer = Lexer {
-        state: RefCell::new(state),
-        input: chars.to_vec(),
-    };
-    let mut tokens = vec![];
-    loop {
-        match next_token(&lexer) {
-            Some(token) => {
-                tokens.push(token);
+// TDE: remove dupage
+pub fn tokenize_traditional_f2(line: &TraditionalCSpecLine) -> Vec<Token> {
+    match &line.factor2 {
+        FieldResult::Ok(code) => {
+            let pos = code.meta.span.start;
+            let chars = code.value.chars().collect::<Vec<char>>();
+            let state = LexerState {
+                origin: pos,
+                col: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: chars.to_vec(),
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
             }
-            None => {
-                break;
-            }
+            tokens
         }
+        _ => vec![],
     }
-    tokens
+}
+
+pub fn tokenize_extf2(
+    line: &ExtF2CSpecLine,
+    continuations: Vec<&ExtF2CSpecLineContinuation>,
+) -> Vec<Token> {
+    match &line.factor2 {
+        FieldResult::Ok(code) => {
+            let pos = code.meta.span.start;
+            let chars = code.value.chars().collect::<Vec<char>>();
+            let state = LexerState {
+                origin: pos,
+                col: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: chars.to_vec(),
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            tokens
+        }
+        _ => vec![],
+    }
+}
+
+pub fn tokenize(
+    line: &FreeCSpecLine,
+    continuations: Vec<&FreeCSpecLineContinuation>,
+) -> Vec<Token> {
+    match &line.code {
+        FieldResult::Ok(code) => {
+            let pos = code.meta.span.start;
+            let chars = code.value.chars().collect::<Vec<char>>();
+            let state = LexerState {
+                origin: pos,
+                col: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: chars.to_vec(),
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            tokens
+        }
+        _ => vec![],
+    }
 }

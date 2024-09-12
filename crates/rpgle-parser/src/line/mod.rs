@@ -9,7 +9,8 @@ pub mod specline;
 
 // re-exports
 pub use c_specline::{
-    CSpecLine, CSpecLineContinuation, ExtF2CSpecLine, FreeCSpecLine, TraditionalCSpecLine,
+    CSpecLine, CSpecLineContinuation, ExtF2CSpecLine, ExtF2CSpecLineContinuation, FreeCSpecLine,
+    FreeCSpecLineContinuation, TraditionalCSpecLine,
 };
 pub use comment_specline::CommentSpecLine;
 pub use compiler_directive_specline::CompilerDirectiveSpecLine;

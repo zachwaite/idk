@@ -35,7 +35,7 @@ mod result_field;
 mod result_length_field;
 mod sequence_field;
 
-pub use code_field::CodeField;
+pub use code_field::{CodeField, RawCodeField};
 pub use comment_field::CommentField;
 pub use compiler_directive_field::CompilerDirectiveField;
 pub use control_level_field::{ControlLevel, ControlLevelField};
@@ -47,7 +47,7 @@ pub use device_field::{Device, DeviceField};
 pub use endfile_field::{Endfile, EndfileField};
 pub use external_description_field::{ExternalDescription, ExternalDescriptionField};
 pub use factor1_field::Factor1Field;
-pub use factor2_field::Factor2Field;
+pub use factor2_field::{Factor2Field, RawFactor2Field};
 pub use file_addition_field::{FileAddition, FileAdditionField};
 pub use file_designation_field::{FileDesignation, FileDesignationField};
 pub use file_format_field::{FileFormat, FileFormatField};

@@ -1,4 +1,4 @@
-use crate::field::{FieldResult, FormtypeField, HKeywordsField, SequenceField};
+use crate::field::{FieldResult, FormtypeField, RawKeywordsField, SequenceField};
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
@@ -8,7 +8,7 @@ use std::fmt::Display;
 pub struct HSpecLine {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,
-    pub keywords: FieldResult<HKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for HSpecLine {
@@ -53,7 +53,7 @@ impl PMixin for HSpecLine {
 pub struct HSpecLineContinuation {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,
-    pub keywords: FieldResult<HKeywordsField>,
+    pub keywords: FieldResult<RawKeywordsField>,
 }
 
 impl Display for HSpecLineContinuation {

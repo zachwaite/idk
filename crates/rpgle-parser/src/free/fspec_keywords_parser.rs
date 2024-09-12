@@ -2,6 +2,8 @@ use super::lexer::{
     ch, is_identifier_char, peek_n, read_all, read_char, read_identifier, read_spaces_or_tabs,
     Lexer, LexerState,
 };
+use crate::field::FieldResult;
+use crate::line::{FSpecLine, FSpecLineContinuation};
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -136,25 +138,35 @@ fn next_token(lexer: &Lexer) -> Option<FToken> {
     Some(tok)
 }
 
-pub fn tokenize_fspec_kw(pos: Position, chars: &[char; 57]) -> Vec<FToken> {
-    let state = LexerState {
-        origin: pos,
-        col: 0,
-    };
-    let lexer = Lexer {
-        state: RefCell::new(state),
-        input: chars.to_vec(),
-    };
-    let mut tokens = vec![];
-    loop {
-        match next_token(&lexer) {
-            Some(token) => {
-                tokens.push(token);
+pub fn tokenize_fspec_kw(
+    line: &FSpecLine,
+    continuations: Vec<&FSpecLineContinuation>,
+) -> Vec<FToken> {
+    match &line.keywords {
+        FieldResult::Ok(kw) => {
+            let pos = kw.meta.span.start;
+            let chars = kw.value.chars().collect::<Vec<char>>();
+            let state = LexerState {
+                origin: pos,
+                col: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: chars.to_vec(),
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
             }
-            None => {
-                break;
-            }
+            tokens
         }
+        _ => vec![],
     }
-    tokens
 }

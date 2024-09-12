@@ -1,6 +1,5 @@
-use crate::line::{IdkSpecLine, SpecLine};
+use crate::line::SpecLine;
 use crate::meta::{PMixin, Span};
-use crate::spec::{CSpec, CommentSpec, CompilerDirectiveSpec, DSpec, FSpec, HSpec, IdkSpec, Spec};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
@@ -18,15 +17,15 @@ impl ParserException {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CST {
-    pub specs: Vec<Spec>,
+    pub lines: Vec<SpecLine>,
 }
 
 impl Display for CST {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = self
-            .specs
+            .lines
             .iter()
-            .map(|spec| spec.to_string())
+            .map(|line| line.to_string())
             .collect::<Vec<String>>()
             .join("\n");
         write!(f, "{}", out)
@@ -35,26 +34,26 @@ impl Display for CST {
 
 impl PMixin for CST {
     fn highlight(&self) -> Vec<(Span, String)> {
-        self.specs
+        self.lines
             .iter()
-            .flat_map(|s| s.highlight())
+            .flat_map(|line| line.highlight())
             .collect::<Vec<(Span, String)>>()
     }
 
     fn span(&self) -> Span {
-        if self.specs.len() == 0 {
+        if self.lines.len() == 0 {
             Span::empty()
-        } else if self.specs.len() == 1 {
-            self.specs[0].span()
+        } else if self.lines.len() == 1 {
+            self.lines[0].span()
         } else {
-            let start = self.specs[0].span();
-            let end = self.specs.last().expect("Expected Span").span();
+            let start = self.lines[0].span();
+            let end = self.lines.last().expect("Expected Span").span();
             Span::from((start, end))
         }
     }
 }
 
-pub fn highlight_cst(cst: CST) -> Vec<(Span, String)> {
+pub fn highlight_cst(cst: &CST) -> Vec<(Span, String)> {
     cst.highlight()
 }
 
@@ -94,100 +93,7 @@ impl TryFrom<&str> for CST {
             .map(|(i, chars)| SpecLine::from((i, chars)))
             .collect::<Vec<SpecLine>>();
 
-        // parse speclines into specs
-        // this is a reduction and adjacent lines need to know about each other
-        let cst = CST::from(speclines);
-        Ok(cst)
-    }
-}
-
-impl From<Vec<SpecLine>> for CST {
-    fn from(value: Vec<SpecLine>) -> Self {
-        let lines = value;
-        let mut specs: Vec<Spec> = vec![];
-        let mut i = 0;
-        while i < lines.len() {
-            let cur = &lines[i];
-            match cur {
-                SpecLine::Idk(line) => {
-                    let spec = IdkSpec { line: line.clone() };
-                    specs.push(Spec::Idk(spec));
-                    i += 1;
-                }
-                SpecLine::Comment(line) => {
-                    let spec = CommentSpec { line: line.clone() };
-                    specs.push(Spec::Comment(spec));
-                    i += 1;
-                }
-                SpecLine::CompilerDirective(line) => {
-                    let spec = CompilerDirectiveSpec { line: line.clone() };
-                    specs.push(Spec::CompilerDirective(spec));
-                    i += 1;
-                }
-                SpecLine::HSpec(line) => {
-                    let spec = HSpec {
-                        line: line.clone(),
-                        continuations: vec![],
-                    };
-                    specs.push(Spec::H(spec));
-                    i += 1;
-                }
-                SpecLine::FSpec(line) => {
-                    let spec = FSpec {
-                        line: line.clone(),
-                        continuations: vec![],
-                    };
-                    i += 1;
-                    specs.push(Spec::F(spec));
-                }
-                SpecLine::FSpecContinuation(line) => {
-                    if let Some(Spec::F(spec)) = specs.last_mut() {
-                        // if the last spec is an fspec, this continues it
-                        spec.continuations.push(line.clone());
-                        i += 1;
-                    } else {
-                        // if there is no prior last spec or it is not an fspec, then cast to idk
-                        let raw: (usize, [char; 100]) = line.to_raw();
-                        let spec = IdkSpec {
-                            line: IdkSpecLine::from((raw.0, &raw.1)),
-                        };
-                        specs.push(Spec::Idk(spec));
-                        i += 1;
-                    }
-                }
-                SpecLine::DSpec(line) => {
-                    let spec = DSpec {
-                        line: line.clone(),
-                        continuations: vec![],
-                    };
-                    i += 1;
-                    specs.push(Spec::D(spec));
-                }
-                SpecLine::DSpecContinuation(line) => {
-                    if let Some(Spec::D(spec)) = specs.last_mut() {
-                        spec.continuations.push(line.clone());
-                        i += 1;
-                    } else {
-                        let raw: (usize, [char; 100]) = line.to_raw();
-                        let spec = IdkSpec {
-                            line: IdkSpecLine::from((raw.0, &raw.1)),
-                        };
-                        specs.push(Spec::Idk(spec));
-                        i += 1;
-                    }
-                }
-                SpecLine::CSpec(line) => {
-                    let spec = CSpec {
-                        line: line.clone(),
-                        continuations: vec![],
-                    };
-                    i += 1;
-                    specs.push(Spec::C(spec));
-                }
-            };
-        }
-
-        Self { specs }
+        Ok(CST { lines: speclines })
     }
 }
 
@@ -256,13 +162,7 @@ mod tests {
         if env::var("DEBUG").is_ok() {
             let _ = std::fs::write("/tmp/observed.rpgle", &observed);
             let _ = std::fs::write("/tmp/expected.rpgle", &expected);
-            let _ = std::fs::write(
-                "/tmp/specs.txt",
-                cst.specs
-                    .iter()
-                    .map(|spec| format!("{}\n", spec.kind()))
-                    .collect::<String>(),
-            );
+            let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
         }
         assert_eq!(observed, expected);
     }

@@ -1,6 +1,6 @@
 use crate::field::{
-    CodeField, CommentField, ControlLevelField, DecimalsField, Factor1Field, Factor2Field,
-    FieldResult, FormtypeField, IndicatorsField, NothingField, OperationField, ResultField,
+    CommentField, ControlLevelField, DecimalsField, Factor1Field, FieldResult, FormtypeField,
+    IndicatorsField, NothingField, OperationField, RawCodeField, RawFactor2Field, ResultField,
     ResultLengthField,
 };
 use crate::meta::pluck_array3 as pluck;
@@ -16,7 +16,7 @@ pub struct TraditionalCSpecLine {
     pub indicators: FieldResult<IndicatorsField>,
     pub factor1: FieldResult<Factor1Field>,
     pub operation: FieldResult<OperationField>,
-    pub factor2: FieldResult<Factor2Field>,
+    pub factor2: FieldResult<RawFactor2Field>,
     pub result: FieldResult<ResultField>,
     pub result_length: FieldResult<ResultLengthField>,
     pub decimals: FieldResult<DecimalsField>,
@@ -41,20 +41,22 @@ impl From<(usize, &[char; 100])> for TraditionalCSpecLine {
             )),
             factor1: FieldResult::from((
                 Position::from((row, 11)),
-                pluck::<100, 11, 13, 76>(chars),
+                pluck::<100, 11, 14, 75>(chars),
             )),
             operation: FieldResult::from((
-                Position::from((row, 24)),
-                pluck::<100, 24, 10, 66>(chars),
+                Position::from((row, 25)),
+                pluck::<100, 25, 10, 65>(chars),
             )),
             factor2: FieldResult::from((
-                Position::from((row, 34)),
-                pluck::<100, 34, 15, 51>(chars),
+                // this doesn't match the documentation, but matches every program I can find
+                // ...wtf...wtf...wtf...wtf....
+                Position::from((row, 35)),
+                pluck::<100, 35, 13, 52>(chars),
             )),
-            result: FieldResult::from((Position::from((row, 49)), pluck::<100, 49, 13, 38>(chars))),
+            result: FieldResult::from((Position::from((row, 49)), pluck::<100, 49, 14, 37>(chars))),
             result_length: FieldResult::from((
-                Position::from((row, 62)),
-                pluck::<100, 62, 5, 33>(chars),
+                Position::from((row, 63)),
+                pluck::<100, 63, 5, 32>(chars),
             )),
             decimals: FieldResult::from((
                 Position::from((row, 67)),
@@ -125,7 +127,7 @@ pub struct ExtF2CSpecLine {
     pub indicators: FieldResult<IndicatorsField>,
     pub factor1: FieldResult<Factor1Field>,
     pub operation: FieldResult<OperationField>,
-    pub factor2: FieldResult<Factor2Field>,
+    pub factor2: FieldResult<RawFactor2Field>,
 }
 
 impl Display for ExtF2CSpecLine {
@@ -159,13 +161,13 @@ impl From<(usize, &[char; 100])> for ExtF2CSpecLine {
             )),
             factor1: FieldResult::from((
                 Position::from((row, 11)),
-                pluck::<100, 11, 13, 76>(chars),
+                pluck::<100, 11, 14, 75>(chars),
             )),
             operation: FieldResult::from((
-                Position::from((row, 24)),
-                pluck::<100, 24, 10, 66>(chars),
+                Position::from((row, 25)),
+                pluck::<100, 25, 10, 65>(chars),
             )),
-            factor2: FieldResult::from((Position::from((row, 34)), pluck::<100, 34, 66, 0>(chars))),
+            factor2: FieldResult::from((Position::from((row, 35)), pluck::<100, 35, 65, 0>(chars))),
         };
         line
     }
@@ -194,7 +196,7 @@ impl PMixin for ExtF2CSpecLine {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FreeCSpecLine {
     pub nothing: FieldResult<NothingField>,
-    pub code: FieldResult<CodeField>,
+    pub code: FieldResult<RawCodeField>,
 }
 
 impl Display for FreeCSpecLine {

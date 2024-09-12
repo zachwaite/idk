@@ -6,7 +6,6 @@ use super::idk_spec::IdkSpec;
 use super::{c_spec::CSpec, CompilerDirectiveSpec};
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Spec {
@@ -18,22 +17,6 @@ pub enum Spec {
     D(DSpec),
     C(CSpec),
 }
-
-impl Display for Spec {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let msg = match self {
-            Self::Idk(spec) => spec.to_string(),
-            Self::Comment(spec) => spec.to_string(),
-            Self::CompilerDirective(spec) => spec.to_string(),
-            Self::H(spec) => spec.to_string(),
-            Self::F(spec) => spec.to_string(),
-            Self::D(spec) => spec.to_string(),
-            Self::C(spec) => spec.to_string(),
-        };
-        write!(f, "{}", msg)
-    }
-}
-
 impl Spec {
     pub fn kind(&self) -> String {
         match self {
@@ -47,7 +30,6 @@ impl Spec {
         }
     }
 }
-
 impl PMixin for Spec {
     fn highlight(&self) -> Vec<(Span, String)> {
         match self {
@@ -62,14 +44,6 @@ impl PMixin for Spec {
     }
 
     fn span(&self) -> Span {
-        match self {
-            Spec::Idk(spec) => spec.span(),
-            Spec::Comment(spec) => spec.span(),
-            Spec::CompilerDirective(spec) => spec.span(),
-            Spec::H(spec) => spec.span(),
-            Spec::F(spec) => spec.span(),
-            Spec::D(spec) => spec.span(),
-            Spec::C(spec) => spec.span(),
-        }
+        todo!()
     }
 }

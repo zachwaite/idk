@@ -1,3 +1,5 @@
+use crate::field::{CodeField, FieldResult};
+use crate::free::{tokenize, tokenize_extf2, tokenize_traditional_f2};
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -6,37 +8,43 @@ use crate::line::{CSpecLine, CSpecLineContinuation};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CSpec {
-    pub line: CSpecLine,
-    pub continuations: Vec<CSpecLineContinuation>,
+    pub code: FieldResult<CodeField>,
 }
 
 impl Display for CSpec {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut outs = vec![self.line.to_string()];
-        for cont in self.continuations.iter() {
-            outs.push(cont.to_string());
-        }
-        let out = outs.join("\n");
-        write!(f, "{}", out)
+        let mut msg = String::new();
+        msg.push_str(&self.code.to_string());
+        write!(f, "{}", msg)
     }
 }
 
 impl PMixin for CSpec {
-    fn highlight(&self) -> Vec<(Span, String)> {
-        let mut out = self.line.highlight();
-        for cont in &self.continuations {
-            out.append(&mut cont.highlight())
-        }
-        out
+    fn span(&self) -> Span {
+        self.code.span()
     }
 
-    fn span(&self) -> Span {
-        if self.continuations.len() == 0 {
-            self.line.span()
-        } else {
-            let start = self.line.span();
-            let end = self.continuations.last().expect("CSpec expected").span();
-            Span::from((start, end))
+    fn highlight(&self) -> Vec<(Span, String)> {
+        let mut out = vec![];
+        out.append(&mut self.code.highlight());
+        out
+    }
+}
+
+impl From<(&CSpecLine, Vec<&CSpecLineContinuation>)> for CSpec {
+    fn from(value: (&CSpecLine, Vec<&CSpecLineContinuation>)) -> Self {
+        let line = value.0;
+        let continuations = value.1;
+
+        let tokens = match line {
+            CSpecLine::Free(line) => tokenize(line, vec![]),
+            CSpecLine::Traditional(line) => tokenize_traditional_f2(line), // no conts
+            CSpecLine::ExtF2(line) => tokenize_extf2(line, vec![]),
+        };
+        let codefield = CodeField { tokens };
+
+        Self {
+            code: FieldResult::Ok(codefield),
         }
     }
 }

@@ -1,15 +1,62 @@
 use std::fmt::Display;
 
 use super::result::FieldResult;
-use crate::free::{tokenize, Token};
-use crate::meta::{PMixin, Position, Span};
+use crate::free::Token;
+use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
+// raw
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RawFactor2Field {
+    pub value: String,
+    pub meta: Meta,
+}
+
+impl Display for RawFactor2Field {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.meta.text)
+    }
+}
+
+impl From<(Position, &[char; 13])> for FieldResult<RawFactor2Field> {
+    fn from(value: (Position, &[char; 13])) -> Self {
+        let pos = value.0;
+        let chars = value.1;
+        let meta = Meta::from((pos, chars.as_slice()));
+        Self::Ok(RawFactor2Field {
+            value: chars.iter().collect::<String>(),
+            meta,
+        })
+    }
+}
+
+impl From<(Position, &[char; 65])> for FieldResult<RawFactor2Field> {
+    fn from(value: (Position, &[char; 65])) -> Self {
+        let pos = value.0;
+        let chars = value.1;
+        let meta = Meta::from((pos, chars.as_slice()));
+        Self::Ok(RawFactor2Field {
+            value: chars.iter().collect::<String>(),
+            meta,
+        })
+    }
+}
+
+impl PMixin for RawFactor2Field {
+    fn span(&self) -> Span {
+        self.meta.span
+    }
+
+    fn highlight(&self) -> Vec<(Span, String)> {
+        vec![(self.span(), "Normal".to_string())]
+    }
+}
+
+// cooked
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Factor2Field {
     pub tokens: Vec<Token>,
 }
-
 impl Display for Factor2Field {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let out = self
@@ -20,25 +67,6 @@ impl Display for Factor2Field {
         write!(f, "{}", out)
     }
 }
-
-impl From<(Position, &[char; 15])> for FieldResult<Factor2Field> {
-    fn from(value: (Position, &[char; 15])) -> Self {
-        let pos = value.0;
-        let chars = value.1;
-        let tokens = tokenize(pos, chars);
-        Self::Ok(Factor2Field { tokens })
-    }
-}
-
-impl From<(Position, &[char; 66])> for FieldResult<Factor2Field> {
-    fn from(value: (Position, &[char; 66])) -> Self {
-        let pos = value.0;
-        let chars = value.1;
-        let tokens = tokenize(pos, chars);
-        Self::Ok(Factor2Field { tokens })
-    }
-}
-
 impl PMixin for Factor2Field {
     fn span(&self) -> Span {
         if self.tokens.len() == 0 {
