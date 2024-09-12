@@ -20,3 +20,11 @@ deploy:
   cp ./utils/idk-get ~/.local/bin/idk-get
   cp ./utils/idk-fmt ~/.local/bin/idk-fmt
 
+debug:
+  #! /usr/bin/env bash
+  cargo build
+  cp ./target/debug/libidk_nvim.so ~/.config/nvim/custom/rpgle.nvim/lua/idk.so
+  cp ./target/debug/idk-graph ~/.local/bin/idk-graph
+  cp ./utils/idk-get ~/.local/bin/idk-get
+  cp ./utils/idk-fmt ~/.local/bin/idk-fmt
+
