@@ -198,4 +198,18 @@ impl PhysicalFile {
         out.push_str("\n");
         out
     }
+
+    pub fn query_definition(&self, pattern: &str) -> Option<Span> {
+        for entry in self.entries.iter() {
+            if let DDSEntry::Field(fld) = entry {
+                if let Ok(name) = &fld.name {
+                    if name.as_str().to_uppercase() == pattern.to_uppercase() {
+                        let out = fld.meta.span;
+                        return Some(out);
+                    }
+                }
+            }
+        }
+        None
+    }
 }

@@ -193,10 +193,10 @@ impl fmt::Display for TokenKind {
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Span {
-    start_row: usize,
-    start_col: usize,
-    end_row: usize,
-    end_col: usize,
+    pub start_row: usize,
+    pub start_col: usize,
+    pub end_row: usize,
+    pub end_col: usize,
 }
 
 impl fmt::Display for Span {

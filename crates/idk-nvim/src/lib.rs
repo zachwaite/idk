@@ -1,12 +1,15 @@
 mod highlight;
 use highlight::{highlight_all, HighlightMeta};
 use nvim_oxi::{self as oxi};
-use rpgle_parser::{query_definition, Span, AST, CST};
-use std::env;
+use pfdds_lexer::Lexer;
+use pfdds_parser::Parser;
+use rpgle_parser::{query_definition, AST, CST};
+use std::path::PathBuf;
+use std::{env, fs};
 
-use nvim_oxi::conversion::{Error as ConversionError, FromObject, ToObject};
-use nvim_oxi::serde::{Deserializer, Serializer};
-use nvim_oxi::{api, lua, print, Dictionary, Function, Object};
+use nvim_oxi::conversion::{Error as ConversionError, ToObject};
+use nvim_oxi::serde::Serializer;
+use nvim_oxi::{lua, Object};
 use serde::{Deserialize, Serialize};
 
 struct Highlighter {
@@ -85,13 +88,14 @@ impl Highlighter {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct TagItem {
     name: String,
     start_line: usize,
     start_char: usize,
     end_line: usize,
     end_char: usize,
+    uri: Option<String>,
 }
 impl ToObject for TagItem {
     fn to_object(self) -> Result<Object, ConversionError> {
@@ -104,6 +108,91 @@ impl lua::Pushable for TagItem {
             .map_err(lua::Error::push_error_from_err::<Self, _>)?
             .push(lstate)
     }
+}
+
+#[derive(Debug)]
+struct Manifest {
+    uri: String,
+}
+
+impl Manifest {
+    fn uri_filepath(&self) -> String {
+        self.uri.replace("file://", "").to_string()
+    }
+
+    fn get_source_files(&self) -> Option<Vec<String>> {
+        if let Ok(raw_manifest) = fs::read_to_string(self.uri_filepath()) {
+            if let Some(maybebp) = PathBuf::from(&self.uri_filepath()).parent() {
+                let mut relpaths = raw_manifest
+                    .replace("\n", "")
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace('"', "")
+                    .replace('\\', "")
+                    .replace(' ', "")
+                    .split(",")
+                    .map(|x| x.to_string())
+                    .collect::<Vec<String>>();
+                relpaths.reverse();
+                if let Ok(bp) = maybebp.canonicalize() {
+                    if let Some(basepath) = bp.to_str() {
+                        let out = relpaths
+                            .iter()
+                            .map(|rp| {
+                                let mut out = basepath.to_string();
+                                out.push_str("/");
+                                out.push_str(rp);
+                                format!("{}", out)
+                            })
+                            .collect::<Vec<String>>();
+                        return Some(out);
+                    }
+                }
+            }
+        }
+        None
+    }
+}
+
+fn get_manifest() -> Option<Manifest> {
+    let buf = oxi::api::Buffer::current();
+    if let Ok(bufname) = buf.get_name() {
+        if let Some(parent) = bufname.parent() {
+            if let Ok(entries) = parent.read_dir() {
+                for entry in entries {
+                    if let Ok(entry) = entry {
+                        if entry.file_name().to_ascii_lowercase() == "manifest.json" {
+                            if let Ok(fp) = entry.path().canonicalize() {
+                                if let Some(s) = fp.to_str() {
+                                    return Some(Manifest {
+                                        uri: format!("file://{}", s),
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if let Some(grandparent) = parent.parent() {
+                if let Ok(entries) = grandparent.read_dir() {
+                    for entry in entries {
+                        if let Ok(entry) = entry {
+                            if entry.file_name().to_ascii_lowercase() == "manifest.json" {
+                                if let Ok(fp) = entry.path().canonicalize() {
+                                    if let Some(s) = fp.to_str() {
+                                        return Some(Manifest {
+                                            uri: format!("file://{}", s),
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    None
 }
 
 fn getdef(pattern: String) -> Option<TagItem> {
@@ -120,11 +209,58 @@ fn getdef(pattern: String) -> Option<TagItem> {
                 if let Some(def) = query_definition(&ast, &pattern) {
                     return Some(TagItem {
                         name: pattern.clone(),
+                        uri: None,
                         start_line: def.start.row,
                         start_char: def.start.col,
                         end_line: def.end.row,
                         end_char: def.end.col,
                     });
+                }
+                // else
+                if let Some(man) = get_manifest() {
+                    if let Some(sources) = man.get_source_files() {
+                        for source in sources {
+                            if source.ends_with("rpgle") {
+                                if let Ok(input) = fs::read_to_string(source.clone()) {
+                                    if let Ok(cst) = CST::try_from(input.as_str()) {
+                                        let ast = AST::from(&cst);
+                                        if let Some(def) = query_definition(&ast, &pattern) {
+                                            let uri = format!("file://{}", source);
+                                            return Some(TagItem {
+                                                name: pattern.clone(),
+                                                uri: Some(uri),
+                                                start_line: def.start.row,
+                                                start_char: def.start.col,
+                                                end_line: def.end.row,
+                                                end_char: def.end.col,
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                            if source.ends_with("pfdds") {
+                                if let Ok(input) = fs::read_to_string(source.clone()) {
+                                    let pflexer = Lexer::new(&input);
+                                    if let Ok(pfparser) = Parser::new(&pflexer) {
+                                        if let Ok(pf) = pfparser.parse_physical_file() {
+                                            if let Some(def) = pf.query_definition(&pattern) {
+                                                let uri = format!("file://{}", source);
+                                                let ti = TagItem {
+                                                    name: pattern.clone(),
+                                                    uri: Some(uri),
+                                                    start_line: def.start_row,
+                                                    start_char: def.start_col,
+                                                    end_line: def.end_row,
+                                                    end_char: def.end_col,
+                                                };
+                                                return Some(ti);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
