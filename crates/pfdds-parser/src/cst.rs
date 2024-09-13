@@ -53,6 +53,11 @@ impl EntryMeta {
         self.text.push_str(&t.text);
     }
 
+    pub fn first_token(&mut self, t: Token) {
+        self.span = t.span;
+        self.text.push_str(&t.text);
+    }
+
     pub fn to_raw_text(&self) -> String {
         return self.text.clone();
     }

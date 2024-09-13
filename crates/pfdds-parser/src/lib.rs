@@ -268,7 +268,7 @@ impl<'a> Parser<'a> {
             return Err(IllegalParserState::MissingRequiredTokenError);
         }
 
-        meta.push_token(self.pop_active_buffer()?); // sequence
+        meta.first_token(self.pop_active_buffer()?); // sequence
         meta.push_token(self.pop_active_buffer()?); // formtype
         meta.push_token(self.pop_active_buffer()?); // comment
         meta.push_token(self.pop_active_buffer()?); // condition
