@@ -29,6 +29,12 @@ impl Spec {
             Self::C(_) => "CSpec".to_string(),
         }
     }
+    pub fn dspec(&self) -> Option<&DSpec> {
+        match self {
+            Self::D(spec) => Some(spec),
+            _ => None,
+        }
+    }
 }
 impl PMixin for Spec {
     fn highlight(&self) -> Vec<(Span, String)> {

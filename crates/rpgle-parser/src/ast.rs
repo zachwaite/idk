@@ -1,4 +1,5 @@
 use crate::cst::CST;
+use crate::field::FieldResult;
 use crate::line::SpecLine;
 use crate::meta::{PMixin, Span};
 use crate::spec::{CSpec, DSpec, FSpec, HSpec, Spec};
@@ -155,4 +156,17 @@ pub fn highlight_ast(ast: AST) -> Vec<(Span, String)> {
         }
     }
     out
+}
+
+pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
+    for spec in ast.specs.iter() {
+        if let Spec::D(dspec) = spec {
+            if let FieldResult::Ok(namefield) = &dspec.name {
+                if namefield.value.to_uppercase() == pattern.to_uppercase() {
+                    return Some(namefield.meta.span);
+                }
+            }
+        }
+    }
+    None
 }
