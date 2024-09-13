@@ -14,7 +14,6 @@ crate-type = ["cdylib"]
 [dependencies]
 nvim-oxi.workspace = true
 serde.workspace = true
-rpgle-lexer = { path="../rpgle-lexer" }
 rpgle-parser = { path="../rpgle-parser" }
 
 [dev-dependencies]
