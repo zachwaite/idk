@@ -253,6 +253,12 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                                     end_line: def.end_row,
                                                     end_char: def.end_col,
                                                 };
+                                                if env::var("DEBUG").is_ok() {
+                                                    let _ = std::fs::write(
+                                                        "/tmp/tagitem.txt",
+                                                        format!("{:#?}", ti),
+                                                    );
+                                                }
                                                 return Some(ti);
                                             }
                                         }
