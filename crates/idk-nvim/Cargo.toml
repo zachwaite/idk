@@ -15,8 +15,7 @@ crate-type = ["cdylib"]
 nvim-oxi.workspace = true
 serde.workspace = true
 rpgle-parser = { path="../rpgle-parser" }
-pfdds-lexer = { path="../pfdds-lexer" }
-pfdds-parser = { path="../pfdds-parser" }
+dds-parser = { path="../dds-parser" }
 
 [dev-dependencies]
 insta.workspace = true

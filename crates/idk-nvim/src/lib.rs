@@ -1,9 +1,8 @@
 mod highlight;
-use highlight::{highlight_all, HighlightMeta};
+use highlight::{highlight_rpgle, highlight_pfdds, HighlightMeta};
 use nvim_oxi::{self as oxi};
-use pfdds_lexer::Lexer;
-use pfdds_parser::Parser;
-use rpgle_parser::{query_definition, AST, CST};
+use dds_parser;
+use rpgle_parser;
 use std::path::PathBuf;
 use std::{env, fs};
 
@@ -59,7 +58,7 @@ impl Highlighter {
         Ok(())
     }
 
-    fn apply_highlights(&mut self) -> oxi::Result<()> {
+    fn apply_rpgle_highlights(&mut self) -> oxi::Result<()> {
         let count = self.buf.line_count()?;
         let lines = self.buf.get_lines(0..count, true)?;
         let mut input = String::new();
@@ -67,7 +66,35 @@ impl Highlighter {
             input.push_str(&line.to_string());
             input.push_str("\n");
         }
-        let metas = highlight_all(&input);
+        let metas = highlight_rpgle(&input);
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write(
+                "/tmp/highlights.txt",
+                metas
+                    .iter()
+                    .map(|m| {
+                        let mut out = m.to_string();
+                        out.push_str("\n");
+                        out
+                    })
+                    .collect::<String>(),
+            );
+        }
+        for meta in metas.iter() {
+            self.highlight(meta)?;
+        }
+        Ok(())
+    }
+
+    fn apply_pfdds_highlights(&mut self) -> oxi::Result<()> {
+        let count = self.buf.line_count()?;
+        let lines = self.buf.get_lines(0..count, true)?;
+        let mut input = String::new();
+        for line in lines {
+            input.push_str(&line.to_string());
+            input.push_str("\n");
+        }
+        let metas = highlight_pfdds(&input);
         if env::var("DEBUG").is_ok() {
             let _ = std::fs::write(
                 "/tmp/highlights.txt",
@@ -204,9 +231,9 @@ fn getdef(pattern: String) -> Option<TagItem> {
                 input.push_str(&line.to_string());
                 input.push_str("\n");
             }
-            if let Ok(cst) = CST::try_from(input.as_str()) {
-                let ast = AST::from(&cst);
-                if let Some(def) = query_definition(&ast, &pattern) {
+            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+                let ast = rpgle_parser::AST::from(&cst);
+                if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
                     return Some(TagItem {
                         name: pattern.clone(),
                         uri: None,
@@ -222,9 +249,9 @@ fn getdef(pattern: String) -> Option<TagItem> {
                         for source in sources {
                             if source.ends_with("rpgle") {
                                 if let Ok(input) = fs::read_to_string(source.clone()) {
-                                    if let Ok(cst) = CST::try_from(input.as_str()) {
-                                        let ast = AST::from(&cst);
-                                        if let Some(def) = query_definition(&ast, &pattern) {
+                                    if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+                                        let ast = rpgle_parser::AST::from(&cst);
+                                        if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
                                             let uri = format!("file://{}", source);
                                             return Some(TagItem {
                                                 name: pattern.clone(),
@@ -239,28 +266,26 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                 }
                             }
                             if source.ends_with("pfdds") {
-                                if let Ok(input) = fs::read_to_string(source.clone()) {
-                                    let pflexer = Lexer::new(&input);
-                                    if let Ok(pfparser) = Parser::new(&pflexer) {
-                                        if let Ok(pf) = pfparser.parse_physical_file() {
-                                            if let Some(def) = pf.query_definition(&pattern) {
-                                                let uri = format!("file://{}", source);
-                                                let ti = TagItem {
-                                                    name: pattern.clone(),
-                                                    uri: Some(uri),
-                                                    start_line: def.start_row,
-                                                    start_char: def.start_col,
-                                                    end_line: def.end_row,
-                                                    end_char: def.end_col,
-                                                };
-                                                if env::var("DEBUG").is_ok() {
-                                                    let _ = std::fs::write(
-                                                        "/tmp/tagitem.txt",
-                                                        format!("{:#?}", ti),
-                                                    );
-                                                }
-                                                return Some(ti);
+                                if let Ok(input) = fs::read_to_string(&source) {
+                                    if let Ok(cst) = dds_parser::pfdds::CST::try_from(input.as_str()) {
+                                        let ast = dds_parser::pfdds::AST::from(&cst);
+                                        if let Some(def) = dds_parser::pfdds::query_definition(&ast, &pattern) {
+                                            let uri = format!("file://{}", source);
+                                            let ti = TagItem {
+                                                name: pattern.clone(),
+                                                uri: Some(uri),
+                                                start_line: def.start.row,
+                                                start_char: def.start.col,
+                                                end_line: def.end.row,
+                                                end_char: def.end.col,
+                                            };
+                                            if env::var("DEBUG").is_ok() {
+                                                let _ = std::fs::write(
+                                                    "/tmp/tagitem.txt",
+                                                    format!("{:#?}", ti),
+                                                );
                                             }
+                                            return Some(ti);
                                         }
                                     }
                                 }
@@ -275,13 +300,26 @@ fn getdef(pattern: String) -> Option<TagItem> {
 }
 
 #[nvim_oxi::plugin]
-fn idk() -> oxi::Result<oxi::Dictionary> {
+fn libidk() -> oxi::Result<oxi::Dictionary> {
     let highlight_rpgle = oxi::Function::from_fn(move |(): ()| {
         let mut highlighter = Highlighter {
             buf: oxi::api::Buffer::current(),
             namespace_id: oxi::api::create_namespace("RPGLENamespace"),
         };
-        if let Err(e) = highlighter.apply_highlights() {
+        if let Err(e) = highlighter.apply_rpgle_highlights() {
+            oxi::print!("ERROR");
+            oxi::print!("\n");
+            oxi::print!("{}", e);
+            oxi::print!("\n");
+        }
+    });
+
+    let highlight_pfdds = oxi::Function::from_fn(move |(): ()| {
+        let mut highlighter = Highlighter {
+            buf: oxi::api::Buffer::current(),
+            namespace_id: oxi::api::create_namespace("PFDDSNamespace"),
+        };
+        if let Err(e) = highlighter.apply_pfdds_highlights() {
             oxi::print!("ERROR");
             oxi::print!("\n");
             oxi::print!("{}", e);
@@ -292,6 +330,7 @@ fn idk() -> oxi::Result<oxi::Dictionary> {
     let getdef = oxi::Function::from_fn(getdef);
     Ok(oxi::Dictionary::from_iter([
         ("highlight_rpgle", oxi::Object::from(highlight_rpgle)),
+        ("highlight_pfdds", oxi::Object::from(highlight_pfdds)),
         ("getdef", oxi::Object::from(getdef)),
     ]))
 }

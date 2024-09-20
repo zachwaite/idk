@@ -2,6 +2,7 @@ use crate::line::SpecLine;
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
+use std::usize;
 
 #[derive(Debug)]
 pub enum ParserException {
@@ -53,8 +54,10 @@ impl PMixin for CST {
     }
 }
 
-pub fn highlight_cst(cst: &CST) -> Vec<(Span, String)> {
-    cst.highlight()
+pub fn highlight_cst(cst: &CST) -> Vec<((usize, usize), (usize, usize), String)> {
+    cst.highlight().into_iter().map(|tup| {
+        ((tup.0.start.row, tup.0.start.col),(tup.0.end.row, tup.0.end.col),tup.1)
+    }).collect::<Vec<_>>()
 }
 
 impl TryFrom<&str> for CST {

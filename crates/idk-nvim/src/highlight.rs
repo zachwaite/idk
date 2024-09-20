@@ -1,4 +1,5 @@
-use rpgle_parser::{highlight_ast, highlight_cst, Span, AST, CST};
+use rpgle_parser;
+use dds_parser;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt;
@@ -12,7 +13,6 @@ pub struct HighlightMeta {
     pub hl_group: String,
     pub src: String,
 }
-
 impl fmt::Display for HighlightMeta {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = format!(
@@ -22,52 +22,62 @@ impl fmt::Display for HighlightMeta {
         write!(f, "{}", s)
     }
 }
-
-// deprecate
-impl From<(Span, String)> for HighlightMeta {
-    fn from(value: (Span, String)) -> Self {
+impl From<((usize, usize), (usize, usize), &str, &str)> for HighlightMeta {
+    fn from(value: ((usize, usize), (usize, usize), &str, &str)) -> Self {
         Self {
-            start_row: value.0.start.row,
-            start_col: value.0.start.col,
-            end_row: value.0.end.row,
-            end_col: value.0.end.col,
-            hl_group: value.1.to_string(),
-            src: "".to_string(),
-        }
-    }
-}
-
-impl From<(Span, &str, &str)> for HighlightMeta {
-    fn from(value: (Span, &str, &str)) -> Self {
-        Self {
-            start_row: value.0.start.row,
-            start_col: value.0.start.col,
-            end_row: value.0.end.row,
-            end_col: value.0.end.col,
-            hl_group: value.1.to_string(),
-            src: value.2.to_string(),
+            start_row: value.0.0,
+            start_col: value.0.1,
+            end_row: value.1.0,
+            end_col: value.1.1,
+            hl_group: value.2.to_string(),
+            src: value.3.to_string(),
         }
     }
 }
 
 // main
-pub fn highlight_all(txt: &str) -> Vec<HighlightMeta> {
-    if let Ok(cst) = CST::try_from(txt) {
+pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
+    if let Ok(cst) = rpgle_parser::CST::try_from(txt) {
         if env::var("DEBUG").is_ok() {
             let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
         }
-        let mut out = highlight_cst(&cst)
+        let mut out = rpgle_parser::highlight_cst(&cst)
             .into_iter()
-            .map(|tup| HighlightMeta::from((tup.0, tup.1.as_str(), "CST")))
+            .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "CST")))
             .collect::<Vec<HighlightMeta>>();
-        let ast = AST::from(&cst);
+        let ast = rpgle_parser::AST::from(&cst);
         if env::var("DEBUG").is_ok() {
             let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
         }
         out.append(
-            &mut highlight_ast(ast)
+            &mut rpgle_parser::highlight_ast(ast)
                 .into_iter()
-                .map(|tup| HighlightMeta::from((tup.0, tup.1.as_str(), "AST")))
+                .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "AST")))
+                .collect::<Vec<HighlightMeta>>(),
+        );
+        out
+    } else {
+        vec![]
+    }
+}
+
+pub fn highlight_pfdds(txt: &str) -> Vec<HighlightMeta> {
+    if let Ok(cst) = dds_parser::pfdds::CST::try_from(txt) {
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
+        }
+        let mut out = dds_parser::pfdds::highlight_cst(&cst)
+            .into_iter()
+            .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "CST")))
+            .collect::<Vec<HighlightMeta>>();
+        let ast = dds_parser::pfdds::AST::from(&cst);
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
+        }
+        out.append(
+            &mut dds_parser::pfdds::highlight_ast(ast)
+                .into_iter()
+                .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "AST")))
                 .collect::<Vec<HighlightMeta>>(),
         );
         out
@@ -133,7 +143,7 @@ mod tests {
          Exsr $CrtBrnEvt;
        Endsr;                                                                                       "#
             [1..];
-        let highlights = highlight_all(input);
+        let highlights = highlight_rpgle(input);
         insta::assert_yaml_snapshot!(highlights);
     }
 }

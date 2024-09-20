@@ -2,12 +2,12 @@
 resolver = "2"
 
 members = [
-  "crates/pfdds-lexer",        # lib
-  "crates/pfdds-parser",       # lib
-  "crates/rpgle-lexer",        # lib
+  # DISABLED
+  # "crates/rpgle-lexer",        # lib - DEPRECATED - needed by idk-graph
+  # "crates/idk-graph",          # source graph cli tool
+  "crates/dds-parser",         # lib
   "crates/rpgle-parser",       # lib
   "crates/idk-nvim",           # nvim-oxi plugin
-  "crates/idk-graph",          # source graph cli tool
   ]
 
 [workspace.package]
@@ -17,7 +17,6 @@ license = "MIT"
 authors = ["Zach Waite<zach@waiteperspectives.com>"]
 
 [workspace.dependencies]
-thiserror = "1.0.58"
 clap = { version = "4.5.3", features = ["derive"] }
 nvim-oxi = { git="https://github.com/zachwaite/nvim-oxi.git", features=["neovim-0-9"]}
 insta = { version = "1.38.0", features = ["yaml"] }

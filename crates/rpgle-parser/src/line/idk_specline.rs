@@ -7,14 +7,12 @@ use std::fmt::Display;
 pub struct IdkSpecLine {
     pub idk: FieldResult<IdkField>,
 }
-
 impl Display for IdkSpecLine {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let msg = self.idk.to_string();
         write!(f, "{}", msg)
     }
 }
-
 impl From<(usize, &[char; 100])> for IdkSpecLine {
     fn from(value: (usize, &[char; 100])) -> Self {
         let row = value.0;
@@ -25,7 +23,6 @@ impl From<(usize, &[char; 100])> for IdkSpecLine {
         }
     }
 }
-
 impl PMixin for IdkSpecLine {
     fn span(&self) -> Span {
         self.idk.span()

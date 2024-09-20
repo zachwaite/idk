@@ -1,26 +1,31 @@
-# IDK - Language Tooling for IBM i
+# IDK
 
-## Neovim Syntax Highlighter
+IBM i development tools, for Neovim and the command line.
 
-![screenshot-syntax](./screenshots/readme-syntax.png)
+#### Components:
 
-## CLI Source Code Visualization
+- `idk.nvim` (WIP) - the Neovim plugin that works like a language server, without the server
+- `idk-get` (READY) - download source files from an IBM i server via ODBC
+- `idk-fmt` (READY) - format source files to the proper column width based on language
+- `rpgle-parser` (WIP) - a parser for different flavors of RPG
+- `dds-parser` (WIP) - a parser for DDS files
+- `idk-graph` (WIP) - a source graph generator that outputs dot files to be rendered with graphviz
+- `idk-lint` (TODO) - someday there will be a linter
 
-### dot renderer
+## idk-nvim
 
-input:
-![dotrender](./screenshots/readme-dotrender-src.png)
+`idk-nvim` is a Neovim plugin that currently provides syntax highlighting and
+basic jump to definition. The core functionality is written in Rust, and
+compiled into a shared library for plugin usage via `nvim-oxi`.
 
-Run idk-graph:
+###### Jump to definition
 
-```bash
-idk-graph dot ./demo.rpgle > ./graph.gv
-dot -Tsvg ./graph.gv > ./graph.svg
-```
+![jumptodefinition](./assets/jumptodefinition.gif)
 
-Output:
+###### Syntax Highlighting
 
-![dotrender](./screenshots/readme-dotrender.svg)
+![screenshot-syntax](./assets/readme-syntax.png)
+
 
 ## Download source files from IBM i
 
@@ -28,11 +33,3 @@ Output:
 $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
 ```
 
-## Set marks at each spectype
-
-- `'h` = jump to mark at beginning of h-specs
-- `'f` = jump to mark at beginning of f-specs
-- `'d` = jump to mark at beginning of d-specs
-- `'i` = jump to mark at beginning of i-specs
-- `'c` = jump to mark at beginning of c-specs
-- `'o` = jump to mark at beginning of o-specs

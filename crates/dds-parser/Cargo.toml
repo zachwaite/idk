@@ -1,0 +1,15 @@
+[package]
+name = "dds-parser"
+version = "0.0.0"
+description = "DDS Parser"
+
+rust-version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
