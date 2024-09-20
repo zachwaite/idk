@@ -1,7 +1,7 @@
 mod highlight;
-use highlight::{highlight_rpgle, highlight_pfdds, HighlightMeta};
-use nvim_oxi::{self as oxi};
 use dds_parser;
+use highlight::{highlight_pfdds, highlight_rpgle, HighlightMeta};
+use nvim_oxi::{self as oxi};
 use rpgle_parser;
 use std::path::PathBuf;
 use std::{env, fs};
@@ -50,7 +50,7 @@ impl Highlighter {
             let opts = oxi::api::opts::SetExtmarkOpts::builder()
                 .end_row(meta.end_row)
                 .end_col(endcol)
-                .hl_group(&meta.hl_group)
+                .hl_group(meta.hl_group.as_str())
                 .build();
             self.buf
                 .set_extmark(self.namespace_id, meta.start_row, meta.start_col, &opts)?;
@@ -251,7 +251,9 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                 if let Ok(input) = fs::read_to_string(source.clone()) {
                                     if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
                                         let ast = rpgle_parser::AST::from(&cst);
-                                        if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
+                                        if let Some(def) =
+                                            rpgle_parser::query_definition(&ast, &pattern)
+                                        {
                                             let uri = format!("file://{}", source);
                                             return Some(TagItem {
                                                 name: pattern.clone(),
@@ -267,9 +269,13 @@ fn getdef(pattern: String) -> Option<TagItem> {
                             }
                             if source.ends_with("pfdds") {
                                 if let Ok(input) = fs::read_to_string(&source) {
-                                    if let Ok(cst) = dds_parser::pfdds::CST::try_from(input.as_str()) {
+                                    if let Ok(cst) =
+                                        dds_parser::pfdds::CST::try_from(input.as_str())
+                                    {
                                         let ast = dds_parser::pfdds::AST::from(&cst);
-                                        if let Some(def) = dds_parser::pfdds::query_definition(&ast, &pattern) {
+                                        if let Some(def) =
+                                            dds_parser::pfdds::query_definition(&ast, &pattern)
+                                        {
                                             let uri = format!("file://{}", source);
                                             let ti = TagItem {
                                                 name: pattern.clone(),
