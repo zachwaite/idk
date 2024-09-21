@@ -10,6 +10,7 @@ use nvim_oxi::conversion::{Error as ConversionError, ToObject};
 use nvim_oxi::serde::Serializer;
 use nvim_oxi::{lua, Object};
 use serde::{Deserialize, Serialize};
+use serde_json;
 
 struct Highlighter {
     buf: oxi::api::Buffer,
@@ -222,6 +223,56 @@ fn get_manifest() -> Option<Manifest> {
     None
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct DumpOutcome {
+    ok: bool,
+    msg: Option<String>,
+}
+impl ToObject for DumpOutcome {
+    fn to_object(self) -> Result<Object, ConversionError> {
+        self.serialize(Serializer::new()).map_err(Into::into)
+    }
+}
+impl lua::Pushable for DumpOutcome {
+    unsafe fn push(self, lstate: *mut lua::ffi::lua_State) -> Result<std::ffi::c_int, lua::Error> {
+        self.to_object()
+            .map_err(lua::Error::push_error_from_err::<Self, _>)?
+            .push(lstate)
+    }
+}
+
+fn json_dump_current_buffer(path: String) -> DumpOutcome {
+    let buf = oxi::api::Buffer::current();
+    if let Ok(count) = buf.line_count() {
+        if let Ok(lines) = buf.get_lines(0..count, true) {
+            let mut input = String::new();
+            for line in lines {
+                input.push_str(&line.to_string());
+                input.push_str("\n");
+            }
+            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+                match serde_json::to_string(&cst) {
+                    Ok(jsons) => {
+                        let _ = std::fs::write(path, jsons);
+                        DumpOutcome {
+                            ok: true,
+                            msg: None,
+                        }
+                    }
+                    Err(e) => DumpOutcome {
+                        ok: false,
+                        msg: Some(e.to_string()),
+                    },
+                };
+            }
+        }
+    }
+    DumpOutcome {
+        ok: false,
+        msg: Some("Unable to parse CST from current buffer!".to_string()),
+    }
+}
+
 fn getdef(pattern: String) -> Option<TagItem> {
     let buf = oxi::api::Buffer::current();
     if let Ok(count) = buf.line_count() {
@@ -334,9 +385,16 @@ fn libidk() -> oxi::Result<oxi::Dictionary> {
     });
 
     let getdef = oxi::Function::from_fn(getdef);
+
+    let json_dump_current_buffer = oxi::Function::from_fn(json_dump_current_buffer);
+
     Ok(oxi::Dictionary::from_iter([
         ("highlight_rpgle", oxi::Object::from(highlight_rpgle)),
         ("highlight_pfdds", oxi::Object::from(highlight_pfdds)),
         ("getdef", oxi::Object::from(getdef)),
+        (
+            "json_dump_current_buffer",
+            oxi::Object::from(json_dump_current_buffer),
+        ),
     ]))
 }

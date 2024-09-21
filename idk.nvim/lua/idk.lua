@@ -55,6 +55,10 @@ M.run_rpgle_tools = function()
   libidk.mark_rpgle_specs()
 end
 
+M.json_dump_current_buffer = function(path)
+  libidk.json_dump_current_buffer(path)
+end
+
 -- pfdds specific
 M.highlight_pfdds = function()
   libidk.highlight_pfdds()
