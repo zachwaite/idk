@@ -2,6 +2,7 @@ use super::lexer::{
     ch, is_identifier_char, peek_n, read_all, read_char, read_identifier, Lexer, LexerState,
 };
 use crate::meta::{Meta, PMixin, Position, Span};
+use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::fmt;
@@ -142,9 +143,11 @@ pub fn tokenize_directive(pos: Position, chars: &[char; 94]) -> Vec<DirectiveTok
         origin: pos,
         col: 0,
     };
+    let value = NonEmpty::from_vec(chars.iter().map(|c| *c).collect::<Vec<char>>())
+        .expect("&[char; 94] is guaranteed to be nonempty");
     let lexer = Lexer {
         state: RefCell::new(state),
-        input: chars.to_vec(),
+        input: value,
     };
     let mut tokens = vec![];
     let mut tmp = 0;

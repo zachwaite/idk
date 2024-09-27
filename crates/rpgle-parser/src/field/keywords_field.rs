@@ -1,3 +1,4 @@
+use nonempty::NonEmpty;
 use std::fmt::Display;
 
 use super::result::FieldResult;
@@ -8,7 +9,7 @@ use serde::{Deserialize, Serialize};
 // raw
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RawKeywordsField {
-    pub value: String,
+    pub value: NonEmpty<char>,
     pub meta: Meta,
 }
 impl Display for RawKeywordsField {
@@ -30,10 +31,9 @@ impl From<(Position, &[char; 57])> for FieldResult<RawKeywordsField> {
         let pos = value.0;
         let chars = value.1;
         let meta = Meta::from((pos, chars.as_slice()));
-        Self::Ok(RawKeywordsField {
-            value: chars.iter().collect::<String>(),
-            meta,
-        })
+        let value = NonEmpty::from_vec(chars.iter().map(|c| *c).collect::<Vec<char>>())
+            .expect("&[char; 57] is guaranteed to be nonempty");
+        Self::Ok(RawKeywordsField { value, meta })
     }
 }
 impl From<(Position, &[char; 94])> for FieldResult<RawKeywordsField> {
@@ -41,10 +41,9 @@ impl From<(Position, &[char; 94])> for FieldResult<RawKeywordsField> {
         let pos = value.0;
         let chars = value.1;
         let meta = Meta::from((pos, chars.as_slice()));
-        Self::Ok(RawKeywordsField {
-            value: chars.iter().collect::<String>(),
-            meta,
-        })
+        let value = NonEmpty::from_vec(chars.iter().map(|c| *c).collect::<Vec<char>>())
+            .expect("&[char; 94] is guaranteed to be nonempty");
+        Self::Ok(RawKeywordsField { value, meta })
     }
 }
 

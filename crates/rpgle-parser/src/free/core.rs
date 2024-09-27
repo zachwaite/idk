@@ -1,4 +1,5 @@
 use crate::meta::{Meta, Position, Span};
+use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 
@@ -57,7 +58,7 @@ pub struct LexerState {
 
 pub struct Lexer {
     pub state: RefCell<LexerState>,
-    pub input: Vec<MetaChar>,
+    pub input: NonEmpty<MetaChar>,
 }
 
 pub fn ch(lexer: &Lexer) -> Option<&MetaChar> {

@@ -6,7 +6,7 @@ use std::fmt::Display;
 
 use crate::line::{HSpecLine, HSpecLineContinuation};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HSpec {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,

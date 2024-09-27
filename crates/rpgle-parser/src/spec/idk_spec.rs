@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use crate::line::IdkSpecLine;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IdkSpec {
     pub line: IdkSpecLine,
 }

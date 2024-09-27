@@ -14,6 +14,15 @@ pub enum DefinitionType {
     PI,
     S,
 }
+impl DefinitionType {
+    pub fn is_pr(&self) -> bool {
+        if let Self::PR = self {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 
 impl Display for DefinitionType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -45,13 +54,13 @@ impl Display for DefinitionTypeField {
 impl From<(Position, &[char; 2])> for FieldResult<DefinitionTypeField> {
     fn from(value: (Position, &[char; 2])) -> Self {
         let chars = value.1;
-        let maybe = match chars {
-            [' ', ' '] => Some(DefinitionType::Empty),
-            ['C', ' '] => Some(DefinitionType::C),
-            ['D', 'S'] => Some(DefinitionType::DS),
-            ['P', 'R'] => Some(DefinitionType::PR),
-            ['P', 'I'] => Some(DefinitionType::PI),
-            ['S', ' '] => Some(DefinitionType::S),
+        let maybe = match chars.iter().collect::<String>().to_uppercase().as_str() {
+            "  " => Some(DefinitionType::Empty),
+            "C " => Some(DefinitionType::C),
+            "DS" => Some(DefinitionType::DS),
+            "PR" => Some(DefinitionType::PR),
+            "PI" => Some(DefinitionType::PI),
+            "SI" => Some(DefinitionType::S),
             _ => None,
         };
         if let Some(x) = maybe {

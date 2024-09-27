@@ -5,6 +5,7 @@ use super::core::{
 use crate::field::FieldResult;
 use crate::line::{DSpecLine, DSpecLineContinuation};
 use crate::meta::{Meta, Position, Span};
+use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 
@@ -146,29 +147,32 @@ pub fn tokenize_dspec_kw(
 ) -> Vec<DToken> {
     let tokens = match &line.keywords {
         FieldResult::Ok(kw) => {
-            let mut mchars = vec![];
             // line
-            for (i, c) in kw.value.chars().enumerate() {
-                let p = Position {
-                    row: kw.meta.span.start.row,
-                    col: kw.meta.span.start.col + i,
-                };
-                mchars.push(MetaChar {
-                    value: c,
-                    position: p,
-                });
-            }
+            let mut mchars: NonEmpty<MetaChar> = NonEmpty::from_vec(
+                kw.value
+                    .iter()
+                    .enumerate()
+                    .map(|(i, c)| MetaChar {
+                        value: *c,
+                        position: Position {
+                            row: kw.meta.span.start.row,
+                            col: kw.meta.span.start.col + i,
+                        },
+                    })
+                    .collect::<Vec<MetaChar>>(),
+            )
+            .expect("kw.value is NonEmpty, so mchars is guaranteed to be nonempty too");
             // continuations
             for cont in continuations {
                 match &cont.keywords {
                     FieldResult::Ok(kw) => {
-                        for (i, c) in kw.value.chars().enumerate() {
+                        for (i, c) in kw.value.iter().enumerate() {
                             let p = Position {
                                 row: kw.meta.span.start.row,
                                 col: kw.meta.span.start.col + i,
                             };
                             mchars.push(MetaChar {
-                                value: c,
+                                value: *c,
                                 position: p,
                             });
                         }

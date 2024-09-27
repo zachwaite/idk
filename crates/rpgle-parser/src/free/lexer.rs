@@ -1,4 +1,5 @@
 use crate::meta::Position;
+use nonempty::NonEmpty;
 use std::cell::RefCell;
 
 pub struct LexerState {
@@ -8,7 +9,7 @@ pub struct LexerState {
 
 pub struct Lexer {
     pub state: RefCell<LexerState>,
-    pub input: Vec<char>,
+    pub input: NonEmpty<char>,
 }
 
 pub fn ch(lexer: &Lexer) -> Option<&char> {

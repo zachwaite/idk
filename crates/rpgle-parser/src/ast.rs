@@ -1,6 +1,6 @@
 use crate::cst::CST;
 use crate::field::FieldResult;
-use crate::line::SpecLine;
+use crate::line::{CSpecLine, ExtF2CSpecLine, FreeCSpecLine, SpecLine, TraditionalCSpecLine};
 use crate::meta::{PMixin, Span};
 use crate::spec::{CSpec, DSpec, FSpec, HSpec, Spec};
 use serde::{Deserialize, Serialize};
@@ -92,7 +92,11 @@ fn next_spec(parser: &Parser) -> Option<Spec> {
                     Some(Spec::F(FSpec::from((cur, continuations))))
                 }
                 SpecLine::CSpec(cur) => {
-                    let spec = CSpec::from((cur, vec![]));
+                    let spec = match cur {
+                        CSpecLine::Traditional(line) => CSpec::from(line),
+                        CSpecLine::ExtF2(line) => CSpec::from((line, vec![])),
+                        CSpecLine::Free(line) => CSpec::from((line, vec![])),
+                    };
                     Some(Spec::C(spec))
                 }
                 _ => None,
@@ -155,9 +159,15 @@ pub fn highlight_ast(ast: AST) -> Vec<((usize, usize), (usize, usize), String)> 
             _ => continue,
         }
     }
-    out.into_iter().map(|tup| {
-        ((tup.0.start.row, tup.0.start.col),(tup.0.end.row, tup.0.end.col),tup.1)
-    }).collect::<Vec<_>>()
+    out.into_iter()
+        .map(|tup| {
+            (
+                (tup.0.start.row, tup.0.start.col),
+                (tup.0.end.row, tup.0.end.col),
+                tup.1,
+            )
+        })
+        .collect::<Vec<_>>()
 }
 
 pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {

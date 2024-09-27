@@ -10,6 +10,7 @@ authors.workspace = true
 
 [dependencies]
 serde.workspace = true
+nonempty.workspace = true
 
 [dev-dependencies]
 insta.workspace = true

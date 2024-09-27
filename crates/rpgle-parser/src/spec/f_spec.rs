@@ -7,11 +7,10 @@ use crate::field::{
 use crate::free::tokenize_fspec_kw;
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 
 use crate::line::{FSpecLine, FSpecLineContinuation};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FSpec {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,

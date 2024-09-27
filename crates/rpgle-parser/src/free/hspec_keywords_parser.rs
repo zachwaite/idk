@@ -160,14 +160,13 @@ pub fn tokenize_hspec_kw(
     match &line.keywords {
         FieldResult::Ok(kw) => {
             let pos = kw.meta.span.start;
-            let chars = kw.value.chars().collect::<Vec<char>>();
             let state = LexerState {
                 origin: pos,
                 col: 0,
             };
             let lexer = Lexer {
                 state: RefCell::new(state),
-                input: chars.to_vec(),
+                input: kw.value.clone(), // TDE: use lifetime
             };
             let mut tokens = vec![];
             loop {

@@ -1,12 +1,15 @@
 use crate::field::{CodeField, FieldResult};
-use crate::free::{tokenize, tokenize_extf2, tokenize_traditional_f2};
+use crate::free::Op;
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 
-use crate::line::{CSpecLine, CSpecLineContinuation};
+use crate::line::{
+    ExtF2CSpecLine, ExtF2CSpecLineContinuation, FreeCSpecLine, FreeCSpecLineContinuation,
+    TraditionalCSpecLine,
+};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CSpec {
     pub code: FieldResult<CodeField>,
 }
@@ -31,20 +34,27 @@ impl PMixin for CSpec {
     }
 }
 
-impl From<(&CSpecLine, Vec<&CSpecLineContinuation>)> for CSpec {
-    fn from(value: (&CSpecLine, Vec<&CSpecLineContinuation>)) -> Self {
-        let line = value.0;
-        let continuations = value.1;
-
-        let tokens = match line {
-            CSpecLine::Free(line) => tokenize(line, vec![]),
-            CSpecLine::Traditional(line) => tokenize_traditional_f2(line), // no conts
-            CSpecLine::ExtF2(line) => tokenize_extf2(line, vec![]),
-        };
-        let codefield = CodeField { tokens };
-
-        Self {
-            code: FieldResult::Ok(codefield),
-        }
+impl From<(&FreeCSpecLine, Vec<&FreeCSpecLineContinuation>)> for CSpec {
+    fn from(value: (&FreeCSpecLine, Vec<&FreeCSpecLineContinuation>)) -> Self {
+        let op = Op::from(value);
+        let fld = CodeField { op };
+        let code = FieldResult::Ok(fld);
+        Self { code }
+    }
+}
+impl From<(&ExtF2CSpecLine, Vec<&ExtF2CSpecLineContinuation>)> for CSpec {
+    fn from(value: (&ExtF2CSpecLine, Vec<&ExtF2CSpecLineContinuation>)) -> Self {
+        let op = Op::from(value);
+        let fld = CodeField { op };
+        let code = FieldResult::Ok(fld);
+        Self { code }
+    }
+}
+impl From<&TraditionalCSpecLine> for CSpec {
+    fn from(value: &TraditionalCSpecLine) -> Self {
+        let op = Op::from(value);
+        let fld = CodeField { op };
+        let code = FieldResult::Ok(fld);
+        Self { code }
     }
 }

@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::line::{DSpecLine, DSpecLineContinuation};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DSpec {
     pub sequence: FieldResult<SequenceField>,
     pub form_type: FieldResult<FormtypeField>,

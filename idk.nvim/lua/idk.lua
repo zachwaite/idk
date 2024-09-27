@@ -63,6 +63,10 @@ M.json_dump_current_buffer = function(path)
   libidk.json_dump_current_buffer(path)
 end
 
+M.dot_dump_current_buffer = function(path)
+  libidk.dot_dump_current_buffer(path)
+end
+
 -- pfdds specific
 M.highlight_pfdds = function()
   libidk.highlight_pfdds()

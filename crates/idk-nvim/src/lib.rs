@@ -1,3 +1,4 @@
+mod graph;
 mod highlight;
 use dds_parser;
 use highlight::{highlight_pfdds, highlight_rpgle, HighlightMeta};
@@ -6,6 +7,7 @@ use rpgle_parser;
 use std::path::PathBuf;
 use std::{env, fs};
 
+use graph::{IRenderable, IdkGraph};
 use nvim_oxi::conversion::{Error as ConversionError, ToObject};
 use nvim_oxi::serde::Serializer;
 use nvim_oxi::{lua, Object};
@@ -241,6 +243,34 @@ impl lua::Pushable for DumpOutcome {
     }
 }
 
+fn dot_dump_current_buffer(path: String) -> DumpOutcome {
+    let buf = oxi::api::Buffer::current();
+    if let Ok(count) = buf.line_count() {
+        if let Ok(lines) = buf.get_lines(0..count, true) {
+            let mut input = String::new();
+            for line in lines {
+                input.push_str(&line.to_string());
+                input.push_str("\n");
+            }
+            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+                let ast = rpgle_parser::AST::from(&cst);
+                let graph = IdkGraph::from(&ast);
+                let _ = std::fs::write("/tmp/graph.txt", format!("{:#?}", &graph));
+                let dot = graph.render();
+                let _ = std::fs::write(path, dot);
+                return DumpOutcome {
+                    ok: true,
+                    msg: None,
+                };
+            }
+        }
+    }
+    DumpOutcome {
+        ok: false,
+        msg: Some("Unable to parse CST from current buffer!".to_string()),
+    }
+}
+
 fn json_dump_current_buffer(path: String) -> DumpOutcome {
     let buf = oxi::api::Buffer::current();
     if let Ok(count) = buf.line_count() {
@@ -387,6 +417,7 @@ fn libidk() -> oxi::Result<oxi::Dictionary> {
     let getdef = oxi::Function::from_fn(getdef);
 
     let json_dump_current_buffer = oxi::Function::from_fn(json_dump_current_buffer);
+    let dot_dump_current_buffer = oxi::Function::from_fn(dot_dump_current_buffer);
 
     Ok(oxi::Dictionary::from_iter([
         ("highlight_rpgle", oxi::Object::from(highlight_rpgle)),
@@ -395,6 +426,10 @@ fn libidk() -> oxi::Result<oxi::Dictionary> {
         (
             "json_dump_current_buffer",
             oxi::Object::from(json_dump_current_buffer),
+        ),
+        (
+            "dot_dump_current_buffer",
+            oxi::Object::from(dot_dump_current_buffer),
         ),
     ]))
 }

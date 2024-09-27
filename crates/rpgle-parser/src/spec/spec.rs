@@ -7,7 +7,7 @@ use super::{c_spec::CSpec, CompilerDirectiveSpec};
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Spec {
     Idk(IdkSpec),
     Comment(CommentSpec),

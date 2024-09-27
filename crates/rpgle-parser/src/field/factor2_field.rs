@@ -3,12 +3,13 @@ use std::fmt::Display;
 use super::result::FieldResult;
 use crate::free::Token;
 use crate::meta::{Meta, PMixin, Position, Span};
+use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 
 // raw
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RawFactor2Field {
-    pub value: String,
+    pub value: NonEmpty<char>,
     pub meta: Meta,
 }
 
@@ -23,10 +24,9 @@ impl From<(Position, &[char; 13])> for FieldResult<RawFactor2Field> {
         let pos = value.0;
         let chars = value.1;
         let meta = Meta::from((pos, chars.as_slice()));
-        Self::Ok(RawFactor2Field {
-            value: chars.iter().collect::<String>(),
-            meta,
-        })
+        let value = NonEmpty::from_vec(chars.iter().map(|c| *c).collect::<Vec<char>>())
+            .expect("&[char; 13] is guaranteed to be nonempty");
+        Self::Ok(RawFactor2Field { value, meta })
     }
 }
 
@@ -35,10 +35,9 @@ impl From<(Position, &[char; 65])> for FieldResult<RawFactor2Field> {
         let pos = value.0;
         let chars = value.1;
         let meta = Meta::from((pos, chars.as_slice()));
-        Self::Ok(RawFactor2Field {
-            value: chars.iter().collect::<String>(),
-            meta,
-        })
+        let value = NonEmpty::from_vec(chars.iter().map(|c| *c).collect::<Vec<char>>())
+            .expect("&[char; 65] is guaranteed to be nonempty");
+        Self::Ok(RawFactor2Field { value, meta })
     }
 }
 

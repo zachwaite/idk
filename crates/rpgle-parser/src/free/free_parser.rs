@@ -8,12 +8,13 @@ use crate::line::{
     TraditionalCSpecLine,
 };
 use crate::meta::{Meta, PMixin, Position, Span};
+use nonempty::{nonempty, NonEmpty};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum TokenKind {
     Idk,
     Whitespace,
@@ -438,20 +439,19 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
     Some(tok)
 }
 // TDE: remove dupage
-pub fn tokenize_traditional_f2(line: &TraditionalCSpecLine) -> Vec<Token> {
+pub fn tokenize_traditional_f2(line: &TraditionalCSpecLine) -> NonEmpty<Token> {
     match &line.factor2 {
         FieldResult::Ok(code) => {
             let pos = code.meta.span.start;
-            let chars = code.value.chars().collect::<Vec<char>>();
             let state = LexerState {
                 origin: pos,
                 col: 0,
             };
             let lexer = Lexer {
                 state: RefCell::new(state),
-                input: chars.to_vec(),
+                input: code.value.clone(), // TDE: lifetime
             };
-            let mut tokens = vec![];
+            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
             loop {
                 match next_token(&lexer) {
                     Some(token) => {
@@ -464,27 +464,32 @@ pub fn tokenize_traditional_f2(line: &TraditionalCSpecLine) -> Vec<Token> {
             }
             tokens
         }
-        _ => vec![],
+        FieldResult::Idk(fld) => {
+            let tok = Token {
+                kind: TokenKind::Idk,
+                meta: fld.meta.clone(),
+            };
+            nonempty![tok].into()
+        }
     }
 }
 
 pub fn tokenize_extf2(
     line: &ExtF2CSpecLine,
     continuations: Vec<&ExtF2CSpecLineContinuation>,
-) -> Vec<Token> {
+) -> NonEmpty<Token> {
     match &line.factor2 {
         FieldResult::Ok(code) => {
             let pos = code.meta.span.start;
-            let chars = code.value.chars().collect::<Vec<char>>();
             let state = LexerState {
                 origin: pos,
                 col: 0,
             };
             let lexer = Lexer {
                 state: RefCell::new(state),
-                input: chars.to_vec(),
+                input: code.value.clone(), // TDE: lifetime
             };
-            let mut tokens = vec![];
+            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
             loop {
                 match next_token(&lexer) {
                     Some(token) => {
@@ -497,27 +502,32 @@ pub fn tokenize_extf2(
             }
             tokens
         }
-        _ => vec![],
+        FieldResult::Idk(fld) => {
+            let tok = Token {
+                kind: TokenKind::Idk,
+                meta: fld.meta.clone(),
+            };
+            nonempty![tok].into()
+        }
     }
 }
 
 pub fn tokenize(
     line: &FreeCSpecLine,
     continuations: Vec<&FreeCSpecLineContinuation>,
-) -> Vec<Token> {
+) -> NonEmpty<Token> {
     match &line.code {
         FieldResult::Ok(code) => {
             let pos = code.meta.span.start;
-            let chars = code.value.chars().collect::<Vec<char>>();
             let state = LexerState {
                 origin: pos,
                 col: 0,
             };
             let lexer = Lexer {
                 state: RefCell::new(state),
-                input: chars.to_vec(),
+                input: code.value.clone(),
             };
-            let mut tokens = vec![];
+            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
             loop {
                 match next_token(&lexer) {
                     Some(token) => {
@@ -528,8 +538,14 @@ pub fn tokenize(
                     }
                 }
             }
-            tokens
+            tokens.into()
         }
-        _ => vec![],
+        FieldResult::Idk(fld) => {
+            let tok = Token {
+                kind: TokenKind::Idk,
+                meta: fld.meta.clone(),
+            };
+            nonempty![tok].into()
+        }
     }
 }

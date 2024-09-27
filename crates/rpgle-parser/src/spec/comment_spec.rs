@@ -4,7 +4,7 @@ use std::fmt::Display;
 
 use crate::line::CommentSpecLine;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CommentSpec {
     pub line: CommentSpecLine,
 }
