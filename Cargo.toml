@@ -2,13 +2,10 @@
 resolver = "2"
 
 members = [
-  # DISABLED
-  # "crates/rpgle-lexer",        # lib - DEPRECATED - needed by idk-graph
-  # "crates/idk-graph",          # source graph cli tool
   "crates/dds-parser",         # lib
   "crates/rpgle-parser",       # lib
   "crates/idk-nvim",           # nvim-oxi plugin
-  ]
+]
 
 [workspace.package]
 rust-version = "1.76"
