@@ -188,6 +188,16 @@ impl Display for Op {
     }
 }
 impl Op {
+    pub fn kind(&self) -> String {
+        let s = match self {
+            Op::Begsr { .. } => "BEGSR",
+            Op::Endsr { .. } => "ENDSR",
+            Op::Exsr { .. } => "EXSR",
+            Op::Callp { .. } => "CALLP",
+            Op::Idk { .. } => "IDK",
+        };
+        s.to_string()
+    }
     pub fn span(&self) -> Span {
         match self {
             Op::Idk { meta, .. } => meta.span,

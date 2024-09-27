@@ -1,6 +1,7 @@
 use crate::cst::CST;
 use crate::field::FieldResult;
-use crate::line::{CSpecLine, ExtF2CSpecLine, FreeCSpecLine, SpecLine, TraditionalCSpecLine};
+use crate::free::Op;
+use crate::line::{CSpecLine, SpecLine};
 use crate::meta::{PMixin, Span};
 use crate::spec::{CSpec, DSpec, FSpec, HSpec, Spec};
 use serde::{Deserialize, Serialize};
@@ -176,6 +177,15 @@ pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
             if let FieldResult::Ok(namefield) = &dspec.name {
                 if namefield.value.to_uppercase() == pattern.to_uppercase() {
                     return Some(namefield.meta.span);
+                }
+            }
+        }
+        if let Spec::C(cspec) = spec {
+            if let FieldResult::Ok(codefield) = &cspec.code {
+                if let Op::Begsr { name, .. } = &codefield.op {
+                    if name.trim().to_uppercase() == pattern.trim().to_uppercase() {
+                        return Some(codefield.op.span());
+                    }
                 }
             }
         }

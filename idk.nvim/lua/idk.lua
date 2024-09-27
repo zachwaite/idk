@@ -37,6 +37,7 @@ M.setup_rpgle = function(args)
   M.config = vim.tbl_deep_extend("force", M.config, args or {})
   rpgle_formatter.setup()
   vim.bo[0].tagfunc = "v:lua.require'idk'.tfunc"
+  vim.opt.iskeyword:append("$")
 end
 
 M.tfunc = tfunc
