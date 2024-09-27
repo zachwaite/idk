@@ -22,3 +22,4 @@ nvim-oxi = { git="https://github.com/zachwaite/nvim-oxi.git", features=["neovim-
 insta = { version = "1.38.0", features = ["yaml"] }
 serde = { version = "1.0.206", features = ["derive"] }
 serde_json = "1.0"
+nonempty = { git="https://github.com/zachwaite/nonempty.git", features=["serialize"]}
