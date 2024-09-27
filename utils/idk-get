@@ -3,7 +3,7 @@ set -o errexit
 set -o nounset
 
 USAGE=$(cat <<-EOM
-idk-ge v1.0
+idk-get v1.0
 
 Download source code from ibm i
 
