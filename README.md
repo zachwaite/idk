@@ -25,6 +25,16 @@ compiled into a shared library for plugin usage via `nvim-oxi`.
 
 ###### Jump to definition
 
+Supported jumps:
+
+- local variable usage -> DSpec definition
+- subroutine `Exsr` calls -> `Begsr` definition in traditional or `/free` syntax
+- field usage -> field definition in a DDS file registered in the project manifest
+
+Not yet supported:
+- prefixed field name -> field definition
+- external program call -> external program source file
+
 ![jumptodefinition](./assets/jumptodefinition.gif)
 
 ###### Syntax Highlighting
@@ -51,6 +61,8 @@ to generate the graph.
 
 
 ## Download source files from IBM i
+
+Handy for getting source code onto your system versus working with SEU.
 
 ```sh
 $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
