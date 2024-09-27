@@ -2,7 +2,9 @@ local idk = require("idk")
 idk.setup_rpgle()
 vim.api.nvim_create_user_command("RpgleRunTools", idk.run_rpgle_tools, {})
 vim.api.nvim_create_user_command("RpgleHighlight", idk.highlight_rpgle, {})
+vim.api.nvim_create_user_command("RpgleMarkSpecs", idk.mark_rpgle, {})
 idk.highlight_rpgle()
+idk.mark_rpgle()
 
 -- searching
 vim.cmd([[set ignorecase]])

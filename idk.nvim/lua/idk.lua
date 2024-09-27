@@ -1,4 +1,5 @@
 local rpgle_formatter = require("luarpgle.formatter")
+local rpgle_marker = require("luarpgle.marker")
 local libidk = require("libidk")
 local utils = require("utils")
 
@@ -49,10 +50,13 @@ M.format_rpgle = function()
   rpgle_formatter.format_all()
 end
 
+M.mark_rpgle = function()
+  rpgle_marker.set_marks()
+end
+
 M.run_rpgle_tools = function()
   rpgle_formatter.format_all()
   libidk.highlight_rpgle()
-  libidk.mark_rpgle_specs()
 end
 
 M.json_dump_current_buffer = function(path)
