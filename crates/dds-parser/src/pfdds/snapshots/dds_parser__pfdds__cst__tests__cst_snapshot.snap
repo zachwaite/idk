@@ -1,6 +1,6 @@
 ---
-source: crates/dds-parser/src/pfdds.rs
-assertion_line: 124
+source: crates/dds-parser/src/pfdds/cst.rs
+assertion_line: 144
 expression: cst
 ---
 lines:
@@ -338,7 +338,7 @@ lines:
             text: " "
       length:
         Idk:
-          value: "     "
+          value: ""
           meta:
             span:
               start:
@@ -362,7 +362,7 @@ lines:
             text: " "
       decimal_positions:
         Idk:
-          value: "  "
+          value: ""
           meta:
             span:
               start:
@@ -506,8 +506,8 @@ lines:
                 col: 29
             text: " "
       length:
-        Idk:
-          value: "    8"
+        Ok:
+          value: 8
           meta:
             span:
               start:
@@ -530,8 +530,8 @@ lines:
                 col: 35
             text: " "
       decimal_positions:
-        Idk:
-          value: " 0"
+        Ok:
+          value: 0
           meta:
             span:
               start:
@@ -675,8 +675,8 @@ lines:
                 col: 29
             text: " "
       length:
-        Idk:
-          value: "    6"
+        Ok:
+          value: 6
           meta:
             span:
               start:
@@ -699,8 +699,8 @@ lines:
                 col: 35
             text: " "
       decimal_positions:
-        Idk:
-          value: " 0"
+        Ok:
+          value: 0
           meta:
             span:
               start:
@@ -844,8 +844,8 @@ lines:
                 col: 29
             text: " "
       length:
-        Idk:
-          value: "    6"
+        Ok:
+          value: 6
           meta:
             span:
               start:
@@ -868,8 +868,8 @@ lines:
                 col: 35
             text: " "
       decimal_positions:
-        Idk:
-          value: " 0"
+        Ok:
+          value: 0
           meta:
             span:
               start:
@@ -1013,8 +1013,8 @@ lines:
                 col: 29
             text: " "
       length:
-        Idk:
-          value: "    8"
+        Ok:
+          value: 8
           meta:
             span:
               start:
@@ -1038,7 +1038,7 @@ lines:
             text: " "
       decimal_positions:
         Idk:
-          value: "  "
+          value: ""
           meta:
             span:
               start:
@@ -1220,7 +1220,7 @@ lines:
             text: " "
       length:
         Idk:
-          value: "     "
+          value: ""
           meta:
             span:
               start:
@@ -1244,7 +1244,7 @@ lines:
             text: " "
       decimal_positions:
         Idk:
-          value: "  "
+          value: ""
           meta:
             span:
               start:

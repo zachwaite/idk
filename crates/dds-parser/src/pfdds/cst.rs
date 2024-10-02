@@ -1,8 +1,8 @@
+use crate::line::DDSLine;
+use crate::meta::{IHighlight, ISpan, Span};
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fmt::Display;
-use crate::line::DDSLine;
-use crate::meta::{IHighlight, ISpan, Span};
 
 #[derive(Debug)]
 pub enum ParserException {
@@ -33,7 +33,10 @@ impl Display for CST {
 }
 impl IHighlight for CST {
     fn highlight(&self) -> Vec<(crate::meta::Span, String)> {
-        self.lines.iter().flat_map(|line| line.highlight()).collect::<Vec<(Span, String)>>()
+        self.lines
+            .iter()
+            .flat_map(|line| line.highlight())
+            .collect::<Vec<(Span, String)>>()
     }
 }
 impl ISpan for CST {
@@ -90,9 +93,16 @@ impl TryFrom<&str> for CST {
 }
 
 pub fn highlight_cst(cst: &CST) -> Vec<((usize, usize), (usize, usize), String)> {
-    cst.highlight().into_iter().map(|tup| {
-        ((tup.0.start.row, tup.0.start.col),(tup.0.end.row, tup.0.end.col),tup.1)
-    }).collect::<Vec<_>>()
+    cst.highlight()
+        .into_iter()
+        .map(|tup| {
+            (
+                (tup.0.start.row, tup.0.start.col),
+                (tup.0.end.row, tup.0.end.col),
+                tup.1,
+            )
+        })
+        .collect::<Vec<_>>()
 }
 
 // #[derive(Debug, Serialize, Deserialize)]
@@ -108,8 +118,7 @@ mod tests {
     use insta;
     use std::env;
 
-    #[test]
-    fn test_round_trip_snapshot() {
+    fn dfmslike_fixture() -> String {
         let input = &r#"
      A*                                                                         
      A*   FILE         - Cow Event                                              
@@ -124,17 +133,28 @@ mod tests {
      A            ETIM           6  0       TEXT('Event Time HHMMSS')           
      A            ETYP           8          TEXT('Event Type')                  
      A* PRIMARY KEY                                                             
-     A          K ID                                                            "#
-     [1..];
-     let cst = CST::try_from(input).unwrap();
-     insta::assert_yaml_snapshot!(cst);
-     let observed = cst.to_string();
-     let expected = input;
-     if env::var("DEBUG").is_ok() {
-         let _ = std::fs::write("/tmp/observed.rpgle", &observed);
-         let _ = std::fs::write("/tmp/expected.rpgle", &expected);
-         let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
-     }
-     assert_eq!(observed, expected);
+     A          K ID                                                            "#[1..];
+        input.to_string()
+    }
+
+    #[test]
+    fn test_cst_snapshot() {
+        let input = dfmslike_fixture();
+        let cst = CST::try_from(input.as_str()).unwrap();
+        insta::assert_yaml_snapshot!(cst);
+    }
+
+    #[test]
+    fn test_round_trip_snapshot() {
+        let input = dfmslike_fixture();
+        let cst = CST::try_from(input.as_str()).unwrap();
+        let observed = cst.to_string();
+        let expected = input;
+        if env::var("DEBUG").is_ok() {
+            let _ = std::fs::write("/tmp/observed.rpgle", &observed);
+            let _ = std::fs::write("/tmp/expected.rpgle", &expected);
+            let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
+        }
+        assert_eq!(observed, expected);
     }
 }
