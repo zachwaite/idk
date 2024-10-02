@@ -1,6 +1,6 @@
 ---
 source: crates/idk-nvim/src/highlight.rs
-assertion_line: 147
+assertion_line: 152
 expression: highlights
 ---
 - start_row: 0
@@ -415,7 +415,7 @@ expression: highlights
   start_col: 23
   end_row: 7
   end_col: 25
-  hl_group: "@type.definition"
+  hl_group: Normal
   src: CST
 - start_row: 7
   start_col: 25
@@ -1669,7 +1669,7 @@ expression: highlights
   start_col: 23
   end_row: 7
   end_col: 25
-  hl_group: "@type.definition"
+  hl_group: Normal
   src: AST
 - start_row: 7
   start_col: 25
@@ -2475,12 +2475,6 @@ expression: highlights
   end_col: 100
   hl_group: Normal
   src: AST
-- start_row: 27
-  start_col: 35
-  end_row: 27
-  end_col: 48
-  hl_group: Normal
-  src: AST
 - start_row: 28
   start_col: 7
   end_row: 28
@@ -2659,12 +2653,6 @@ expression: highlights
   start_col: 23
   end_row: 31
   end_col: 100
-  hl_group: Normal
-  src: AST
-- start_row: 32
-  start_col: 35
-  end_row: 32
-  end_col: 48
   hl_group: Normal
   src: AST
 - start_row: 33

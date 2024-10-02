@@ -1,5 +1,5 @@
-use rpgle_parser;
 use dds_parser;
+use rpgle_parser;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt;
@@ -25,10 +25,10 @@ impl fmt::Display for HighlightMeta {
 impl From<((usize, usize), (usize, usize), &str, &str)> for HighlightMeta {
     fn from(value: ((usize, usize), (usize, usize), &str, &str)) -> Self {
         Self {
-            start_row: value.0.0,
-            start_col: value.0.1,
-            end_row: value.1.0,
-            end_col: value.1.1,
+            start_row: value.0 .0,
+            start_col: value.0 .1,
+            end_row: value.1 .0,
+            end_col: value.1 .1,
             hl_group: value.2.to_string(),
             src: value.3.to_string(),
         }
@@ -91,8 +91,7 @@ mod tests {
     use super::*;
     use insta;
 
-    #[test]
-    fn test_highlights() {
+    fn dfmslike_fixture() -> String {
         let input = &r#"
      H OPTION(*nodebugio:*srcstmt)
      FCowEvt    UF A E           K DISK
@@ -143,7 +142,13 @@ mod tests {
          Exsr $CrtBrnEvt;
        Endsr;                                                                                       "#
             [1..];
-        let highlights = highlight_rpgle(input);
+        input.to_string()
+    }
+
+    #[test]
+    fn test_highlights_snapshot() {
+        let input = dfmslike_fixture();
+        let highlights = highlight_rpgle(input.as_str());
         insta::assert_yaml_snapshot!(highlights);
     }
 }
