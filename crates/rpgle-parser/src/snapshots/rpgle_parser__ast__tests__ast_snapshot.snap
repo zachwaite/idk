@@ -1,0 +1,3402 @@
+---
+source: crates/rpgle-parser/src/ast.rs
+assertion_line: 256
+expression: ast
+---
+specs:
+  - H:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 0
+                col: 0
+              end:
+                row: 0
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: H
+          meta:
+            span:
+              start:
+                row: 0
+                col: 5
+              end:
+                row: 0
+                col: 6
+            text: H
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 6
+                  end:
+                    row: 0
+                    col: 7
+                text: " "
+            - kind: Identifier
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 7
+                  end:
+                    row: 0
+                    col: 13
+                text: OPTION
+            - kind: LParen
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 13
+                  end:
+                    row: 0
+                    col: 14
+                text: (
+            - kind: Indicator
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 14
+                  end:
+                    row: 0
+                    col: 24
+                text: "*nodebugio"
+            - kind: Colon
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 24
+                  end:
+                    row: 0
+                    col: 25
+                text: ":"
+            - kind: Indicator
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 25
+                  end:
+                    row: 0
+                    col: 33
+                text: "*srcstmt"
+            - kind: RParen
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 33
+                  end:
+                    row: 0
+                    col: 34
+                text: )
+            - kind: Whitespace
+              meta:
+                span:
+                  start:
+                    row: 0
+                    col: 34
+                  end:
+                    row: 0
+                    col: 100
+                text: "                                                                  "
+  - F:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 1
+                col: 0
+              end:
+                row: 1
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 1
+                col: 5
+              end:
+                row: 1
+                col: 6
+            text: F
+      name:
+        Ok:
+          value: CowEvt
+          meta:
+            span:
+              start:
+                row: 1
+                col: 6
+              end:
+                row: 1
+                col: 16
+            text: "CowEvt    "
+      filetype:
+        Ok:
+          value: U
+          meta:
+            span:
+              start:
+                row: 1
+                col: 16
+              end:
+                row: 1
+                col: 17
+            text: U
+      file_designation:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 1
+                col: 17
+              end:
+                row: 1
+                col: 18
+            text: F
+      endfile:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 18
+              end:
+                row: 1
+                col: 19
+            text: " "
+      file_addition:
+        Ok:
+          value: A
+          meta:
+            span:
+              start:
+                row: 1
+                col: 19
+              end:
+                row: 1
+                col: 20
+            text: A
+      file_sequence:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 20
+              end:
+                row: 1
+                col: 21
+            text: " "
+      file_format:
+        Ok:
+          value: E
+          meta:
+            span:
+              start:
+                row: 1
+                col: 21
+              end:
+                row: 1
+                col: 22
+            text: E
+      record_length:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 22
+              end:
+                row: 1
+                col: 27
+            text: "     "
+      limits_processing:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 27
+              end:
+                row: 1
+                col: 28
+            text: " "
+      keylength:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 28
+              end:
+                row: 1
+                col: 33
+            text: "     "
+      record_address_type:
+        Ok:
+          value: K
+          meta:
+            span:
+              start:
+                row: 1
+                col: 33
+              end:
+                row: 1
+                col: 34
+            text: K
+      file_organization:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 34
+              end:
+                row: 1
+                col: 35
+            text: " "
+      device:
+        Ok:
+          value: DISK
+          meta:
+            span:
+              start:
+                row: 1
+                col: 35
+              end:
+                row: 1
+                col: 42
+            text: "DISK   "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 42
+              end:
+                row: 1
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 1
+                      col: 43
+                    end:
+                      row: 1
+                      col: 100
+                  text: "                                                         "
+  - F:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 2
+                col: 0
+              end:
+                row: 2
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 2
+                col: 5
+              end:
+                row: 2
+                col: 6
+            text: F
+      name:
+        Ok:
+          value: BornEvt
+          meta:
+            span:
+              start:
+                row: 2
+                col: 6
+              end:
+                row: 2
+                col: 16
+            text: "BornEvt   "
+      filetype:
+        Ok:
+          value: U
+          meta:
+            span:
+              start:
+                row: 2
+                col: 16
+              end:
+                row: 2
+                col: 17
+            text: U
+      file_designation:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 2
+                col: 17
+              end:
+                row: 2
+                col: 18
+            text: F
+      endfile:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 18
+              end:
+                row: 2
+                col: 19
+            text: " "
+      file_addition:
+        Ok:
+          value: A
+          meta:
+            span:
+              start:
+                row: 2
+                col: 19
+              end:
+                row: 2
+                col: 20
+            text: A
+      file_sequence:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 20
+              end:
+                row: 2
+                col: 21
+            text: " "
+      file_format:
+        Ok:
+          value: E
+          meta:
+            span:
+              start:
+                row: 2
+                col: 21
+              end:
+                row: 2
+                col: 22
+            text: E
+      record_length:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 22
+              end:
+                row: 2
+                col: 27
+            text: "     "
+      limits_processing:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 27
+              end:
+                row: 2
+                col: 28
+            text: " "
+      keylength:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 28
+              end:
+                row: 2
+                col: 33
+            text: "     "
+      record_address_type:
+        Ok:
+          value: K
+          meta:
+            span:
+              start:
+                row: 2
+                col: 33
+              end:
+                row: 2
+                col: 34
+            text: K
+      file_organization:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 34
+              end:
+                row: 2
+                col: 35
+            text: " "
+      device:
+        Ok:
+          value: DISK
+          meta:
+            span:
+              start:
+                row: 2
+                col: 35
+              end:
+                row: 2
+                col: 42
+            text: "DISK   "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 2
+                col: 42
+              end:
+                row: 2
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 2
+                      col: 43
+                    end:
+                      row: 2
+                      col: 100
+                  text: "                                                         "
+  - F:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 3
+                col: 0
+              end:
+                row: 3
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 3
+                col: 5
+              end:
+                row: 3
+                col: 6
+            text: F
+      name:
+        Ok:
+          value: CowEvtL2
+          meta:
+            span:
+              start:
+                row: 3
+                col: 6
+              end:
+                row: 3
+                col: 16
+            text: "CowEvtL2  "
+      filetype:
+        Ok:
+          value: I
+          meta:
+            span:
+              start:
+                row: 3
+                col: 16
+              end:
+                row: 3
+                col: 17
+            text: I
+      file_designation:
+        Ok:
+          value: F
+          meta:
+            span:
+              start:
+                row: 3
+                col: 17
+              end:
+                row: 3
+                col: 18
+            text: F
+      endfile:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 18
+              end:
+                row: 3
+                col: 19
+            text: " "
+      file_addition:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 19
+              end:
+                row: 3
+                col: 20
+            text: " "
+      file_sequence:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 20
+              end:
+                row: 3
+                col: 21
+            text: " "
+      file_format:
+        Ok:
+          value: E
+          meta:
+            span:
+              start:
+                row: 3
+                col: 21
+              end:
+                row: 3
+                col: 22
+            text: E
+      record_length:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 22
+              end:
+                row: 3
+                col: 27
+            text: "     "
+      limits_processing:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 27
+              end:
+                row: 3
+                col: 28
+            text: " "
+      keylength:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 28
+              end:
+                row: 3
+                col: 33
+            text: "     "
+      record_address_type:
+        Ok:
+          value: K
+          meta:
+            span:
+              start:
+                row: 3
+                col: 33
+              end:
+                row: 3
+                col: 34
+            text: K
+      file_organization:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 34
+              end:
+                row: 3
+                col: 35
+            text: " "
+      device:
+        Ok:
+          value: DISK
+          meta:
+            span:
+              start:
+                row: 3
+                col: 35
+              end:
+                row: 3
+                col: 42
+            text: "DISK   "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 3
+                col: 42
+              end:
+                row: 3
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 43
+                    end:
+                      row: 3
+                      col: 44
+                  text: " "
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 44
+                    end:
+                      row: 3
+                      col: 50
+                  text: Rename
+            - kind: LParen
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 50
+                    end:
+                      row: 3
+                      col: 51
+                  text: (
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 51
+                    end:
+                      row: 3
+                      col: 57
+                  text: EVTFMT
+            - kind: Colon
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 57
+                    end:
+                      row: 3
+                      col: 58
+                  text: ":"
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 58
+                    end:
+                      row: 3
+                      col: 65
+                  text: VEVTFMT
+            - kind: RParen
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 65
+                    end:
+                      row: 3
+                      col: 66
+                  text: )
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 3
+                      col: 66
+                    end:
+                      row: 3
+                      col: 100
+                  text: "                                  "
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 4
+                      col: 43
+                    end:
+                      row: 4
+                      col: 49
+                  text: Prefix
+            - kind: LParen
+              metas:
+                - span:
+                    start:
+                      row: 4
+                      col: 49
+                    end:
+                      row: 4
+                      col: 50
+                  text: (
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 4
+                      col: 50
+                    end:
+                      row: 4
+                      col: 51
+                  text: V
+            - kind: RParen
+              metas:
+                - span:
+                    start:
+                      row: 4
+                      col: 51
+                    end:
+                      row: 4
+                      col: 52
+                  text: )
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 4
+                      col: 52
+                    end:
+                      row: 4
+                      col: 100
+                  text: "                                                "
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 7
+                col: 0
+              end:
+                row: 7
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 7
+                col: 5
+              end:
+                row: 7
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: LastId
+          meta:
+            span:
+              start:
+                row: 7
+                col: 6
+              end:
+                row: 7
+                col: 21
+            text: " LastId        "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 7
+                col: 21
+              end:
+                row: 7
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 7
+                col: 22
+              end:
+                row: 7
+                col: 23
+            text: " "
+      definition_type:
+        Idk:
+          value: "S "
+          meta:
+            span:
+              start:
+                row: 7
+                col: 23
+              end:
+                row: 7
+                col: 25
+            text: "S "
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 7
+                col: 25
+              end:
+                row: 7
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value:
+            Value: 8
+          meta:
+            span:
+              start:
+                row: 7
+                col: 32
+              end:
+                row: 7
+                col: 39
+            text: "      8"
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 7
+                col: 39
+              end:
+                row: 7
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value:
+            Value: 0
+          meta:
+            span:
+              start:
+                row: 7
+                col: 40
+              end:
+                row: 7
+                col: 42
+            text: " 0"
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 7
+                col: 42
+              end:
+                row: 7
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 7
+                      col: 43
+                    end:
+                      row: 7
+                      col: 100
+                  text: "                                                         "
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 8
+                col: 0
+              end:
+                row: 8
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 8
+                col: 5
+              end:
+                row: 8
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: QCmdExc
+          meta:
+            span:
+              start:
+                row: 8
+                col: 6
+              end:
+                row: 8
+                col: 21
+            text: " QCmdExc       "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 21
+              end:
+                row: 8
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 22
+              end:
+                row: 8
+                col: 23
+            text: " "
+      definition_type:
+        Ok:
+          value: PR
+          meta:
+            span:
+              start:
+                row: 8
+                col: 23
+              end:
+                row: 8
+                col: 25
+            text: PR
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 25
+              end:
+                row: 8
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 32
+              end:
+                row: 8
+                col: 39
+            text: "       "
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 39
+              end:
+                row: 8
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 40
+              end:
+                row: 8
+                col: 42
+            text: "  "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 8
+                col: 42
+              end:
+                row: 8
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Identifier
+              metas:
+                - span:
+                    start:
+                      row: 8
+                      col: 43
+                    end:
+                      row: 8
+                      col: 49
+                  text: EXTPGM
+            - kind: LParen
+              metas:
+                - span:
+                    start:
+                      row: 8
+                      col: 49
+                    end:
+                      row: 8
+                      col: 50
+                  text: (
+            - kind: StringLiteral
+              metas:
+                - span:
+                    start:
+                      row: 8
+                      col: 50
+                    end:
+                      row: 8
+                      col: 59
+                  text: "'QCMDEXC'"
+            - kind: RParen
+              metas:
+                - span:
+                    start:
+                      row: 8
+                      col: 59
+                    end:
+                      row: 8
+                      col: 60
+                  text: )
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 8
+                      col: 60
+                    end:
+                      row: 8
+                      col: 100
+                  text: "                                        "
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 9
+                col: 0
+              end:
+                row: 9
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 9
+                col: 5
+              end:
+                row: 9
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: Command
+          meta:
+            span:
+              start:
+                row: 9
+                col: 6
+              end:
+                row: 9
+                col: 21
+            text: "  Command      "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 21
+              end:
+                row: 9
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 22
+              end:
+                row: 9
+                col: 23
+            text: " "
+      definition_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 23
+              end:
+                row: 9
+                col: 25
+            text: "  "
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 25
+              end:
+                row: 9
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value:
+            Value: 2000
+          meta:
+            span:
+              start:
+                row: 9
+                col: 32
+              end:
+                row: 9
+                col: 39
+            text: "   2000"
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 39
+              end:
+                row: 9
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 40
+              end:
+                row: 9
+                col: 42
+            text: "  "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 9
+                col: 42
+              end:
+                row: 9
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 9
+                      col: 43
+                    end:
+                      row: 9
+                      col: 100
+                  text: "                                                         "
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 10
+                col: 0
+              end:
+                row: 10
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 10
+                col: 5
+              end:
+                row: 10
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: Length
+          meta:
+            span:
+              start:
+                row: 10
+                col: 6
+              end:
+                row: 10
+                col: 21
+            text: "  Length       "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 21
+              end:
+                row: 10
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 22
+              end:
+                row: 10
+                col: 23
+            text: " "
+      definition_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 23
+              end:
+                row: 10
+                col: 25
+            text: "  "
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 25
+              end:
+                row: 10
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value:
+            Value: 15
+          meta:
+            span:
+              start:
+                row: 10
+                col: 32
+              end:
+                row: 10
+                col: 39
+            text: "     15"
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 39
+              end:
+                row: 10
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value:
+            Value: 5
+          meta:
+            span:
+              start:
+                row: 10
+                col: 40
+              end:
+                row: 10
+                col: 42
+            text: " 5"
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 10
+                col: 42
+              end:
+                row: 10
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          tokens:
+            - kind: Whitespace
+              metas:
+                - span:
+                    start:
+                      row: 10
+                      col: 43
+                    end:
+                      row: 10
+                      col: 100
+                  text: "                                                         "
+  - C:
+      code:
+        Ok:
+          op:
+            Exsr:
+              name: $SetLstId
+              meta:
+                span:
+                  start:
+                    row: 13
+                    col: 7
+                  end:
+                    row: 13
+                    col: 100
+                text: "Exsr $SetLstId;                                                                              "
+              highlights:
+                - - start:
+                      row: 13
+                      col: 7
+                    end:
+                      row: 13
+                      col: 11
+                  - "@function.builtin"
+                - - start:
+                      row: 13
+                      col: 11
+                    end:
+                      row: 13
+                      col: 12
+                  - Normal
+                - - start:
+                      row: 13
+                      col: 12
+                    end:
+                      row: 13
+                      col: 21
+                  - Identifier
+                - - start:
+                      row: 13
+                      col: 21
+                    end:
+                      row: 13
+                      col: 22
+                  - Normal
+                - - start:
+                      row: 13
+                      col: 22
+                    end:
+                      row: 13
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Exsr:
+              name: $CrtEvts
+              meta:
+                span:
+                  start:
+                    row: 14
+                    col: 7
+                  end:
+                    row: 14
+                    col: 100
+                text: "Exsr $CrtEvts;                                                                               "
+              highlights:
+                - - start:
+                      row: 14
+                      col: 7
+                    end:
+                      row: 14
+                      col: 11
+                  - "@function.builtin"
+                - - start:
+                      row: 14
+                      col: 11
+                    end:
+                      row: 14
+                      col: 12
+                  - Normal
+                - - start:
+                      row: 14
+                      col: 12
+                    end:
+                      row: 14
+                      col: 20
+                  - Identifier
+                - - start:
+                      row: 14
+                      col: 20
+                    end:
+                      row: 14
+                      col: 21
+                  - Normal
+                - - start:
+                      row: 14
+                      col: 21
+                    end:
+                      row: 14
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Callp:
+              name: QCmdExc
+              meta:
+                span:
+                  start:
+                    row: 15
+                    col: 7
+                  end:
+                    row: 15
+                    col: 100
+                text: "QCmdExc(Foo:Bar);                                                                            "
+              highlights:
+                - - start:
+                      row: 15
+                      col: 7
+                    end:
+                      row: 15
+                      col: 14
+                  - Identifier
+                - - start:
+                      row: 15
+                      col: 14
+                    end:
+                      row: 15
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 15
+                      col: 15
+                    end:
+                      row: 15
+                      col: 18
+                  - Identifier
+                - - start:
+                      row: 15
+                      col: 18
+                    end:
+                      row: 15
+                      col: 19
+                  - Normal
+                - - start:
+                      row: 15
+                      col: 19
+                    end:
+                      row: 15
+                      col: 22
+                  - Identifier
+                - - start:
+                      row: 15
+                      col: 22
+                    end:
+                      row: 15
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 15
+                      col: 23
+                    end:
+                      row: 15
+                      col: 24
+                  - Normal
+                - - start:
+                      row: 15
+                      col: 24
+                    end:
+                      row: 15
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 16
+                    col: 7
+                  end:
+                    row: 16
+                    col: 100
+                text: "*inlr = *on;                                                                                 "
+              error: "Expected Identifier, found Indicator"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 16
+                      col: 7
+                    end:
+                      row: 16
+                      col: 12
+                  - "@variable.builtin"
+                - - start:
+                      row: 16
+                      col: 12
+                    end:
+                      row: 16
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 16
+                      col: 13
+                    end:
+                      row: 16
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 16
+                      col: 14
+                    end:
+                      row: 16
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 16
+                      col: 15
+                    end:
+                      row: 16
+                      col: 18
+                  - "@boolean"
+                - - start:
+                      row: 16
+                      col: 18
+                    end:
+                      row: 16
+                      col: 19
+                  - Normal
+                - - start:
+                      row: 16
+                      col: 19
+                    end:
+                      row: 16
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 17
+                    col: 7
+                  end:
+                    row: 17
+                    col: 100
+                text: "                                                                                             "
+              error: EOL
+              tokens: []
+              highlights:
+                - - start:
+                      row: 17
+                      col: 7
+                    end:
+                      row: 17
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Begsr:
+              name: $SetLstId
+              meta:
+                span:
+                  start:
+                    row: 18
+                    col: 7
+                  end:
+                    row: 18
+                    col: 100
+                text: "Begsr $SetLstId;                                                                             "
+              highlights:
+                - - start:
+                      row: 18
+                      col: 7
+                    end:
+                      row: 18
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 18
+                      col: 12
+                    end:
+                      row: 18
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 18
+                      col: 13
+                    end:
+                      row: 18
+                      col: 22
+                  - Identifier
+                - - start:
+                      row: 18
+                      col: 22
+                    end:
+                      row: 18
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 18
+                      col: 23
+                    end:
+                      row: 18
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 19
+                    col: 7
+                  end:
+                    row: 19
+                    col: 100
+                text: "  SetLL *Loval CowEvtL2;                                                                     "
+              error: "Expected Identifier, found SetLL"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 19
+                      col: 7
+                    end:
+                      row: 19
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 19
+                      col: 9
+                    end:
+                      row: 19
+                      col: 14
+                  - "@function.builtin"
+                - - start:
+                      row: 19
+                      col: 14
+                    end:
+                      row: 19
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 19
+                      col: 15
+                    end:
+                      row: 19
+                      col: 21
+                  - "@constant.builtin"
+                - - start:
+                      row: 19
+                      col: 21
+                    end:
+                      row: 19
+                      col: 22
+                  - Normal
+                - - start:
+                      row: 19
+                      col: 22
+                    end:
+                      row: 19
+                      col: 30
+                  - Identifier
+                - - start:
+                      row: 19
+                      col: 30
+                    end:
+                      row: 19
+                      col: 31
+                  - Normal
+                - - start:
+                      row: 19
+                      col: 31
+                    end:
+                      row: 19
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 20
+                    col: 7
+                  end:
+                    row: 20
+                    col: 100
+                text: "  If Not %Eof;                                                                               "
+              error: "Expected Identifier, found If"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 20
+                      col: 7
+                    end:
+                      row: 20
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 20
+                      col: 9
+                    end:
+                      row: 20
+                      col: 11
+                  - "@function.builtin"
+                - - start:
+                      row: 20
+                      col: 11
+                    end:
+                      row: 20
+                      col: 12
+                  - Normal
+                - - start:
+                      row: 20
+                      col: 12
+                    end:
+                      row: 20
+                      col: 15
+                  - Identifier
+                - - start:
+                      row: 20
+                      col: 15
+                    end:
+                      row: 20
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 20
+                      col: 16
+                    end:
+                      row: 20
+                      col: 20
+                  - "@function.builtin"
+                - - start:
+                      row: 20
+                      col: 20
+                    end:
+                      row: 20
+                      col: 21
+                  - Normal
+                - - start:
+                      row: 20
+                      col: 21
+                    end:
+                      row: 20
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 21
+                    col: 7
+                  end:
+                    row: 21
+                    col: 100
+                text: "    Read CowEvtL2;                                                                           "
+              error: "Expected Identifier, found Read"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 21
+                      col: 7
+                    end:
+                      row: 21
+                      col: 11
+                  - Normal
+                - - start:
+                      row: 21
+                      col: 11
+                    end:
+                      row: 21
+                      col: 15
+                  - "@function.builtin"
+                - - start:
+                      row: 21
+                      col: 15
+                    end:
+                      row: 21
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 21
+                      col: 16
+                    end:
+                      row: 21
+                      col: 24
+                  - Identifier
+                - - start:
+                      row: 21
+                      col: 24
+                    end:
+                      row: 21
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 21
+                      col: 25
+                    end:
+                      row: 21
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Callp:
+              name: QCmdExc
+              meta:
+                span:
+                  start:
+                    row: 22
+                    col: 7
+                  end:
+                    row: 22
+                    col: 100
+                text: "      QCmdExc(FOO:BaR);                                                                      "
+              highlights:
+                - - start:
+                      row: 22
+                      col: 7
+                    end:
+                      row: 22
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 22
+                      col: 13
+                    end:
+                      row: 22
+                      col: 20
+                  - Identifier
+                - - start:
+                      row: 22
+                      col: 20
+                    end:
+                      row: 22
+                      col: 21
+                  - Normal
+                - - start:
+                      row: 22
+                      col: 21
+                    end:
+                      row: 22
+                      col: 24
+                  - Identifier
+                - - start:
+                      row: 22
+                      col: 24
+                    end:
+                      row: 22
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 22
+                      col: 25
+                    end:
+                      row: 22
+                      col: 28
+                  - Identifier
+                - - start:
+                      row: 22
+                      col: 28
+                    end:
+                      row: 22
+                      col: 29
+                  - Normal
+                - - start:
+                      row: 22
+                      col: 29
+                    end:
+                      row: 22
+                      col: 30
+                  - Normal
+                - - start:
+                      row: 22
+                      col: 30
+                    end:
+                      row: 22
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 23
+                    col: 7
+                  end:
+                    row: 23
+                    col: 100
+                text: "    LastId = Vid;                                                                            "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 23
+                      col: 7
+                    end:
+                      row: 23
+                      col: 11
+                  - Normal
+                - - start:
+                      row: 23
+                      col: 11
+                    end:
+                      row: 23
+                      col: 17
+                  - Identifier
+                - - start:
+                      row: 23
+                      col: 17
+                    end:
+                      row: 23
+                      col: 18
+                  - Normal
+                - - start:
+                      row: 23
+                      col: 18
+                    end:
+                      row: 23
+                      col: 19
+                  - Normal
+                - - start:
+                      row: 23
+                      col: 19
+                    end:
+                      row: 23
+                      col: 20
+                  - Normal
+                - - start:
+                      row: 23
+                      col: 20
+                    end:
+                      row: 23
+                      col: 23
+                  - Identifier
+                - - start:
+                      row: 23
+                      col: 23
+                    end:
+                      row: 23
+                      col: 24
+                  - Normal
+                - - start:
+                      row: 23
+                      col: 24
+                    end:
+                      row: 23
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 24
+                    col: 7
+                  end:
+                    row: 24
+                    col: 100
+                text: "  Else;                                                                                      "
+              error: "Expected Identifier, found Else"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 24
+                      col: 7
+                    end:
+                      row: 24
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 24
+                      col: 9
+                    end:
+                      row: 24
+                      col: 13
+                  - "@function.builtin"
+                - - start:
+                      row: 24
+                      col: 13
+                    end:
+                      row: 24
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 24
+                      col: 14
+                    end:
+                      row: 24
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 25
+                    col: 7
+                  end:
+                    row: 25
+                    col: 100
+                text: "   LastId = 1;                                                                               "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 25
+                      col: 7
+                    end:
+                      row: 25
+                      col: 10
+                  - Normal
+                - - start:
+                      row: 25
+                      col: 10
+                    end:
+                      row: 25
+                      col: 16
+                  - Identifier
+                - - start:
+                      row: 25
+                      col: 16
+                    end:
+                      row: 25
+                      col: 17
+                  - Normal
+                - - start:
+                      row: 25
+                      col: 17
+                    end:
+                      row: 25
+                      col: 18
+                  - Normal
+                - - start:
+                      row: 25
+                      col: 18
+                    end:
+                      row: 25
+                      col: 19
+                  - Normal
+                - - start:
+                      row: 25
+                      col: 19
+                    end:
+                      row: 25
+                      col: 20
+                  - "@number"
+                - - start:
+                      row: 25
+                      col: 20
+                    end:
+                      row: 25
+                      col: 21
+                  - Normal
+                - - start:
+                      row: 25
+                      col: 21
+                    end:
+                      row: 25
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 26
+                    col: 7
+                  end:
+                    row: 26
+                    col: 100
+                text: "  Endif;                                                                                     "
+              error: "Expected Identifier, found Endif"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 26
+                      col: 7
+                    end:
+                      row: 26
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 26
+                      col: 9
+                    end:
+                      row: 26
+                      col: 14
+                  - "@function.builtin"
+                - - start:
+                      row: 26
+                      col: 14
+                    end:
+                      row: 26
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 26
+                      col: 15
+                    end:
+                      row: 26
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Endsr:
+              meta:
+                span:
+                  start:
+                    row: 27
+                    col: 7
+                  end:
+                    row: 27
+                    col: 100
+                text: "Endsr;                                                                                       "
+              highlights:
+                - - start:
+                      row: 27
+                      col: 7
+                    end:
+                      row: 27
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 27
+                      col: 12
+                    end:
+                      row: 27
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 27
+                      col: 13
+                    end:
+                      row: 27
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 28
+                    col: 7
+                  end:
+                    row: 28
+                    col: 100
+                text: "                                                                                             "
+              error: EOL
+              tokens: []
+              highlights:
+                - - start:
+                      row: 28
+                      col: 7
+                    end:
+                      row: 28
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Begsr:
+              name: $CrtBRNEVT
+              meta:
+                span:
+                  start:
+                    row: 29
+                    col: 11
+                  end:
+                    row: 29
+                    col: 25
+                text: "$CrtBRNEVT    "
+              highlights: []
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 30
+                    col: 7
+                  end:
+                    row: 30
+                    col: 100
+                text: "  EID = Id;                                                                                  "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 30
+                      col: 7
+                    end:
+                      row: 30
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 30
+                      col: 9
+                    end:
+                      row: 30
+                      col: 12
+                  - Identifier
+                - - start:
+                      row: 30
+                      col: 12
+                    end:
+                      row: 30
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 30
+                      col: 13
+                    end:
+                      row: 30
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 30
+                      col: 14
+                    end:
+                      row: 30
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 30
+                      col: 15
+                    end:
+                      row: 30
+                      col: 17
+                  - Identifier
+                - - start:
+                      row: 30
+                      col: 17
+                    end:
+                      row: 30
+                      col: 18
+                  - Normal
+                - - start:
+                      row: 30
+                      col: 18
+                    end:
+                      row: 30
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 31
+                    col: 7
+                  end:
+                    row: 31
+                    col: 100
+                text: "  BNAME = 'BESSE';                                                                           "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 31
+                      col: 7
+                    end:
+                      row: 31
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 31
+                      col: 9
+                    end:
+                      row: 31
+                      col: 14
+                  - Identifier
+                - - start:
+                      row: 31
+                      col: 14
+                    end:
+                      row: 31
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 31
+                      col: 15
+                    end:
+                      row: 31
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 31
+                      col: 16
+                    end:
+                      row: 31
+                      col: 17
+                  - Normal
+                - - start:
+                      row: 31
+                      col: 17
+                    end:
+                      row: 31
+                      col: 24
+                  - String
+                - - start:
+                      row: 31
+                      col: 24
+                    end:
+                      row: 31
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 31
+                      col: 25
+                    end:
+                      row: 31
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 32
+                    col: 7
+                  end:
+                    row: 32
+                    col: 100
+                text: "  BDAT = 20240101;                                                                           "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 32
+                      col: 7
+                    end:
+                      row: 32
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 32
+                      col: 9
+                    end:
+                      row: 32
+                      col: 13
+                  - Identifier
+                - - start:
+                      row: 32
+                      col: 13
+                    end:
+                      row: 32
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 32
+                      col: 14
+                    end:
+                      row: 32
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 32
+                      col: 15
+                    end:
+                      row: 32
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 32
+                      col: 16
+                    end:
+                      row: 32
+                      col: 24
+                  - "@number"
+                - - start:
+                      row: 32
+                      col: 24
+                    end:
+                      row: 32
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 32
+                      col: 25
+                    end:
+                      row: 32
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 33
+                    col: 7
+                  end:
+                    row: 33
+                    col: 100
+                text: "  Write BORNFMT;                                                                             "
+              error: "Expected Identifier, found Write"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 33
+                      col: 7
+                    end:
+                      row: 33
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 33
+                      col: 9
+                    end:
+                      row: 33
+                      col: 14
+                  - "@function.builtin"
+                - - start:
+                      row: 33
+                      col: 14
+                    end:
+                      row: 33
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 33
+                      col: 15
+                    end:
+                      row: 33
+                      col: 22
+                  - Identifier
+                - - start:
+                      row: 33
+                      col: 22
+                    end:
+                      row: 33
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 33
+                      col: 23
+                    end:
+                      row: 33
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Endsr:
+              meta:
+                span:
+                  start:
+                    row: 34
+                    col: 25
+                  end:
+                    row: 34
+                    col: 35
+                text: "ENDSR     "
+              highlights: []
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 35
+                    col: 7
+                  end:
+                    row: 35
+                    col: 100
+                text: "                                                                                             "
+              error: EOL
+              tokens: []
+              highlights:
+                - - start:
+                      row: 35
+                      col: 7
+                    end:
+                      row: 35
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Begsr:
+              name: $CrtCowEvt
+              meta:
+                span:
+                  start:
+                    row: 36
+                    col: 7
+                  end:
+                    row: 36
+                    col: 100
+                text: "Begsr $CrtCowEvt;                                                                            "
+              highlights:
+                - - start:
+                      row: 36
+                      col: 7
+                    end:
+                      row: 36
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 36
+                      col: 12
+                    end:
+                      row: 36
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 36
+                      col: 13
+                    end:
+                      row: 36
+                      col: 23
+                  - Identifier
+                - - start:
+                      row: 36
+                      col: 23
+                    end:
+                      row: 36
+                      col: 24
+                  - Normal
+                - - start:
+                      row: 36
+                      col: 24
+                    end:
+                      row: 36
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 37
+                    col: 7
+                  end:
+                    row: 37
+                    col: 100
+                text: "  Id = LastId + 1;                                                                           "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 37
+                      col: 7
+                    end:
+                      row: 37
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 9
+                    end:
+                      row: 37
+                      col: 11
+                  - Identifier
+                - - start:
+                      row: 37
+                      col: 11
+                    end:
+                      row: 37
+                      col: 12
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 12
+                    end:
+                      row: 37
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 13
+                    end:
+                      row: 37
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 14
+                    end:
+                      row: 37
+                      col: 20
+                  - Identifier
+                - - start:
+                      row: 37
+                      col: 20
+                    end:
+                      row: 37
+                      col: 21
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 21
+                    end:
+                      row: 37
+                      col: 22
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 22
+                    end:
+                      row: 37
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 23
+                    end:
+                      row: 37
+                      col: 24
+                  - "@number"
+                - - start:
+                      row: 37
+                      col: 24
+                    end:
+                      row: 37
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 37
+                      col: 25
+                    end:
+                      row: 37
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 38
+                    col: 7
+                  end:
+                    row: 38
+                    col: 100
+                text: "  Edat = 20240101;                                                                           "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 38
+                      col: 7
+                    end:
+                      row: 38
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 38
+                      col: 9
+                    end:
+                      row: 38
+                      col: 13
+                  - Identifier
+                - - start:
+                      row: 38
+                      col: 13
+                    end:
+                      row: 38
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 38
+                      col: 14
+                    end:
+                      row: 38
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 38
+                      col: 15
+                    end:
+                      row: 38
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 38
+                      col: 16
+                    end:
+                      row: 38
+                      col: 24
+                  - "@number"
+                - - start:
+                      row: 38
+                      col: 24
+                    end:
+                      row: 38
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 38
+                      col: 25
+                    end:
+                      row: 38
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 39
+                    col: 7
+                  end:
+                    row: 39
+                    col: 100
+                text: "  Etim = 125959;                                                                             "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 39
+                      col: 7
+                    end:
+                      row: 39
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 39
+                      col: 9
+                    end:
+                      row: 39
+                      col: 13
+                  - Identifier
+                - - start:
+                      row: 39
+                      col: 13
+                    end:
+                      row: 39
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 39
+                      col: 14
+                    end:
+                      row: 39
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 39
+                      col: 15
+                    end:
+                      row: 39
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 39
+                      col: 16
+                    end:
+                      row: 39
+                      col: 22
+                  - "@number"
+                - - start:
+                      row: 39
+                      col: 22
+                    end:
+                      row: 39
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 39
+                      col: 23
+                    end:
+                      row: 39
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 40
+                    col: 7
+                  end:
+                    row: 40
+                    col: 100
+                text: "  Etyp = 'BORN';                                                                             "
+              error: "Expected LParen, found Equals"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 40
+                      col: 7
+                    end:
+                      row: 40
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 40
+                      col: 9
+                    end:
+                      row: 40
+                      col: 13
+                  - Identifier
+                - - start:
+                      row: 40
+                      col: 13
+                    end:
+                      row: 40
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 40
+                      col: 14
+                    end:
+                      row: 40
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 40
+                      col: 15
+                    end:
+                      row: 40
+                      col: 16
+                  - Normal
+                - - start:
+                      row: 40
+                      col: 16
+                    end:
+                      row: 40
+                      col: 22
+                  - String
+                - - start:
+                      row: 40
+                      col: 22
+                    end:
+                      row: 40
+                      col: 23
+                  - Normal
+                - - start:
+                      row: 40
+                      col: 23
+                    end:
+                      row: 40
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 41
+                    col: 7
+                  end:
+                    row: 41
+                    col: 100
+                text: "  Write EVTFMT;                                                                              "
+              error: "Expected Identifier, found Write"
+              tokens: []
+              highlights:
+                - - start:
+                      row: 41
+                      col: 7
+                    end:
+                      row: 41
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 41
+                      col: 9
+                    end:
+                      row: 41
+                      col: 14
+                  - "@function.builtin"
+                - - start:
+                      row: 41
+                      col: 14
+                    end:
+                      row: 41
+                      col: 15
+                  - Normal
+                - - start:
+                      row: 41
+                      col: 15
+                    end:
+                      row: 41
+                      col: 21
+                  - Identifier
+                - - start:
+                      row: 41
+                      col: 21
+                    end:
+                      row: 41
+                      col: 22
+                  - Normal
+                - - start:
+                      row: 41
+                      col: 22
+                    end:
+                      row: 41
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Endsr:
+              meta:
+                span:
+                  start:
+                    row: 42
+                    col: 7
+                  end:
+                    row: 42
+                    col: 100
+                text: "Endsr;                                                                                       "
+              highlights:
+                - - start:
+                      row: 42
+                      col: 7
+                    end:
+                      row: 42
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 42
+                      col: 12
+                    end:
+                      row: 42
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 42
+                      col: 13
+                    end:
+                      row: 42
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Idk:
+              meta:
+                span:
+                  start:
+                    row: 43
+                    col: 7
+                  end:
+                    row: 43
+                    col: 100
+                text: "                                                                                             "
+              error: EOL
+              tokens: []
+              highlights:
+                - - start:
+                      row: 43
+                      col: 7
+                    end:
+                      row: 43
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Begsr:
+              name: $CrtEvts
+              meta:
+                span:
+                  start:
+                    row: 44
+                    col: 7
+                  end:
+                    row: 44
+                    col: 100
+                text: "Begsr $CrtEvts;                                                                              "
+              highlights:
+                - - start:
+                      row: 44
+                      col: 7
+                    end:
+                      row: 44
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 44
+                      col: 12
+                    end:
+                      row: 44
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 44
+                      col: 13
+                    end:
+                      row: 44
+                      col: 21
+                  - Identifier
+                - - start:
+                      row: 44
+                      col: 21
+                    end:
+                      row: 44
+                      col: 22
+                  - Normal
+                - - start:
+                      row: 44
+                      col: 22
+                    end:
+                      row: 44
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Exsr:
+              name: $CrtCowEvt
+              meta:
+                span:
+                  start:
+                    row: 45
+                    col: 7
+                  end:
+                    row: 45
+                    col: 100
+                text: "  Exsr $CrtCowEvt;                                                                           "
+              highlights:
+                - - start:
+                      row: 45
+                      col: 7
+                    end:
+                      row: 45
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 45
+                      col: 9
+                    end:
+                      row: 45
+                      col: 13
+                  - "@function.builtin"
+                - - start:
+                      row: 45
+                      col: 13
+                    end:
+                      row: 45
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 45
+                      col: 14
+                    end:
+                      row: 45
+                      col: 24
+                  - Identifier
+                - - start:
+                      row: 45
+                      col: 24
+                    end:
+                      row: 45
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 45
+                      col: 25
+                    end:
+                      row: 45
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Exsr:
+              name: $CrtBrnEvt
+              meta:
+                span:
+                  start:
+                    row: 46
+                    col: 7
+                  end:
+                    row: 46
+                    col: 100
+                text: "  Exsr $CrtBrnEvt;                                                                           "
+              highlights:
+                - - start:
+                      row: 46
+                      col: 7
+                    end:
+                      row: 46
+                      col: 9
+                  - Normal
+                - - start:
+                      row: 46
+                      col: 9
+                    end:
+                      row: 46
+                      col: 13
+                  - "@function.builtin"
+                - - start:
+                      row: 46
+                      col: 13
+                    end:
+                      row: 46
+                      col: 14
+                  - Normal
+                - - start:
+                      row: 46
+                      col: 14
+                    end:
+                      row: 46
+                      col: 24
+                  - Identifier
+                - - start:
+                      row: 46
+                      col: 24
+                    end:
+                      row: 46
+                      col: 25
+                  - Normal
+                - - start:
+                      row: 46
+                      col: 25
+                    end:
+                      row: 46
+                      col: 100
+                  - Normal
+  - C:
+      code:
+        Ok:
+          op:
+            Endsr:
+              meta:
+                span:
+                  start:
+                    row: 47
+                    col: 7
+                  end:
+                    row: 47
+                    col: 100
+                text: "Endsr;                                                                                       "
+              highlights:
+                - - start:
+                      row: 47
+                      col: 7
+                    end:
+                      row: 47
+                      col: 12
+                  - "@function.builtin"
+                - - start:
+                      row: 47
+                      col: 12
+                    end:
+                      row: 47
+                      col: 13
+                  - Normal
+                - - start:
+                      row: 47
+                      col: 13
+                    end:
+                      row: 47
+                      col: 100
+                  - Normal
