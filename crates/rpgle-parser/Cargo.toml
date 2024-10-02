@@ -11,6 +11,7 @@ authors.workspace = true
 [dependencies]
 serde.workspace = true
 nonempty.workspace = true
+nom.workspace = true
 
 [dev-dependencies]
 insta.workspace = true
