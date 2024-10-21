@@ -305,6 +305,21 @@ fn json_dump_current_buffer(path: String) -> DumpOutcome {
 
 fn getdef(pattern: String) -> Option<TagItem> {
     let buf = oxi::api::Buffer::current();
+    let current_file: String = match buf.get_name() {
+        Ok(pb) => pb
+            .as_path()
+            .file_name()
+            .expect("path from pathbuf from ok result should always unwrap")
+            .to_str()
+            .expect("should always be able to convert osstr to str in this context")
+            .to_string()
+            .to_uppercase(),
+        Err(_) => "".to_string(),
+    };
+    let current_row = match oxi::api::get_current_win().get_cursor() {
+        Ok((row1, _)) => row1 - 1,
+        Err(_) => 0,
+    };
     if let Ok(count) = buf.line_count() {
         if let Ok(lines) = buf.get_lines(0..count, true) {
             let mut input = String::new();
@@ -315,18 +330,34 @@ fn getdef(pattern: String) -> Option<TagItem> {
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
                 let ast = rpgle_parser::AST::from(&cst);
                 if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
-                    return Some(TagItem {
-                        name: pattern.clone(),
-                        uri: None,
-                        start_line: def.start.row,
-                        start_char: def.start.col,
-                        end_line: def.end.row,
-                        end_char: def.end.col,
-                    });
+                    if def.start.row != current_row {
+                        let ti = TagItem {
+                            name: pattern.clone(),
+                            uri: None,
+                            start_line: def.start.row,
+                            start_char: def.start.col,
+                            end_line: def.end.row,
+                            end_char: def.end.col,
+                        };
+                        if env::var("DEBUG").is_ok() {
+                            let _ = std::fs::write("/tmp/getdef.txt", format!("{:#?}", ti));
+                        }
+                        return Some(ti);
+                    }
                 }
                 // else
                 if let Some(man) = get_manifest() {
-                    if let Some(sources) = man.get_source_files() {
+                    if let Some(srcs) = man.get_source_files() {
+                        let mut sources = srcs
+                            .into_iter()
+                            .filter(|x| !x.to_uppercase().ends_with(&current_file))
+                            .collect::<Vec<String>>();
+                        sources.sort_by_key(|x| {
+                            match x.to_uppercase().contains(&pattern.to_uppercase()) {
+                                true => 0,
+                                false => 1,
+                            }
+                        });
                         for source in sources {
                             if source.ends_with("rpgle") {
                                 if let Ok(input) = fs::read_to_string(source.clone()) {
@@ -336,14 +367,21 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                             rpgle_parser::query_definition(&ast, &pattern)
                                         {
                                             let uri = format!("file://{}", source);
-                                            return Some(TagItem {
+                                            let ti = TagItem {
                                                 name: pattern.clone(),
                                                 uri: Some(uri),
                                                 start_line: def.start.row,
                                                 start_char: def.start.col,
                                                 end_line: def.end.row,
                                                 end_char: def.end.col,
-                                            });
+                                            };
+                                            if env::var("DEBUG").is_ok() {
+                                                let _ = std::fs::write(
+                                                    "/tmp/getdef.txt",
+                                                    format!("{:#?}", ti),
+                                                );
+                                            }
+                                            return Some(ti);
                                         }
                                     }
                                 }
@@ -368,7 +406,7 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                             };
                                             if env::var("DEBUG").is_ok() {
                                                 let _ = std::fs::write(
-                                                    "/tmp/tagitem.txt",
+                                                    "/tmp/getdef.txt",
                                                     format!("{:#?}", ti),
                                                 );
                                             }

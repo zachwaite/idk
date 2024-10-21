@@ -179,6 +179,16 @@ pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
                     return Some(namefield.meta.span);
                 }
             }
+
+            if let FieldResult::Ok(kwfield) = &dspec.keywords {
+                for t in kwfield.tokens.iter() {
+                    for m in t.metas.iter() {
+                        if m.text.to_uppercase().contains(&pattern.to_uppercase()) {
+                            return Some(dspec.sequence.span());
+                        }
+                    }
+                }
+            }
         }
         if let Spec::C(cspec) = spec {
             if let FieldResult::Ok(codefield) = &cspec.code {

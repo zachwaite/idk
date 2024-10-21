@@ -20,6 +20,15 @@ pub enum DTokenKind {
     Colon,
     StringLiteral,
 }
+impl DTokenKind {
+    pub fn is_identifier_or_literal(&self) -> bool {
+        if matches!(self, Self::Identifier) || matches!(self, Self::StringLiteral) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DToken {
