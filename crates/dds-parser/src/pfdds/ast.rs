@@ -1,15 +1,13 @@
-use std::cell::RefCell;
+use crate::field::FieldResult;
 use crate::line::DDSLine;
 use crate::meta::{IHighlight, Span};
-use crate::pfdds::{RecordFormat, Field, Keyfield, Entry, CST, FileEntry};
-use crate::field::FieldResult;
-use serde::{Serialize, Deserialize};
-
-
+use crate::pfdds::{Entry, Field, FileEntry, Keyfield, RecordFormat, CST};
+use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AST {
-    pub entries: Vec<Entry>
+    pub entries: Vec<Entry>,
 }
 
 enum Phase {
@@ -31,7 +29,6 @@ impl Parser {
         self.state.borrow_mut().phase = Phase::Main;
     }
 }
-
 
 fn peek_n(parser: &Parser, n: usize) -> Option<&DDSLine> {
     let idx = parser.state.borrow().idx;
@@ -56,8 +53,8 @@ fn read_fileentry(parser: &Parser) -> Option<Entry> {
                 break;
             }
         }
-        return Some(Entry::FE(FileEntry::from(continuations)))
-    } 
+        return Some(Entry::FE(FileEntry::from(continuations)));
+    }
     unreachable!()
 }
 
@@ -75,8 +72,8 @@ fn read_recordformat(parser: &Parser) -> Option<Entry> {
                 break;
             }
         }
-        return Some(Entry::R(RecordFormat::from((cur, continuations))))
-    } 
+        return Some(Entry::R(RecordFormat::from((cur, continuations))));
+    }
     unreachable!()
 }
 
@@ -92,8 +89,8 @@ fn read_field(parser: &Parser) -> Option<Entry> {
                 break;
             }
         }
-        return Some(Entry::F(Field::from((cur, continuations))))
-    } 
+        return Some(Entry::F(Field::from((cur, continuations))));
+    }
     unreachable!()
 }
 
@@ -109,11 +106,10 @@ fn read_keyfield(parser: &Parser) -> Option<Entry> {
                 break;
             }
         }
-        return Some(Entry::K(Keyfield::from((cur, continuations))))
-    } 
+        return Some(Entry::K(Keyfield::from((cur, continuations))));
+    }
     unreachable!()
 }
-
 
 fn next_entry(parser: &Parser) -> Option<Entry> {
     match peek_n(parser, 0) {
@@ -123,7 +119,7 @@ fn next_entry(parser: &Parser) -> Option<Entry> {
                 DDSLine::Field(_) => read_field(parser),
                 DDSLine::Key(_) => read_keyfield(parser),
                 DDSLine::Comment(_) => None, // ignore
-                DDSLine::Idk(_) => None, // ignore
+                DDSLine::Idk(_) => None,     // ignore
                 DDSLine::Continuation(_) => {
                     let p = if let Phase::FileEntry = &parser.state.borrow().phase {
                         true
@@ -138,24 +134,32 @@ fn next_entry(parser: &Parser) -> Option<Entry> {
                 }
             }
         }
-        None => None
+        None => None,
     }
 }
 
 impl From<&CST> for AST {
     fn from(value: &CST) -> Self {
         let cst = value;
-        let state = ParserState { idx: 0, phase: Phase::FileEntry };
+        let state = ParserState {
+            idx: 0,
+            phase: Phase::FileEntry,
+        };
         let parser = Parser {
             state: RefCell::new(state),
-            input: cst.lines.iter().filter(|line| match line {
-                DDSLine::RecordFormat(_) => true,
-                DDSLine::Field(_) => true,
-                DDSLine::Key(_) => true,
-                DDSLine::Continuation(_) => true,
-                DDSLine::Comment(_) => false,
-                DDSLine::Idk(_) => false,
-            }).map(|line| line.clone()).collect::<Vec<DDSLine>>()
+            input: cst
+                .lines
+                .iter()
+                .filter(|line| match line {
+                    DDSLine::RecordFormat(_) => true,
+                    DDSLine::Field(_) => true,
+                    DDSLine::Key(_) => true,
+                    DDSLine::Continuation(_) => true,
+                    DDSLine::Comment(_) => false,
+                    DDSLine::Idk(_) => false,
+                })
+                .map(|line| line.clone())
+                .collect::<Vec<DDSLine>>(),
         };
         let mut entries = vec![];
         loop {
@@ -171,9 +175,17 @@ impl From<&CST> for AST {
 }
 
 pub fn highlight_ast(ast: AST) -> Vec<((usize, usize), (usize, usize), String)> {
-    ast.entries.iter().flat_map(|e| e.highlight()).map(|tup| {
-        ((tup.0.start.row, tup.0.start.col), (tup.0.end.row, tup.0.end.col), tup.1)
-    }).collect::<Vec<_>>()
+    ast.entries
+        .iter()
+        .flat_map(|e| e.highlight())
+        .map(|tup| {
+            (
+                (tup.0.start.row, tup.0.start.col),
+                (tup.0.end.row, tup.0.end.col),
+                tup.1,
+            )
+        })
+        .collect::<Vec<_>>()
 }
 
 pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
