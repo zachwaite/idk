@@ -11,7 +11,6 @@ local function tfunc(pattern, _)
       ['start'] = { ['line'] = tagitem.start_line, ['character'] = tagitem.start_char },
       ['end'] = { ['line'] = tagitem.end_line, ['character'] = tagitem.end_char }
     }
-    -- only support current file for now
     local uri = "file://" .. vim.api.nvim_buf_get_name(0)
     if tagitem.uri then
       uri = tagitem.uri
