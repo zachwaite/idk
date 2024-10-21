@@ -1,30 +1,29 @@
 test:
-  #! /usr/bin/env bash
-  cargo test -- --nocapture
-
-graph rpgfile:
-  #! /usr/bin/env bash
-  rm ~/Downloads/tmp-graph.*
-  ./target/debug/idk-graph dot {{ rpgfile }} > ~/Downloads/tmp-graph.gv
-  dot -Tsvg ~/Downloads/tmp-graph.gv > ~/Downloads/tmp-graph.svg
-
-build:
-  #! /usr/bin/env bash
-  cargo build
+  cargo test --workspace
 
 deploy:
   #! /usr/bin/env bash
   cargo build --release
   cp ./target/release/libidk_nvim.so ./idk.nvim/lua/libidk.so
-  # cp ./target/release/idk-graph ~/.local/bin/idk-graph
-  # cp ./utils/idk-get ~/.local/bin/idk-get
-  # cp ./utils/idk-fmt ~/.local/bin/idk-fmt
 
-debug:
+deploy-idk-get:
   #! /usr/bin/env bash
-  cargo build
+  cp ./utils/idk-get ~/.local/bin/idk-get
+  cp ./utils/idk-fmt ~/.local/bin/idk-fmt
+
+debug-idk-nvim:
+  #! /usr/bin/env bash
+  cargo build --package idk-nvim
   cp ./target/debug/libidk_nvim.so ./idk.nvim/lua/libidk.so
-  # cp ./target/debug/idk-graph ~/.local/bin/idk-graph
-  # cp ./utils/idk-get ~/.local/bin/idk-get
-  # cp ./utils/idk-fmt ~/.local/bin/idk-fmt
+
+debug-idkpy:
+  #! /usr/bin/env bash
+  # idkpy
+  cd ./crates/idkpy/ \
+    && source ./venv/bin/activate \
+    && maturin build \
+    && cd ../../ \
+    && cp ./target/wheels/*.whl ../test-idk/
+
+debug: debug-idk-nvim debug-idkpy deploy-idk-get
 
