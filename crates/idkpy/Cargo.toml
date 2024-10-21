@@ -1,0 +1,19 @@
+[package]
+name = "idkpy"
+version = "0.0.0"
+description = "idk for python"
+
+rust-version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "idkpy"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = "0.22.0"
+rpgle-parser = { path="../rpgle-parser" }
+serde.workspace = true
+serde_json.workspace = true

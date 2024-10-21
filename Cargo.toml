@@ -5,6 +5,7 @@ members = [
   "crates/dds-parser",         # lib
   "crates/rpgle-parser",       # lib
   "crates/idk-nvim",           # nvim-oxi plugin
+  "crates/idkpy",              # python package
 ]
 
 [workspace.package]
