@@ -1,0 +1,332 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 288
+expression: observed
+---
+- F:
+    sequence:
+      Ok:
+        value: "     "
+        meta:
+          span:
+            start:
+              row: 0
+              col: 0
+            end:
+              row: 0
+              col: 5
+          text: "     "
+    form_type:
+      Ok:
+        value: F
+        meta:
+          span:
+            start:
+              row: 0
+              col: 5
+            end:
+              row: 0
+              col: 6
+          text: F
+    name:
+      Ok:
+        value: CowEvtL2
+        meta:
+          span:
+            start:
+              row: 0
+              col: 6
+            end:
+              row: 0
+              col: 16
+          text: "CowEvtL2  "
+    filetype:
+      Ok:
+        value: I
+        meta:
+          span:
+            start:
+              row: 0
+              col: 16
+            end:
+              row: 0
+              col: 17
+          text: I
+    file_designation:
+      Ok:
+        value: F
+        meta:
+          span:
+            start:
+              row: 0
+              col: 17
+            end:
+              row: 0
+              col: 18
+          text: F
+    endfile:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 18
+            end:
+              row: 0
+              col: 19
+          text: " "
+    file_addition:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 19
+            end:
+              row: 0
+              col: 20
+          text: " "
+    file_sequence:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 20
+            end:
+              row: 0
+              col: 21
+          text: " "
+    file_format:
+      Ok:
+        value: E
+        meta:
+          span:
+            start:
+              row: 0
+              col: 21
+            end:
+              row: 0
+              col: 22
+          text: E
+    record_length:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 22
+            end:
+              row: 0
+              col: 27
+          text: "     "
+    limits_processing:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 27
+            end:
+              row: 0
+              col: 28
+          text: " "
+    keylength:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 28
+            end:
+              row: 0
+              col: 33
+          text: "     "
+    record_address_type:
+      Ok:
+        value: K
+        meta:
+          span:
+            start:
+              row: 0
+              col: 33
+            end:
+              row: 0
+              col: 34
+          text: K
+    file_organization:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 34
+            end:
+              row: 0
+              col: 35
+          text: " "
+    device:
+      Ok:
+        value: DISK
+        meta:
+          span:
+            start:
+              row: 0
+              col: 35
+            end:
+              row: 0
+              col: 42
+          text: "DISK   "
+    reserved:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 42
+            end:
+              row: 0
+              col: 43
+          text: " "
+    keywords:
+      Ok:
+        tokens:
+          - kind: Whitespace
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 43
+                  end:
+                    row: 0
+                    col: 44
+                text: " "
+          - kind: Identifier
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 44
+                  end:
+                    row: 0
+                    col: 50
+                text: Rename
+          - kind: LParen
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 50
+                  end:
+                    row: 0
+                    col: 51
+                text: (
+          - kind: Identifier
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 51
+                  end:
+                    row: 0
+                    col: 57
+                text: EVTFMT
+          - kind: Colon
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 57
+                  end:
+                    row: 0
+                    col: 58
+                text: ":"
+          - kind: Identifier
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 58
+                  end:
+                    row: 0
+                    col: 65
+                text: VEVTFMT
+          - kind: RParen
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 65
+                  end:
+                    row: 0
+                    col: 66
+                text: )
+          - kind: Whitespace
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 66
+                  end:
+                    row: 0
+                    col: 100
+                text: "                                  "
+          - kind: Identifier
+            metas:
+              - span:
+                  start:
+                    row: 1
+                    col: 43
+                  end:
+                    row: 1
+                    col: 49
+                text: Prefix
+          - kind: LParen
+            metas:
+              - span:
+                  start:
+                    row: 1
+                    col: 49
+                  end:
+                    row: 1
+                    col: 50
+                text: (
+          - kind: Identifier
+            metas:
+              - span:
+                  start:
+                    row: 1
+                    col: 50
+                  end:
+                    row: 1
+                    col: 51
+                text: V
+          - kind: RParen
+            metas:
+              - span:
+                  start:
+                    row: 1
+                    col: 51
+                  end:
+                    row: 1
+                    col: 52
+                text: )
+          - kind: Whitespace
+            metas:
+              - span:
+                  start:
+                    row: 1
+                    col: 52
+                  end:
+                    row: 1
+                    col: 100
+                text: "                                                "
+- []

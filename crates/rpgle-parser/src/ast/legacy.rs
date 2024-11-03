@@ -1,4 +1,4 @@
-use super::core::AST;
+use super::ast::AST;
 use crate::cst::CST;
 use crate::line::{CSpecLine, SpecLine};
 use crate::spec::{CSpec, DSpec, FSpec, HSpec, Spec};

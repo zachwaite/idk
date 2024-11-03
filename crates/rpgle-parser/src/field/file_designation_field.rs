@@ -29,7 +29,7 @@ impl Display for FileDesignation {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FileDesignationField {
     pub value: FileDesignation,
     pub meta: Meta,

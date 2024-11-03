@@ -2,7 +2,7 @@ use super::lexer::{
     ch, is_identifier_char, peek_n, peek_until, read_all, read_char, read_identifier,
     read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
-use crate::field::FieldResult;
+use crate::field::{FieldResult, RawKeywordsField};
 use crate::line::{HSpecLine, HSpecLineContinuation};
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
@@ -10,7 +10,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum HTokenKind {
     Idk,
     Whitespace,
@@ -22,7 +22,7 @@ pub enum HTokenKind {
     StringLiteral,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct HToken {
     pub kind: HTokenKind,
     pub meta: Meta,
@@ -158,6 +158,35 @@ pub fn tokenize_hspec_kw(
     continuations: Vec<&HSpecLineContinuation>,
 ) -> Vec<HToken> {
     match &line.keywords {
+        FieldResult::Ok(kw) => {
+            let pos = kw.meta.span.start;
+            let state = LexerState {
+                origin: pos,
+                col: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: kw.value.clone(), // TDE: use lifetime
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            tokens
+        }
+        _ => vec![],
+    }
+}
+
+pub fn legacy_tokenize_hspec_kw(kwfield: &FieldResult<RawKeywordsField>) -> Vec<HToken> {
+    match kwfield {
         FieldResult::Ok(kw) => {
             let pos = kw.meta.span.start;
             let state = LexerState {

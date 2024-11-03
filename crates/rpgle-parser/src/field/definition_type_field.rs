@@ -38,7 +38,7 @@ impl Display for DefinitionType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DefinitionTypeField {
     pub value: DefinitionType,
     pub meta: Meta,

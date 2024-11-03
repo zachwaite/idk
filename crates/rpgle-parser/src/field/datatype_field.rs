@@ -49,7 +49,7 @@ impl Display for Datatype {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DatatypeField {
     pub value: Datatype,
     pub meta: Meta,

@@ -1,0 +1,22 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 495
+expression: observed
+---
+- C:
+    code:
+      Ok:
+        op:
+          Begsr:
+            name: $CrtBRNEVT
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 11
+                end:
+                  row: 0
+                  col: 25
+              text: "$CrtBRNEVT    "
+            highlights: []
+- []

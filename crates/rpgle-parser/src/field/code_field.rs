@@ -7,7 +7,7 @@ use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 
 // raw
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RawCodeField {
     pub value: NonEmpty<char>,
     pub meta: Meta,
@@ -39,7 +39,7 @@ impl From<(Position, &[char; 93])> for FieldResult<RawCodeField> {
 }
 
 // cooked
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CodeField {
     pub op: Op,
 }

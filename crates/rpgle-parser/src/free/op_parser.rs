@@ -1,5 +1,4 @@
-use crate::field::FieldResult;
-use crate::free::{tokenize, Token, TokenKind};
+use crate::field::{Factor1Field, FieldResult, OperationField, RawCodeField, RawFactor2Field};
 use crate::line::{
     CSpecLine, CSpecLineContinuation, ExtF2CSpecLine, ExtF2CSpecLineContinuation,
     TraditionalCSpecLine,
@@ -13,7 +12,10 @@ use std::env;
 use std::fmt;
 use std::fmt::Display;
 
-use super::{tokenize_extf2, tokenize_traditional_f2};
+use super::{
+    legacy_tokenize, legacy_tokenize_extf2, tokenize, tokenize_extf2, tokenize_traditional_f2,
+    Token, TokenKind,
+};
 
 struct ParserState {
     idx: usize,
@@ -147,7 +149,7 @@ impl<'a> Parser<'a> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Op {
     Begsr {
         name: String,
@@ -335,6 +337,7 @@ fn parse_callp(parser: &Parser) -> Result<Op, String> {
     Err("ERROR".to_string())
 }
 
+// DEPRECATED
 impl From<(&FreeCSpecLine, Vec<&FreeCSpecLineContinuation>)> for Op {
     fn from(value: (&FreeCSpecLine, Vec<&FreeCSpecLineContinuation>)) -> Self {
         let tokens = tokenize(value.0, value.1);
@@ -368,6 +371,41 @@ impl From<(&FreeCSpecLine, Vec<&FreeCSpecLineContinuation>)> for Op {
         }
     }
 }
+impl From<(&FieldResult<RawCodeField>, &[&FieldResult<RawCodeField>])> for Op {
+    fn from(value: (&FieldResult<RawCodeField>, &[&FieldResult<RawCodeField>])) -> Self {
+        let tokens = legacy_tokenize(value.0, value.1);
+        let parser = Parser {
+            state: RefCell::new(ParserState { idx: 0 }),
+            input: &tokens,
+        };
+        let maybe_op = parse_exsr(&parser)
+            .or(parse_begsr(&parser))
+            .or(parse_endsr(&parser))
+            .or(parse_callp(&parser));
+        match maybe_op {
+            Ok(op) => op,
+            Err(x) => {
+                let meta = Meta::from((
+                    &tokens.head.meta,
+                    tokens.tail.iter().map(|t| &t.meta).collect::<Vec<&Meta>>(),
+                ));
+                let tokens: Vec<Token> = if env::var("DEBUG").is_ok() {
+                    parser.input.iter().map(|t| t.clone()).collect::<_>()
+                } else {
+                    vec![]
+                };
+                Op::Idk {
+                    meta,
+                    highlights: parser.highlights(),
+                    tokens,
+                    error: x,
+                }
+            }
+        }
+    }
+}
+
+// DEPRECATED
 impl From<(&ExtF2CSpecLine, Vec<&ExtF2CSpecLineContinuation>)> for Op {
     fn from(value: (&ExtF2CSpecLine, Vec<&ExtF2CSpecLineContinuation>)) -> Self {
         let tokens = tokenize_extf2(value.0, value.1);
@@ -398,6 +436,44 @@ impl From<(&ExtF2CSpecLine, Vec<&ExtF2CSpecLineContinuation>)> for Op {
         }
     }
 }
+// using type alias means we can't elide the lifetime like we can when inlining..
+// not sure if this really helps readability yet
+type RawF2ResultInput<'a> = (
+    &'a FieldResult<RawFactor2Field>,
+    &'a [&'a FieldResult<RawFactor2Field>],
+);
+impl<'a> From<RawF2ResultInput<'a>> for Op {
+    fn from(value: RawF2ResultInput) -> Self {
+        let tokens = legacy_tokenize_extf2(value.0, value.1);
+        let parser = Parser {
+            state: RefCell::new(ParserState { idx: 0 }),
+            input: &tokens,
+        };
+        let maybe_op = parse_exsr(&parser);
+        match maybe_op {
+            Ok(op) => op,
+            Err(x) => {
+                let meta = Meta::from((
+                    &tokens.head.meta,
+                    tokens.tail.iter().map(|t| &t.meta).collect::<Vec<&Meta>>(),
+                ));
+                let tokens: Vec<Token> = if env::var("DEBUG").is_ok() {
+                    parser.input.iter().map(|t| t.clone()).collect::<_>()
+                } else {
+                    vec![]
+                };
+                Op::Idk {
+                    meta,
+                    highlights: parser.highlights(),
+                    tokens,
+                    error: x,
+                }
+            }
+        }
+    }
+}
+
+// DEPRECATED
 impl From<&TraditionalCSpecLine> for Op {
     fn from(value: &TraditionalCSpecLine) -> Self {
         match &value.operation {
@@ -423,6 +499,72 @@ impl From<&TraditionalCSpecLine> for Op {
                     }
                 } else if opfield.value.to_uppercase() == "EXSR" {
                     match &value.factor1 {
+                        FieldResult::Ok(f1) => Op::Exsr {
+                            name: f1.value.clone(),
+                            meta: f1.meta.clone(),
+                            highlights: vec![],
+                        },
+                        FieldResult::Idk(idk) => Op::Idk {
+                            meta: idk.meta.clone(),
+                            error: "BAD F1".to_string(),
+                            tokens: vec![],
+                            highlights: vec![],
+                        },
+                    }
+                } else {
+                    Op::Idk {
+                        meta: opfield.meta.clone(),
+                        error: "IGNORED OP".to_string(),
+                        tokens: vec![],
+                        highlights: vec![],
+                    }
+                }
+            }
+            FieldResult::Idk(opfield) => Op::Idk {
+                meta: opfield.meta.clone(),
+                error: "IDK OP".to_string(),
+                tokens: vec![],
+                highlights: vec![],
+            },
+        }
+    }
+}
+
+type TraditionalResultFields<'a> = (
+    &'a FieldResult<OperationField>,
+    &'a FieldResult<Factor1Field>,
+);
+type TraditionalResultInput<'a> = (
+    TraditionalResultFields<'a>,
+    &'a [TraditionalResultFields<'a>],
+);
+impl<'a> From<TraditionalResultInput<'a>> for Op {
+    fn from(value: TraditionalResultInput) -> Self {
+        let operation = value.0 .0;
+        let factor1 = value.0 .1;
+        match operation {
+            FieldResult::Ok(opfield) => {
+                if opfield.value.to_uppercase() == "BEGSR" {
+                    match factor1 {
+                        FieldResult::Ok(f1) => Op::Begsr {
+                            name: f1.value.clone(),
+                            meta: f1.meta.clone(),
+                            highlights: vec![],
+                        },
+                        FieldResult::Idk(idk) => Op::Idk {
+                            meta: idk.meta.clone(),
+                            error: "BAD F1".to_string(),
+                            tokens: vec![],
+                            highlights: vec![],
+                        },
+                    }
+                } else if opfield.value.to_uppercase() == "ENDSR" {
+                    Op::Endsr {
+                        meta: opfield.meta.clone(),
+                        highlights: vec![],
+                    }
+                } else if opfield.value.to_uppercase() == "EXSR" {
+                    match factor1 {
                         FieldResult::Ok(f1) => Op::Exsr {
                             name: f1.value.clone(),
                             meta: f1.meta.clone(),

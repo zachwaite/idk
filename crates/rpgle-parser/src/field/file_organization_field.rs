@@ -23,7 +23,7 @@ impl Display for FileOrganization {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FileOrganizationField {
     pub value: FileOrganization,
     pub meta: Meta,

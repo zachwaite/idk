@@ -4,7 +4,7 @@ use super::result::FieldResult;
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NameField {
     pub value: String,
     pub meta: Meta,

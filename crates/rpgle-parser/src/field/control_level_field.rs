@@ -47,7 +47,7 @@ impl Display for ControlLevel {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ControlLevelField {
     pub value: ControlLevel,
     pub meta: Meta,

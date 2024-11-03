@@ -7,7 +7,7 @@ use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
 // raw
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RawKeywordsField {
     pub value: NonEmpty<char>,
     pub meta: Meta,
@@ -48,7 +48,7 @@ impl From<(Position, &[char; 94])> for FieldResult<RawKeywordsField> {
 }
 
 // hspec
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct HKeywordsField {
     pub tokens: Vec<HToken>,
 }
@@ -84,7 +84,7 @@ impl PMixin for HKeywordsField {
 }
 
 // fspec
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FKeywordsField {
     pub tokens: Vec<FToken>,
 }
@@ -102,7 +102,7 @@ impl PMixin for FKeywordsField {
 }
 
 // dspec
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DKeywordsField {
     pub tokens: Vec<DToken>,
 }

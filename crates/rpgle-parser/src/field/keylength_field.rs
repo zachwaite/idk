@@ -21,7 +21,7 @@ impl Display for KeyLength {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct KeyLengthField {
     pub value: KeyLength,
     pub meta: Meta,

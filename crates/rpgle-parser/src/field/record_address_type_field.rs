@@ -35,7 +35,7 @@ impl Display for RecordAddressType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RecordAddressTypeField {
     pub value: RecordAddressType,
     pub meta: Meta,

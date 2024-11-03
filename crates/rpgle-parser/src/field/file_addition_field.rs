@@ -21,7 +21,7 @@ impl Display for FileAddition {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FileAdditionField {
     pub value: FileAddition,
     pub meta: Meta,

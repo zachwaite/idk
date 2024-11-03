@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use rpgle_parser::{AST, CST};
+use rpgle_parser::{specs_from_cst, CST};
 use serde_json;
 
 /// Formats the sum of two numbers as string.
@@ -12,9 +12,10 @@ fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
 #[pyfunction]
 fn parse_rpgle(txt: &str) -> PyResult<String> {
     if let Ok(cst) = CST::try_from(txt) {
-        let ast = AST::from(&cst);
-        let out = serde_json::to_string(&ast).expect("this derives serde so must unwrap");
-        return Ok(out);
+        if let Ok(ast) = specs_from_cst(&cst) {
+            let out = serde_json::to_string(&ast).expect("this derives serde so must unwrap");
+            return Ok(out);
+        }
     }
     Ok("???".to_string())
 }

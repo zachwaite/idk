@@ -23,7 +23,7 @@ impl Display for FileSequence {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FileSequenceField {
     pub value: FileSequence,
     pub meta: Meta,

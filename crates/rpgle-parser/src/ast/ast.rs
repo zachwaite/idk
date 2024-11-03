@@ -1,35 +1,19 @@
-use super::core::AST;
-use crate::cst::{ParserException, CST};
-use crate::field::IdkField;
-use crate::line::{CSpecLine, HSpecLine, IdkSpecLine, SpecLine};
-use crate::meta::{partition, Meta, Span};
-use crate::spec::{
-    CSpec, CompilerDirectiveSpec as CompilerDirective, DSpec, FSpec, HSpec, IdkSpec, Spec,
-};
-use crate::FieldResult;
+use super::spec::{ast, ParseError, Spec};
+use super::srcline::{srcline_from_specline, Srcline};
+use crate::cst::CST;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
-pub enum ParseError {
-    EmptyInput,
-    Unhandled,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AST {
+    pub specs: Vec<Spec>,
 }
 
-fn try_hspec(input: &[SpecLine]) -> Option<(Spec, &[SpecLine])> {
-    todo!()
-}
-
-fn hspec(input: &[SpecLine]) -> Result<(Spec, &[SpecLine]), ParseError> {
-    try_hspec(&input).ok_or(ParseError::Unhandled)
-}
-
-fn try_dspec(input: &[SpecLine]) -> Option<(Spec, &[SpecLine])> {
-    todo!()
-}
-
-fn dspec(input: &[SpecLine]) -> Result<(Spec, &[SpecLine]), ParseError> {
-    try_hspec(&input).ok_or(ParseError::Unhandled)
-}
-
-fn ast(input: &mut [SpecLine]) -> Result<(Vec<Spec>, &[SpecLine]), ParseError> {
-    let (keep, ignore) = partition(&mut input, |line| matches(line, SpecLine::HLine{})));
+pub fn specs_from_cst(cst: &CST) -> Result<AST, ParseError> {
+    let mut lines = cst
+        .lines
+        .iter()
+        .map(|line| srcline_from_specline(line))
+        .collect::<Vec<Srcline>>();
+    let (specs, _) = ast(&mut lines)?;
+    Ok(AST { specs })
 }

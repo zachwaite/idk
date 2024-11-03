@@ -5,7 +5,7 @@ use crate::free::{tokenize_directive, DirectiveToken};
 use crate::meta::{PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct CompilerDirectiveField {
     pub tokens: Vec<DirectiveToken>,
 }

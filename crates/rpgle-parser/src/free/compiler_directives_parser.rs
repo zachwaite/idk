@@ -8,7 +8,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::fmt::Display;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum DirectiveTokenKind {
     Idk,
     Title,
@@ -29,7 +29,7 @@ pub enum DirectiveTokenKind {
     Eof,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DirectiveToken {
     pub kind: DirectiveTokenKind,
     pub meta: Meta,

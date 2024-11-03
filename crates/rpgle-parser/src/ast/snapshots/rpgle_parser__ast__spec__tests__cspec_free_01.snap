@@ -1,0 +1,6 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 426
+expression: observed
+---
+~

@@ -19,7 +19,7 @@ impl Display for Reserved {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ReservedField {
     pub value: Reserved,
     pub meta: Meta,

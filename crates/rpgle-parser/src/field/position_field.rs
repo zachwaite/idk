@@ -21,7 +21,7 @@ impl Display for POS {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct POSField {
     pub value: POS,
     pub meta: Meta,

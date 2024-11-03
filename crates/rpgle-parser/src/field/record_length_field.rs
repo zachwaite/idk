@@ -21,7 +21,7 @@ impl Display for RecordLength {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RecordLengthField {
     pub value: RecordLength,
     pub meta: Meta,

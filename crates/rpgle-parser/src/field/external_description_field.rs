@@ -21,7 +21,7 @@ impl Display for ExternalDescription {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ExternalDescriptionField {
     pub value: ExternalDescription,
     pub meta: Meta,

@@ -21,7 +21,7 @@ impl Display for Endfile {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct EndfileField {
     pub value: Endfile,
     pub meta: Meta,

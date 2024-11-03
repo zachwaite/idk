@@ -1,0 +1,114 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 169
+expression: observed
+---
+- H:
+    sequence:
+      Ok:
+        value: "     "
+        meta:
+          span:
+            start:
+              row: 0
+              col: 0
+            end:
+              row: 0
+              col: 5
+          text: "     "
+    form_type:
+      Ok:
+        value: H
+        meta:
+          span:
+            start:
+              row: 0
+              col: 5
+            end:
+              row: 0
+              col: 6
+          text: H
+    keywords:
+      Ok:
+        tokens:
+          - kind: Whitespace
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 6
+                end:
+                  row: 0
+                  col: 7
+              text: " "
+          - kind: Identifier
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 7
+                end:
+                  row: 0
+                  col: 13
+              text: OPTION
+          - kind: LParen
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 13
+                end:
+                  row: 0
+                  col: 14
+              text: (
+          - kind: Indicator
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 14
+                end:
+                  row: 0
+                  col: 24
+              text: "*nodebugio"
+          - kind: Colon
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 24
+                end:
+                  row: 0
+                  col: 25
+              text: ":"
+          - kind: Indicator
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 25
+                end:
+                  row: 0
+                  col: 33
+              text: "*srcstmt"
+          - kind: RParen
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 33
+                end:
+                  row: 0
+                  col: 34
+              text: )
+          - kind: Whitespace
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 34
+                end:
+                  row: 0
+                  col: 100
+              text: "                                                                  "
+- []

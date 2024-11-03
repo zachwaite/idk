@@ -1,9 +1,9 @@
 test:
   cargo test --workspace
 
-deploy:
+deploy-idk-nvim:
   #! /usr/bin/env bash
-  cargo build --release
+  cargo build -p idk-nvim --release
   cp ./target/release/libidk_nvim.so ./idk.nvim/lua/libidk.so
 
 deploy-idk-get:

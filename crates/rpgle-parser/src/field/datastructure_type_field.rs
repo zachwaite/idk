@@ -23,7 +23,7 @@ impl Display for DatastructureType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DatastructureTypeField {
     pub value: DatastructureType,
     pub meta: Meta,

@@ -253,14 +253,21 @@ fn dot_dump_current_buffer(path: String) -> DumpOutcome {
                 input.push_str("\n");
             }
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
-                let ast = rpgle_parser::AST::from(&cst);
-                let graph = IdkGraph::from(&ast);
-                let _ = std::fs::write("/tmp/graph.txt", format!("{:#?}", &graph));
-                let dot = graph.render();
-                let _ = std::fs::write(path, dot);
+                let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                if let Ok(ast) = ast_rs {
+                    let graph = IdkGraph::from(&ast);
+                    let _ = std::fs::write("/tmp/graph.txt", format!("{:#?}", &graph));
+                    let dot = graph.render();
+                    let _ = std::fs::write(path, dot);
+                    return DumpOutcome {
+                        ok: true,
+                        msg: None,
+                    };
+                }
+            } else {
                 return DumpOutcome {
-                    ok: true,
-                    msg: None,
+                    ok: false,
+                    msg: Some("Unable to parse AST from current buffer!".to_string()),
                 };
             }
         }
@@ -328,89 +335,94 @@ fn getdef(pattern: String) -> Option<TagItem> {
                 input.push_str("\n");
             }
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
-                let ast = rpgle_parser::AST::from(&cst);
-                if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
-                    if def.start.row != current_row {
-                        let ti = TagItem {
-                            name: pattern.clone(),
-                            uri: None,
-                            start_line: def.start.row,
-                            start_char: def.start.col,
-                            end_line: def.end.row,
-                            end_char: def.end.col,
-                        };
-                        if env::var("DEBUG").is_ok() {
-                            let _ = std::fs::write("/tmp/getdef.txt", format!("{:#?}", ti));
-                        }
-                        return Some(ti);
-                    }
-                }
-                // else
-                if let Some(man) = get_manifest() {
-                    if let Some(srcs) = man.get_source_files() {
-                        let mut sources = srcs
-                            .into_iter()
-                            .filter(|x| !x.to_uppercase().ends_with(&current_file))
-                            .collect::<Vec<String>>();
-                        sources.sort_by_key(|x| {
-                            match x.to_uppercase().contains(&pattern.to_uppercase()) {
-                                true => 0,
-                                false => 1,
+                let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                if let Ok(ast) = ast_rs {
+                    if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
+                        if def.start.row != current_row {
+                            let ti = TagItem {
+                                name: pattern.clone(),
+                                uri: None,
+                                start_line: def.start.row,
+                                start_char: def.start.col,
+                                end_line: def.end.row,
+                                end_char: def.end.col,
+                            };
+                            if env::var("DEBUG").is_ok() {
+                                let _ = std::fs::write("/tmp/getdef.txt", format!("{:#?}", ti));
                             }
-                        });
-                        for source in sources {
-                            if source.ends_with("rpgle") {
-                                if let Ok(input) = fs::read_to_string(source.clone()) {
-                                    if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
-                                        let ast = rpgle_parser::AST::from(&cst);
-                                        if let Some(def) =
-                                            rpgle_parser::query_definition(&ast, &pattern)
+                            return Some(ti);
+                        }
+                    }
+                    // else
+                    if let Some(man) = get_manifest() {
+                        if let Some(srcs) = man.get_source_files() {
+                            let mut sources = srcs
+                                .into_iter()
+                                .filter(|x| !x.to_uppercase().ends_with(&current_file))
+                                .collect::<Vec<String>>();
+                            sources.sort_by_key(|x| {
+                                match x.to_uppercase().contains(&pattern.to_uppercase()) {
+                                    true => 0,
+                                    false => 1,
+                                }
+                            });
+                            for source in sources {
+                                if source.ends_with("rpgle") {
+                                    if let Ok(input) = fs::read_to_string(source.clone()) {
+                                        if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str())
                                         {
-                                            let uri = format!("file://{}", source);
-                                            let ti = TagItem {
-                                                name: pattern.clone(),
-                                                uri: Some(uri),
-                                                start_line: def.start.row,
-                                                start_char: def.start.col,
-                                                end_line: def.end.row,
-                                                end_char: def.end.col,
-                                            };
-                                            if env::var("DEBUG").is_ok() {
-                                                let _ = std::fs::write(
-                                                    "/tmp/getdef.txt",
-                                                    format!("{:#?}", ti),
-                                                );
+                                            let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                                            if let Ok(ast) = ast_rs {
+                                                if let Some(def) =
+                                                    rpgle_parser::query_definition(&ast, &pattern)
+                                                {
+                                                    let uri = format!("file://{}", source);
+                                                    let ti = TagItem {
+                                                        name: pattern.clone(),
+                                                        uri: Some(uri),
+                                                        start_line: def.start.row,
+                                                        start_char: def.start.col,
+                                                        end_line: def.end.row,
+                                                        end_char: def.end.col,
+                                                    };
+                                                    if env::var("DEBUG").is_ok() {
+                                                        let _ = std::fs::write(
+                                                            "/tmp/getdef.txt",
+                                                            format!("{:#?}", ti),
+                                                        );
+                                                    }
+                                                    return Some(ti);
+                                                }
                                             }
-                                            return Some(ti);
                                         }
                                     }
                                 }
-                            }
-                            if source.ends_with("pfdds") {
-                                if let Ok(input) = fs::read_to_string(&source) {
-                                    if let Ok(cst) =
-                                        dds_parser::pfdds::CST::try_from(input.as_str())
-                                    {
-                                        let ast = dds_parser::pfdds::AST::from(&cst);
-                                        if let Some(def) =
-                                            dds_parser::pfdds::query_definition(&ast, &pattern)
+                                if source.ends_with("pfdds") {
+                                    if let Ok(input) = fs::read_to_string(&source) {
+                                        if let Ok(cst) =
+                                            dds_parser::pfdds::CST::try_from(input.as_str())
                                         {
-                                            let uri = format!("file://{}", source);
-                                            let ti = TagItem {
-                                                name: pattern.clone(),
-                                                uri: Some(uri),
-                                                start_line: def.start.row,
-                                                start_char: def.start.col,
-                                                end_line: def.end.row,
-                                                end_char: def.end.col,
-                                            };
-                                            if env::var("DEBUG").is_ok() {
-                                                let _ = std::fs::write(
-                                                    "/tmp/getdef.txt",
-                                                    format!("{:#?}", ti),
-                                                );
+                                            let ast = dds_parser::pfdds::AST::from(&cst);
+                                            if let Some(def) =
+                                                dds_parser::pfdds::query_definition(&ast, &pattern)
+                                            {
+                                                let uri = format!("file://{}", source);
+                                                let ti = TagItem {
+                                                    name: pattern.clone(),
+                                                    uri: Some(uri),
+                                                    start_line: def.start.row,
+                                                    start_char: def.start.col,
+                                                    end_line: def.end.row,
+                                                    end_char: def.end.col,
+                                                };
+                                                if env::var("DEBUG").is_ok() {
+                                                    let _ = std::fs::write(
+                                                        "/tmp/getdef.txt",
+                                                        format!("{:#?}", ti),
+                                                    );
+                                                }
+                                                return Some(ti);
                                             }
-                                            return Some(ti);
                                         }
                                     }
                                 }

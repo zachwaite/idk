@@ -7,7 +7,7 @@ use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 
 // raw
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RawFactor2Field {
     pub value: NonEmpty<char>,
     pub meta: Meta,

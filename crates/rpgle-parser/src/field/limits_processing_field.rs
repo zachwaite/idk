@@ -21,7 +21,7 @@ impl Display for LimitsProcessing {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct LimitsProcessingField {
     pub value: LimitsProcessing,
     pub meta: Meta,

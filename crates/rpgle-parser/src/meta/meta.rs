@@ -2,7 +2,7 @@ use super::position::Position;
 use super::span::Span;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Meta {
     pub span: Span,
     pub text: String,

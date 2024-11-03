@@ -1,0 +1,57 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 442
+expression: observed
+---
+- C:
+    code:
+      Ok:
+        op:
+          Exsr:
+            name: $SetLstId
+            meta:
+              span:
+                start:
+                  row: 0
+                  col: 7
+                end:
+                  row: 0
+                  col: 100
+              text: "Exsr $SetLstId;                                                                              "
+            highlights:
+              - - start:
+                    row: 0
+                    col: 7
+                  end:
+                    row: 0
+                    col: 11
+                - "@function.builtin"
+              - - start:
+                    row: 0
+                    col: 11
+                  end:
+                    row: 0
+                    col: 12
+                - Normal
+              - - start:
+                    row: 0
+                    col: 12
+                  end:
+                    row: 0
+                    col: 21
+                - Identifier
+              - - start:
+                    row: 0
+                    col: 21
+                  end:
+                    row: 0
+                    col: 22
+                - Normal
+              - - start:
+                    row: 0
+                    col: 22
+                  end:
+                    row: 0
+                    col: 100
+                - Normal
+- []

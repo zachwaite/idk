@@ -21,7 +21,7 @@ impl Display for Decimals {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DecimalsField {
     pub value: Decimals,
     pub meta: Meta,

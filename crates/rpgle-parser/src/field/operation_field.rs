@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 //     Extf2(Extf2Opcode)
 // }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct OperationField {
     pub value: String,
     pub meta: Meta,

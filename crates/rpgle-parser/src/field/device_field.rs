@@ -27,7 +27,7 @@ impl Display for Device {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct DeviceField {
     pub value: Device,
     pub meta: Meta,

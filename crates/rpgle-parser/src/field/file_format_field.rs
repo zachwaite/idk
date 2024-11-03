@@ -23,7 +23,7 @@ impl Display for FileFormat {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FileFormatField {
     pub value: FileFormat,
     pub meta: Meta,

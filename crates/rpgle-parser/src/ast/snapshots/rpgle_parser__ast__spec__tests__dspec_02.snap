@@ -1,0 +1,154 @@
+---
+source: crates/rpgle-parser/src/ast/spec.rs
+assertion_line: 371
+expression: observed
+---
+- D:
+    sequence:
+      Ok:
+        value: "     "
+        meta:
+          span:
+            start:
+              row: 0
+              col: 0
+            end:
+              row: 0
+              col: 5
+          text: "     "
+    form_type:
+      Ok:
+        value: D
+        meta:
+          span:
+            start:
+              row: 0
+              col: 5
+            end:
+              row: 0
+              col: 6
+          text: D
+    name:
+      Ok:
+        value: LastId
+        meta:
+          span:
+            start:
+              row: 0
+              col: 6
+            end:
+              row: 0
+              col: 21
+          text: " LastId        "
+    external_description:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 21
+            end:
+              row: 0
+              col: 22
+          text: " "
+    datastructure_type:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 22
+            end:
+              row: 0
+              col: 23
+          text: " "
+    definition_type:
+      Idk:
+        value: "S "
+        meta:
+          span:
+            start:
+              row: 0
+              col: 23
+            end:
+              row: 0
+              col: 25
+          text: "S "
+    from_position:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 25
+            end:
+              row: 0
+              col: 32
+          text: "       "
+    to_length:
+      Ok:
+        value:
+          Value: 8
+        meta:
+          span:
+            start:
+              row: 0
+              col: 32
+            end:
+              row: 0
+              col: 39
+          text: "      8"
+    datatype:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 39
+            end:
+              row: 0
+              col: 40
+          text: " "
+    decimals:
+      Ok:
+        value:
+          Value: 0
+        meta:
+          span:
+            start:
+              row: 0
+              col: 40
+            end:
+              row: 0
+              col: 42
+          text: " 0"
+    reserved:
+      Ok:
+        value: Empty
+        meta:
+          span:
+            start:
+              row: 0
+              col: 42
+            end:
+              row: 0
+              col: 43
+          text: " "
+    keywords:
+      Ok:
+        tokens:
+          - kind: Whitespace
+            metas:
+              - span:
+                  start:
+                    row: 0
+                    col: 43
+                  end:
+                    row: 0
+                    col: 100
+                text: "                                                         "
+- []

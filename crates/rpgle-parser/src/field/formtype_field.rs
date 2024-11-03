@@ -33,7 +33,7 @@ impl Display for Formtype {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FormtypeField {
     pub value: Formtype,
     pub meta: Meta,

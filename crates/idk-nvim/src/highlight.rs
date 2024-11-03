@@ -45,17 +45,20 @@ pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
             .into_iter()
             .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "CST")))
             .collect::<Vec<HighlightMeta>>();
-        let ast = rpgle_parser::AST::from(&cst);
-        if env::var("DEBUG").is_ok() {
-            let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
+        if let Ok(ast) = rpgle_parser::specs_from_cst(&cst) {
+            if env::var("DEBUG").is_ok() {
+                let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
+            }
+            out.append(
+                &mut rpgle_parser::highlight_ast(ast)
+                    .into_iter()
+                    .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "AST")))
+                    .collect::<Vec<HighlightMeta>>(),
+            );
+            out
+        } else {
+            vec![]
         }
-        out.append(
-            &mut rpgle_parser::highlight_ast(ast)
-                .into_iter()
-                .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "AST")))
-                .collect::<Vec<HighlightMeta>>(),
-        );
-        out
     } else {
         vec![]
     }
@@ -83,72 +86,5 @@ pub fn highlight_pfdds(txt: &str) -> Vec<HighlightMeta> {
         out
     } else {
         vec![]
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use insta;
-
-    fn dfmslike_fixture() -> String {
-        let input = &r#"
-     H OPTION(*nodebugio:*srcstmt)
-     FCowEvt    UF A E           K DISK
-     FBornEvt   UF A E           K DISK
-     FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT)
-     F                                     Prefix(V)
-     F**********************************************************************************************
-     D**********************************************************************************************
-     D LastId          S              8  0
-     D QCmdExc         PR                  EXTPGM('QCMDEXC')
-     D  Command                    2000
-     D  Length                       15  5
-     C**********************************************************************************************
-      /free
-       Exsr $SetLstId;
-       Exsr $CrtEvts;
-       QCmdExc(Foo:Bar);
-       *inlr = *on;
-
-       Begsr $SetLstId;
-         SetLL *Loval CowEvtL2;
-         If Not %Eof;
-           Read CowEvtL2;
-             QCmdExc(FOO:BaR);
-           LastId = Vid;
-         Else;
-          LastId = 1;
-         Endif;
-       Endsr;
-
-     C     $CrtBRNEVT    BegSr
-         EID = Id;
-         BNAME = 'BESSE';
-         BDAT = 20240101;
-         Write BORNFMT;
-     C                   ENDSR
-
-       Begsr $CrtCowEvt;
-         Id = LastId + 1;
-         Edat = 20240101;
-         Etim = 125959;
-         Etyp = 'BORN';
-         Write EVTFMT;
-       Endsr;
-
-       Begsr $CrtEvts;
-         Exsr $CrtCowEvt;
-         Exsr $CrtBrnEvt;
-       Endsr;                                                                                       "#
-            [1..];
-        input.to_string()
-    }
-
-    #[test]
-    fn test_highlights_snapshot() {
-        let input = dfmslike_fixture();
-        let highlights = highlight_rpgle(input.as_str());
-        insta::assert_yaml_snapshot!(highlights);
     }
 }

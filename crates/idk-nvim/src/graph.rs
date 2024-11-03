@@ -1,5 +1,5 @@
 use rpgle_parser;
-use rpgle_parser::{CSpec, FieldResult, Op, Spec, AST};
+use rpgle_parser::{FieldResult, Op, Spec, AST};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 
@@ -279,10 +279,14 @@ fn next_statement(parser: &Parser) -> Result<Statement, String> {
     };
     let pass = "PASS".to_string();
     match read_spec(parser) {
-        Spec::D(dspec) => {
-            if let FieldResult::Ok(dtfield) = &dspec.definition_type {
+        Spec::D {
+            name,
+            definition_type,
+            ..
+        } => {
+            if let FieldResult::Ok(dtfield) = definition_type {
                 if dtfield.value.is_pr() {
-                    if let FieldResult::Ok(namefield) = &dspec.name {
+                    if let FieldResult::Ok(namefield) = name {
                         let name = namefield.value.to_string();
                         let _ = read_spec(parser);
                         let def = Definition::ExtPgm(name);
@@ -292,8 +296,8 @@ fn next_statement(parser: &Parser) -> Result<Statement, String> {
             }
             Err(pass)
         }
-        Spec::C(cspec) => {
-            if let FieldResult::Ok(codefield) = &cspec.code {
+        Spec::C { code } => {
+            if let FieldResult::Ok(codefield) = code {
                 // defs
                 if let Op::Begsr { name, .. } = &codefield.op {
                     // collect any calls inside the def
@@ -301,9 +305,9 @@ fn next_statement(parser: &Parser) -> Result<Statement, String> {
                     loop {
                         if let Some(_) = peek_n(parser, 0) {
                             let spec = read_spec(parser);
-                            if let Spec::C(CSpec {
+                            if let Spec::C {
                                 code: FieldResult::Ok(codefield),
-                            }) = spec
+                            } = spec
                             {
                                 if let Op::Endsr { .. } = &codefield.op {
                                     break;
@@ -341,10 +345,7 @@ fn next_statement(parser: &Parser) -> Result<Statement, String> {
             }
             Err(pass)
         }
-        Spec::Idk(_) => Err(pass), // ignore for now
-        Spec::H(_) => Err(pass),
-        Spec::F(_) => Err(pass),
-        Spec::Comment(_) => Err(pass),
-        Spec::CompilerDirective(_) => Err(pass),
+        Spec::H { .. } => Err(pass),
+        Spec::F { .. } => Err(pass),
     }
 }

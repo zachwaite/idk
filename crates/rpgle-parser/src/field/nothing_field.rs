@@ -5,7 +5,7 @@ use super::IdkField;
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NothingField {
     pub value: String,
     pub meta: Meta,

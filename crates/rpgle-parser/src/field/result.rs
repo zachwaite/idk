@@ -4,7 +4,7 @@ use super::idk_field::IdkField;
 use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum FieldResult<T> {
     Ok(T),
     Idk(IdkField),

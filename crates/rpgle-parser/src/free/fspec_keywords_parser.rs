@@ -2,14 +2,14 @@ use super::core::{
     ch, cut_into_metas, is_identifier_char, peek_n, read_all, read_char, read_identifier,
     read_spaces_or_tabs, Lexer, LexerState, MetaChar,
 };
-use crate::field::FieldResult;
+use crate::field::{FKeywordsField, FieldResult, RawKeywordsField};
 use crate::line::{FSpecLine, FSpecLineContinuation};
 use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum FTokenKind {
     Idk,
     Whitespace,
@@ -20,7 +20,7 @@ pub enum FTokenKind {
     Colon,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct FToken {
     pub kind: FTokenKind,
     pub metas: Vec<Meta>,
@@ -190,4 +190,69 @@ pub fn tokenize_fspec_kw(
         _ => vec![],
     };
     tokens
+}
+
+pub fn legacy_tokenize_fspec_kw(
+    kwfield: &FieldResult<RawKeywordsField>,
+    contkw: &[&FieldResult<RawKeywordsField>],
+) -> Vec<FToken> {
+    match kwfield {
+        FieldResult::Ok(kw) => {
+            // line
+            let mut mchars: NonEmpty<MetaChar> = NonEmpty::from_vec(
+                kw.value
+                    .iter()
+                    .enumerate()
+                    .map(|(i, c)| MetaChar {
+                        value: *c,
+                        position: Position {
+                            row: kw.meta.span.start.row,
+                            col: kw.meta.span.start.col + i,
+                        },
+                    })
+                    .collect::<Vec<MetaChar>>(),
+            )
+            .expect("kw.value is NonEmpty, so mchars is guaranteed to be nonempty too");
+            // continuations
+            for kwfield in contkw {
+                match kwfield {
+                    FieldResult::Ok(kw) => {
+                        for (i, c) in kw.value.iter().enumerate() {
+                            let p = Position {
+                                row: kw.meta.span.start.row,
+                                col: kw.meta.span.start.col + i,
+                            };
+                            mchars.push(MetaChar {
+                                value: *c,
+                                position: p,
+                            });
+                        }
+                    }
+                    _ => continue,
+                }
+            }
+            // process
+            let state = LexerState {
+                position: kw.meta.span.start,
+                idx: 0,
+            };
+            let lexer = Lexer {
+                state: RefCell::new(state),
+                input: mchars,
+            };
+            let mut tokens = vec![];
+            loop {
+                match next_token(&lexer) {
+                    Some(token) => {
+                        tokens.push(token);
+                    }
+                    None => {
+                        break;
+                    }
+                }
+            }
+            tokens
+        }
+        FieldResult::Idk(_) => vec![],
+    }
 }
