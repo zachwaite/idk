@@ -1,3 +1,4 @@
+// Adapts SpecLine to SrcLine
 use crate::field::{
     CommentField, CompilerDirectiveField, ControlLevelField, DatastructureTypeField, DatatypeField,
     DecimalsField, DefinitionTypeField, DeviceField, EndfileField, ExternalDescriptionField,

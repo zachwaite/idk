@@ -4,7 +4,6 @@ mod field;
 mod free;
 mod line;
 mod meta;
-mod spec;
 
 pub use ast::{parse_ast, Spec, AST};
 pub use cst::{highlight_cst, CST};
