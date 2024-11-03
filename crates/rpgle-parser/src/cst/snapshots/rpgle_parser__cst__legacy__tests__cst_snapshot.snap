@@ -1,5 +1,5 @@
 ---
-source: crates/rpgle-parser/src/cst.rs
+source: crates/rpgle-parser/src/cst/legacy.rs
 assertion_line: 173
 expression: cst
 ---
