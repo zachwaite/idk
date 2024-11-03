@@ -337,15 +337,17 @@ fn getdef(pattern: String) -> Option<TagItem> {
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
                 let ast_rs = rpgle_parser::parse_ast(&cst);
                 if let Ok(ast) = ast_rs {
-                    if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
-                        if def.start.row != current_row {
+                    if let Some(((strow, stcol), (endrow, endcol))) =
+                        ast.try_get_definition(&pattern)
+                    {
+                        if strow != current_row {
                             let ti = TagItem {
                                 name: pattern.clone(),
                                 uri: None,
-                                start_line: def.start.row,
-                                start_char: def.start.col,
-                                end_line: def.end.row,
-                                end_char: def.end.col,
+                                start_line: strow,
+                                start_char: stcol,
+                                end_line: endrow,
+                                end_char: endcol,
                             };
                             if env::var("DEBUG").is_ok() {
                                 let _ = std::fs::write("/tmp/getdef.txt", format!("{:#?}", ti));
@@ -373,17 +375,17 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                         {
                                             let ast_rs = rpgle_parser::parse_ast(&cst);
                                             if let Ok(ast) = ast_rs {
-                                                if let Some(def) =
-                                                    rpgle_parser::query_definition(&ast, &pattern)
+                                                if let Some(((strow, stcol), (endrow, endcol))) =
+                                                    ast.try_get_definition(&pattern)
                                                 {
                                                     let uri = format!("file://{}", source);
                                                     let ti = TagItem {
                                                         name: pattern.clone(),
                                                         uri: Some(uri),
-                                                        start_line: def.start.row,
-                                                        start_char: def.start.col,
-                                                        end_line: def.end.row,
-                                                        end_char: def.end.col,
+                                                        start_line: strow,
+                                                        start_char: stcol,
+                                                        end_line: endrow,
+                                                        end_char: endcol,
                                                     };
                                                     if env::var("DEBUG").is_ok() {
                                                         let _ = std::fs::write(

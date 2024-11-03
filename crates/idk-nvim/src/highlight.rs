@@ -50,9 +50,10 @@ pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
                 let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
             }
             out.append(
-                &mut rpgle_parser::highlight_ast(ast)
+                &mut ast
+                    .get_highlights()
                     .into_iter()
-                    .map(|tup| HighlightMeta::from((tup.0, tup.1, tup.2.as_str(), "AST")))
+                    .map(|tup| HighlightMeta::from((tup.0 .0, tup.0 .1, tup.1.as_str(), "AST")))
                     .collect::<Vec<HighlightMeta>>(),
             );
             out

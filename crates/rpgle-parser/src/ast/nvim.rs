@@ -4,7 +4,7 @@ use crate::field::FieldResult;
 use crate::free::Op;
 use crate::meta::{PMixin, Span};
 
-pub fn highlight_ast(ast: AST) -> Vec<((usize, usize), (usize, usize), String)> {
+pub fn highlight_ast(ast: &AST) -> Vec<(((usize, usize), (usize, usize)), String)> {
     let mut out = vec![];
     for spec in ast.specs.iter() {
         match spec {
@@ -89,8 +89,10 @@ pub fn highlight_ast(ast: AST) -> Vec<((usize, usize), (usize, usize), String)> 
     out.into_iter()
         .map(|tup| {
             (
-                (tup.0.start.row, tup.0.start.col),
-                (tup.0.end.row, tup.0.end.col),
+                (
+                    (tup.0.start.row, tup.0.start.col),
+                    (tup.0.end.row, tup.0.end.col),
+                ),
                 tup.1,
             )
         })
