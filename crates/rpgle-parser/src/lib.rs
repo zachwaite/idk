@@ -6,7 +6,7 @@ mod line;
 mod meta;
 mod spec;
 
-pub use ast::{highlight_ast, query_definition, specs_from_cst, Spec, AST};
+pub use ast::{highlight_ast, parse_ast, query_definition, Spec, AST};
 pub use cst::{highlight_cst, CST};
 pub use field::FieldResult;
 pub use free::{Op, TokenKind};

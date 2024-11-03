@@ -253,7 +253,7 @@ fn dot_dump_current_buffer(path: String) -> DumpOutcome {
                 input.push_str("\n");
             }
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
-                let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                let ast_rs = rpgle_parser::parse_ast(&cst);
                 if let Ok(ast) = ast_rs {
                     let graph = IdkGraph::from(&ast);
                     let _ = std::fs::write("/tmp/graph.txt", format!("{:#?}", &graph));
@@ -335,7 +335,7 @@ fn getdef(pattern: String) -> Option<TagItem> {
                 input.push_str("\n");
             }
             if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
-                let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                let ast_rs = rpgle_parser::parse_ast(&cst);
                 if let Ok(ast) = ast_rs {
                     if let Some(def) = rpgle_parser::query_definition(&ast, &pattern) {
                         if def.start.row != current_row {
@@ -371,7 +371,7 @@ fn getdef(pattern: String) -> Option<TagItem> {
                                     if let Ok(input) = fs::read_to_string(source.clone()) {
                                         if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str())
                                         {
-                                            let ast_rs = rpgle_parser::specs_from_cst(&cst);
+                                            let ast_rs = rpgle_parser::parse_ast(&cst);
                                             if let Ok(ast) = ast_rs {
                                                 if let Some(def) =
                                                     rpgle_parser::query_definition(&ast, &pattern)

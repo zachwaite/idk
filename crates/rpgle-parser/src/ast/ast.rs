@@ -8,7 +8,7 @@ pub struct AST {
     pub specs: Vec<Spec>,
 }
 
-pub fn specs_from_cst(cst: &CST) -> Result<AST, ParseError> {
+pub fn parse_ast(cst: &CST) -> Result<AST, ParseError> {
     let mut lines = cst
         .lines
         .iter()
