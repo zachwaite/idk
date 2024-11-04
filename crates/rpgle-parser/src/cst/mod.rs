@@ -1,4 +1,5 @@
 // DEPRECATED
+mod cst;
 mod legacy;
 
-pub use legacy::{highlight_cst, CST};
+pub use cst::{parse_cst, CST};
