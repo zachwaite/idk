@@ -367,7 +367,7 @@ pub fn ast(input: &mut [Srcline]) -> Result<(Vec<Spec>, &[Srcline]), ParseError>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cst::{parse_cst, srcline_from_specline, CST};
+    use crate::cst::parse_cst;
     use insta;
 
     #[test]

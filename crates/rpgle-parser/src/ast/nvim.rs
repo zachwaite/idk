@@ -4,7 +4,8 @@ use crate::field::FieldResult;
 use crate::free::Op;
 use crate::meta::{PMixin, Span};
 
-pub fn highlight_ast(ast: &AST) -> Vec<(((usize, usize), (usize, usize)), String)> {
+type SpanShape = ((usize, usize), (usize, usize));
+pub fn highlight_ast(ast: &AST) -> Vec<(SpanShape, String)> {
     let mut out = vec![];
     for spec in ast.specs.iter() {
         match spec {
