@@ -252,7 +252,7 @@ fn dot_dump_current_buffer(path: String) -> DumpOutcome {
                 input.push_str(&line.to_string());
                 input.push_str("\n");
             }
-            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+            if let Ok(cst) = rpgle_parser::parse_cst(input.as_str()) {
                 let ast_rs = rpgle_parser::parse_ast(&cst);
                 if let Ok(ast) = ast_rs {
                     let graph = IdkGraph::from(&ast);
@@ -287,7 +287,7 @@ fn json_dump_current_buffer(path: String) -> DumpOutcome {
                 input.push_str(&line.to_string());
                 input.push_str("\n");
             }
-            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+            if let Ok(cst) = rpgle_parser::parse_cst(input.as_str()) {
                 match serde_json::to_string(&cst) {
                     Ok(jsons) => {
                         let _ = std::fs::write(path, jsons);
@@ -334,7 +334,7 @@ fn getdef(pattern: String) -> Option<TagItem> {
                 input.push_str(&line.to_string());
                 input.push_str("\n");
             }
-            if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str()) {
+            if let Ok(cst) = rpgle_parser::parse_cst(input.as_str()) {
                 let ast_rs = rpgle_parser::parse_ast(&cst);
                 if let Ok(ast) = ast_rs {
                     if let Some(((strow, stcol), (endrow, endcol))) =
@@ -371,8 +371,7 @@ fn getdef(pattern: String) -> Option<TagItem> {
                             for source in sources {
                                 if source.ends_with("rpgle") {
                                     if let Ok(input) = fs::read_to_string(source.clone()) {
-                                        if let Ok(cst) = rpgle_parser::CST::try_from(input.as_str())
-                                        {
+                                        if let Ok(cst) = rpgle_parser::parse_cst(input.as_str()) {
                                             let ast_rs = rpgle_parser::parse_ast(&cst);
                                             if let Ok(ast) = ast_rs {
                                                 if let Some(((strow, stcol), (endrow, endcol))) =

@@ -5,11 +5,11 @@ use std::fmt::Display;
 use std::usize;
 
 #[derive(Debug)]
-pub enum ParserException {
+pub enum ParseError {
     LongLineException(String),
 }
 
-impl ParserException {
+impl ParseError {
     pub fn long_line(line: &str) -> Self {
         let msg = format!("This line is too long to coerce to 100 chars: {}", line);
         Self::LongLineException(msg)
@@ -54,23 +54,8 @@ impl PMixin for CST {
     }
 }
 
-pub fn highlight_cst(cst: &CST) -> Vec<(((usize, usize), (usize, usize)), String)> {
-    cst.highlight()
-        .into_iter()
-        .map(|tup| {
-            (
-                (
-                    (tup.0.start.row, tup.0.start.col),
-                    (tup.0.end.row, tup.0.end.col),
-                ),
-                tup.1,
-            )
-        })
-        .collect::<Vec<_>>()
-}
-
 impl TryFrom<&str> for CST {
-    type Error = ParserException;
+    type Error = ParseError;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         // check all lines are 100 chars long so we can safely convert to [char;100]
@@ -93,7 +78,7 @@ impl TryFrom<&str> for CST {
                 }
                 padded_lines.push(rs);
             } else {
-                return Err(ParserException::long_line(line));
+                return Err(ParseError::long_line(line));
             }
         }
 

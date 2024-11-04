@@ -37,7 +37,7 @@ impl From<((usize, usize), (usize, usize), &str, &str)> for HighlightMeta {
 
 // main
 pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
-    if let Ok(cst) = rpgle_parser::CST::try_from(txt) {
+    if let Ok(cst) = rpgle_parser::parse_cst(txt) {
         if env::var("DEBUG").is_ok() {
             let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
         }

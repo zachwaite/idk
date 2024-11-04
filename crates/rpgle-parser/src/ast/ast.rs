@@ -1,8 +1,7 @@
 // Public API for AST
 use super::nvim::{highlight_ast, query_definition};
 use super::spec::{ast, ParseError, Spec};
-use crate::cst::CST;
-use crate::cst::{srcline_from_specline, Srcline};
+use crate::cst::{Srcline, CST};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -28,7 +27,7 @@ pub fn parse_ast(cst: &CST) -> Result<AST, ParseError> {
     let mut lines = cst
         .lines
         .iter()
-        .map(|line| srcline_from_specline(line))
+        .map(|line| line.clone())
         .collect::<Vec<Srcline>>();
     let (specs, _) = ast(&mut lines)?;
     Ok(AST { specs })

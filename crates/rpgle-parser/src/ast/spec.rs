@@ -367,7 +367,7 @@ pub fn ast(input: &mut [Srcline]) -> Result<(Vec<Spec>, &[Srcline]), ParseError>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cst::{srcline_from_specline, CST};
+    use crate::cst::{parse_cst, srcline_from_specline, CST};
     use insta;
 
     #[test]
@@ -383,13 +383,8 @@ mod tests {
         // 1 hline
         let input = r#"
      H OPTION(*nodebugio:*srcstmt)                                                                  "#[1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_hspec(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_hspec(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -407,13 +402,8 @@ mod tests {
         let input = r#"
      FCowEvt    UF A E           K DISK                                                             "#
             [1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_fspec(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_fspec(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -424,13 +414,8 @@ mod tests {
      FCowEvtL2  IF   E           K DISK     Rename(EVTFMT:VEVTFMT)                                  
      F                                     Prefix(V)                                                "#
             [1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_fspec(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_fspec(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -448,13 +433,8 @@ mod tests {
         let input = r#"
      D LastId          S              8  0                                                          "#
             [1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_dspec(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_dspec(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -472,13 +452,8 @@ mod tests {
         let input = r#"
        Exsr $SetLstId;                                                                              "#
             [1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_cspec_free(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_cspec_free(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -498,13 +473,8 @@ mod tests {
         let input = r#"
      C     $CrtBRNEVT    BegSr                                                                      "#
             [1..].to_string();
-        let cst = CST::try_from(input.as_str()).unwrap();
-        let lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let observed = try_cspec_traditional(&lines);
+        let cst = parse_cst(&input).unwrap();
+        let observed = try_cspec_traditional(&cst.lines);
         insta::assert_yaml_snapshot!(observed);
     }
 
@@ -560,13 +530,8 @@ mod tests {
          Exsr $CrtBrnEvt;                                                                           
        Endsr;                                                                                       "#
             [1..];
-        let cst = CST::try_from(input).unwrap();
-        let mut lines = cst
-            .lines
-            .iter()
-            .map(|line| srcline_from_specline(line))
-            .collect::<Vec<Srcline>>();
-        let (specs, rest) = ast(&mut lines).unwrap();
+        let mut cst = parse_cst(&input).unwrap();
+        let (specs, rest) = ast(&mut cst.lines).unwrap();
         for ln in rest.iter() {
             println!("{:?}", ln);
         }

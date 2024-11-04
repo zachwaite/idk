@@ -10,9 +10,10 @@ use crate::field::{
     SequenceField,
 };
 use crate::line::{CSpecLine, SpecLine};
+use crate::meta::{PMixin, Span};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum CSrcline {
     Traditional {
         nothing: FieldResult<NothingField>,
@@ -43,7 +44,7 @@ pub enum CSrcline {
     },
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Srcline {
     Idk {
         idk: FieldResult<IdkField>,

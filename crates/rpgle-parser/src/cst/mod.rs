@@ -1,5 +1,6 @@
 mod cst;
 mod legacy; // DEPRECATED
+mod nvim;
 mod srcline;
 
 pub use cst::{parse_cst, CST};
