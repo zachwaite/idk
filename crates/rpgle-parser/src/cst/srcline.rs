@@ -14,6 +14,7 @@ use crate::meta::pluck_array3 as pluck;
 use crate::meta::Position;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
+use std::fmt::Display;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -49,6 +50,63 @@ pub enum CSrcline {
         nothing: FieldResult<NothingField>,
         code: FieldResult<RawCodeField>,
     },
+}
+
+impl Display for CSrcline {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut msg = String::new();
+        match self {
+            Self::Traditional {
+                nothing,
+                form_type,
+                control_level,
+                indicators,
+                factor1,
+                operation,
+                factor2,
+                result,
+                result_length,
+                decimals,
+                resulting_indicators,
+                comments,
+            } => {
+                msg.push_str(&nothing.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&control_level.to_string());
+                msg.push_str(&indicators.to_string());
+                msg.push_str(&factor1.to_string());
+                msg.push_str(&operation.to_string());
+                msg.push_str(&factor2.to_string());
+                msg.push_str(&result.to_string());
+                msg.push_str(&result_length.to_string());
+                msg.push_str(&decimals.to_string());
+                msg.push_str(&resulting_indicators.to_string());
+                msg.push_str(&comments.to_string());
+            }
+            Self::ExtF2 {
+                nothing,
+                form_type,
+                control_level,
+                indicators,
+                factor1,
+                operation,
+                factor2,
+            } => {
+                msg.push_str(&nothing.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&control_level.to_string());
+                msg.push_str(&indicators.to_string());
+                msg.push_str(&factor1.to_string());
+                msg.push_str(&operation.to_string());
+                msg.push_str(&factor2.to_string());
+            }
+            Self::Free { nothing, code } => {
+                msg.push_str(&nothing.to_string());
+                msg.push_str(&code.to_string());
+            }
+        }
+        write!(f, "{}", msg)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -117,6 +175,132 @@ pub enum Srcline {
         keywords: FieldResult<RawKeywordsField>,
     },
     C(CSrcline),
+}
+
+impl Display for Srcline {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut msg = String::new();
+        match self {
+            Srcline::Idk { idk } => {
+                msg.push_str(&idk.to_string());
+            }
+            Srcline::Comment {
+                sequence,
+                form_type,
+                comment,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&comment.to_string());
+            }
+            Srcline::CompilerDirective {
+                sequence,
+                form_type,
+                directive,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&directive.to_string());
+            }
+            Srcline::H {
+                sequence,
+                form_type,
+                keywords,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&keywords.to_string());
+            }
+            Srcline::F {
+                sequence,
+                form_type,
+                name,
+                filetype,
+                file_designation,
+                endfile,
+                file_addition,
+                file_sequence,
+                file_format,
+                record_length,
+                limits_processing,
+                keylength,
+                record_address_type,
+                file_organization,
+                device,
+                reserved,
+                keywords,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&name.to_string());
+                msg.push_str(&filetype.to_string());
+                msg.push_str(&file_designation.to_string());
+                msg.push_str(&endfile.to_string());
+                msg.push_str(&file_addition.to_string());
+                msg.push_str(&file_sequence.to_string());
+                msg.push_str(&file_format.to_string());
+                msg.push_str(&record_length.to_string());
+                msg.push_str(&limits_processing.to_string());
+                msg.push_str(&keylength.to_string());
+                msg.push_str(&record_address_type.to_string());
+                msg.push_str(&file_organization.to_string());
+                msg.push_str(&device.to_string());
+                msg.push_str(&reserved.to_string());
+                msg.push_str(&keywords.to_string());
+            }
+            Srcline::FCont {
+                sequence,
+                form_type,
+                nothing,
+                keywords,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&nothing.to_string());
+                msg.push_str(&keywords.to_string());
+            }
+            Srcline::D {
+                sequence,
+                form_type,
+                name,
+                external_description,
+                datastructure_type,
+                definition_type,
+                from_position,
+                to_length,
+                datatype,
+                decimals,
+                reserved,
+                keywords,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&name.to_string());
+                msg.push_str(&external_description.to_string());
+                msg.push_str(&datastructure_type.to_string());
+                msg.push_str(&definition_type.to_string());
+                msg.push_str(&from_position.to_string());
+                msg.push_str(&to_length.to_string());
+                msg.push_str(&datatype.to_string());
+                msg.push_str(&decimals.to_string());
+                msg.push_str(&reserved.to_string());
+                msg.push_str(&keywords.to_string());
+            }
+            Srcline::DCont {
+                sequence,
+                form_type,
+                nothing,
+                keywords,
+            } => {
+                msg.push_str(&sequence.to_string());
+                msg.push_str(&form_type.to_string());
+                msg.push_str(&nothing.to_string());
+                msg.push_str(&keywords.to_string());
+            }
+            Srcline::C(cline) => msg.push_str(&cline.to_string()),
+        }
+        write!(f, "{}", msg)
+    }
 }
 
 pub fn legacy_srcline(i: usize, chars: &[char; 100]) -> Srcline {
