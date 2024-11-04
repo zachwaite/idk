@@ -1,8 +1,8 @@
 // Public API for AST
 use super::nvim::{highlight_ast, query_definition};
 use super::spec::{ast, ParseError, Spec};
-use super::srcline::{srcline_from_specline, Srcline};
 use crate::cst::CST;
+use crate::cst::{srcline_from_specline, Srcline};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -1,4 +1,4 @@
-use super::srcline::{CSrcline, Srcline};
+use crate::cst::{CSrcline, Srcline};
 use crate::field::{
     CodeField, DKeywordsField, DatastructureTypeField, DatatypeField, DecimalsField,
     DefinitionTypeField, DeviceField, EndfileField, ExternalDescriptionField, FKeywordsField,
@@ -367,7 +367,7 @@ pub fn ast(input: &mut [Srcline]) -> Result<(Vec<Spec>, &[Srcline]), ParseError>
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ast::srcline::srcline_from_specline, cst::CST};
+    use crate::cst::{srcline_from_specline, CST};
     use insta;
 
     #[test]
