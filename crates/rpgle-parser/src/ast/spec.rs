@@ -277,7 +277,7 @@ fn try_cspec_free(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
 }
 
 fn try_cspec_extf2(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
-    todo!()
+    None
 }
 
 fn try_cspec_traditional(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
@@ -323,13 +323,14 @@ fn spec(input: &[Srcline]) -> Result<(Spec, &[Srcline]), ParseError> {
     let parse_fspec = || try_fspec(input);
     let parse_dspec = || try_dspec(input);
     let parse_cspec_free = || try_cspec_free(input);
-    // let parse_cspec_extf2 = || try_cspec_extf2(input); // Not Implemented
+    let parse_cspec_extf2 = || try_cspec_extf2(input); // Not Implemented
     let parse_cspec_traditional = || try_cspec_traditional(input);
     parse_hspec()
         .or_else(parse_fspec)
         .or_else(parse_dspec)
-        .or_else(parse_cspec_free)
         .or_else(parse_cspec_traditional)
+        .or_else(parse_cspec_extf2)
+        .or_else(parse_cspec_free)
         .ok_or(ParseError::Unhandled)
 }
 
