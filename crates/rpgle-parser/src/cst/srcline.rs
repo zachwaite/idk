@@ -533,8 +533,13 @@ fn try_cline_traditional(row: usize, chars: &[char; 100]) -> Option<Srcline> {
 }
 
 fn try_cline_free(row: usize, chars: &[char; 100]) -> Option<Srcline> {
-    // guard: form type
+    // guard: form type + comment
     if chars[5..=6] != [' ', ' '] {
+        return None;
+    }
+    // guard: not blank line
+    let unique_chars = chars.iter().collect::<HashSet<&char>>();
+    if unique_chars.len() == 1 && unique_chars.contains(&' ') {
         return None;
     }
     let line = Srcline::C(CSrcline::Free {
