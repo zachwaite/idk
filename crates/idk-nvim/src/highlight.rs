@@ -46,6 +46,7 @@ pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
             .into_iter()
             .map(|tup| HighlightMeta::from((tup.0 .0, tup.0 .1, tup.1.as_str(), "CST")))
             .collect::<Vec<HighlightMeta>>();
+
         if let Ok(ast) = rpgle_parser::parse_ast(&cst) {
             if env::var("DEBUG").is_ok() {
                 let _ = std::fs::write("/tmp/ast.txt", format!("{:#?}", &ast));
@@ -59,7 +60,7 @@ pub fn highlight_rpgle(txt: &str) -> Vec<HighlightMeta> {
             );
             out
         } else {
-            vec![]
+            out
         }
     } else {
         vec![]
