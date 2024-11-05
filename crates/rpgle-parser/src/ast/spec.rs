@@ -458,7 +458,13 @@ mod tests {
         insta::assert_yaml_snapshot!(observed);
     }
 
-    // TODO: extf2
+    // #[test]
+    // fn test_cspec_extf2_01() {
+    //     // empty input
+    //     let lines = vec![];
+    //     let observed = try_cspec_extf2(&lines);
+    //     insta::assert_yaml_snapshot!(observed);
+    // }
 
     #[test]
     fn test_cspec_traditional_01() {
@@ -533,11 +539,8 @@ mod tests {
             [1..];
         let mut cst = parse_cst(&input).unwrap();
         let (specs, rest) = ast(&mut cst.lines).unwrap();
-        for ln in rest.iter() {
-            println!("{:?}", ln);
-        }
-        // expect 3 Comments and a CompilerDirective to be ignored
-        assert_eq!(rest.len(), 4);
+        // expect 3 Comments, 1 CompilerDirective and 4 blank lines to be ignored
+        assert_eq!(rest.len(), 8);
         insta::assert_yaml_snapshot!(specs);
     }
 }

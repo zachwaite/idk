@@ -1,6 +1,6 @@
 ---
 source: crates/rpgle-parser/src/ast/spec.rs
-assertion_line: 575
+assertion_line: 544
 expression: specs
 ---
 - H:
@@ -1925,24 +1925,36 @@ expression: specs
     code:
       Ok:
         op:
-          Idk:
+          Endsr:
             meta:
               span:
                 start:
-                  row: 17
+                  row: 42
                   col: 7
                 end:
-                  row: 17
+                  row: 42
                   col: 100
-              text: "                                                                                             "
-            error: EOL
-            tokens: []
+              text: "Endsr;                                                                                       "
             highlights:
               - - start:
-                    row: 17
+                    row: 42
                     col: 7
                   end:
-                    row: 17
+                    row: 42
+                    col: 12
+                - "@function.builtin"
+              - - start:
+                    row: 42
+                    col: 12
+                  end:
+                    row: 42
+                    col: 13
+                - Normal
+              - - start:
+                    row: 42
+                    col: 13
+                  end:
+                    row: 42
                     col: 100
                 - Normal
 - C:
@@ -2560,20 +2572,55 @@ expression: specs
             meta:
               span:
                 start:
-                  row: 28
+                  row: 41
                   col: 7
                 end:
-                  row: 28
+                  row: 41
                   col: 100
-              text: "                                                                                             "
-            error: EOL
+              text: "  Write EVTFMT;                                                                              "
+            error: "Expected Identifier, found Write"
             tokens: []
             highlights:
               - - start:
-                    row: 28
+                    row: 41
                     col: 7
                   end:
-                    row: 28
+                    row: 41
+                    col: 9
+                - Normal
+              - - start:
+                    row: 41
+                    col: 9
+                  end:
+                    row: 41
+                    col: 14
+                - "@function.builtin"
+              - - start:
+                    row: 41
+                    col: 14
+                  end:
+                    row: 41
+                    col: 15
+                - Normal
+              - - start:
+                    row: 41
+                    col: 15
+                  end:
+                    row: 41
+                    col: 21
+                - Identifier
+              - - start:
+                    row: 41
+                    col: 21
+                  end:
+                    row: 41
+                    col: 22
+                - Normal
+              - - start:
+                    row: 41
+                    col: 22
+                  end:
+                    row: 41
                     col: 100
                 - Normal
 - C:
@@ -2893,20 +2940,69 @@ expression: specs
             meta:
               span:
                 start:
-                  row: 35
+                  row: 40
                   col: 7
                 end:
-                  row: 35
+                  row: 40
                   col: 100
-              text: "                                                                                             "
-            error: EOL
+              text: "  Etyp = 'BORN';                                                                             "
+            error: "Expected LParen, found Equals"
             tokens: []
             highlights:
               - - start:
-                    row: 35
+                    row: 40
                     col: 7
                   end:
-                    row: 35
+                    row: 40
+                    col: 9
+                - Normal
+              - - start:
+                    row: 40
+                    col: 9
+                  end:
+                    row: 40
+                    col: 13
+                - Identifier
+              - - start:
+                    row: 40
+                    col: 13
+                  end:
+                    row: 40
+                    col: 14
+                - Normal
+              - - start:
+                    row: 40
+                    col: 14
+                  end:
+                    row: 40
+                    col: 15
+                - Normal
+              - - start:
+                    row: 40
+                    col: 15
+                  end:
+                    row: 40
+                    col: 16
+                - Normal
+              - - start:
+                    row: 40
+                    col: 16
+                  end:
+                    row: 40
+                    col: 22
+                - String
+              - - start:
+                    row: 40
+                    col: 22
+                  end:
+                    row: 40
+                    col: 23
+                - Normal
+              - - start:
+                    row: 40
+                    col: 23
+                  end:
+                    row: 40
                     col: 100
                 - Normal
 - C:
@@ -3205,197 +3301,5 @@ expression: specs
                     col: 23
                   end:
                     row: 39
-                    col: 100
-                - Normal
-- C:
-    code:
-      Ok:
-        op:
-          Idk:
-            meta:
-              span:
-                start:
-                  row: 40
-                  col: 7
-                end:
-                  row: 40
-                  col: 100
-              text: "  Etyp = 'BORN';                                                                             "
-            error: "Expected LParen, found Equals"
-            tokens: []
-            highlights:
-              - - start:
-                    row: 40
-                    col: 7
-                  end:
-                    row: 40
-                    col: 9
-                - Normal
-              - - start:
-                    row: 40
-                    col: 9
-                  end:
-                    row: 40
-                    col: 13
-                - Identifier
-              - - start:
-                    row: 40
-                    col: 13
-                  end:
-                    row: 40
-                    col: 14
-                - Normal
-              - - start:
-                    row: 40
-                    col: 14
-                  end:
-                    row: 40
-                    col: 15
-                - Normal
-              - - start:
-                    row: 40
-                    col: 15
-                  end:
-                    row: 40
-                    col: 16
-                - Normal
-              - - start:
-                    row: 40
-                    col: 16
-                  end:
-                    row: 40
-                    col: 22
-                - String
-              - - start:
-                    row: 40
-                    col: 22
-                  end:
-                    row: 40
-                    col: 23
-                - Normal
-              - - start:
-                    row: 40
-                    col: 23
-                  end:
-                    row: 40
-                    col: 100
-                - Normal
-- C:
-    code:
-      Ok:
-        op:
-          Idk:
-            meta:
-              span:
-                start:
-                  row: 41
-                  col: 7
-                end:
-                  row: 41
-                  col: 100
-              text: "  Write EVTFMT;                                                                              "
-            error: "Expected Identifier, found Write"
-            tokens: []
-            highlights:
-              - - start:
-                    row: 41
-                    col: 7
-                  end:
-                    row: 41
-                    col: 9
-                - Normal
-              - - start:
-                    row: 41
-                    col: 9
-                  end:
-                    row: 41
-                    col: 14
-                - "@function.builtin"
-              - - start:
-                    row: 41
-                    col: 14
-                  end:
-                    row: 41
-                    col: 15
-                - Normal
-              - - start:
-                    row: 41
-                    col: 15
-                  end:
-                    row: 41
-                    col: 21
-                - Identifier
-              - - start:
-                    row: 41
-                    col: 21
-                  end:
-                    row: 41
-                    col: 22
-                - Normal
-              - - start:
-                    row: 41
-                    col: 22
-                  end:
-                    row: 41
-                    col: 100
-                - Normal
-- C:
-    code:
-      Ok:
-        op:
-          Endsr:
-            meta:
-              span:
-                start:
-                  row: 42
-                  col: 7
-                end:
-                  row: 42
-                  col: 100
-              text: "Endsr;                                                                                       "
-            highlights:
-              - - start:
-                    row: 42
-                    col: 7
-                  end:
-                    row: 42
-                    col: 12
-                - "@function.builtin"
-              - - start:
-                    row: 42
-                    col: 12
-                  end:
-                    row: 42
-                    col: 13
-                - Normal
-              - - start:
-                    row: 42
-                    col: 13
-                  end:
-                    row: 42
-                    col: 100
-                - Normal
-- C:
-    code:
-      Ok:
-        op:
-          Idk:
-            meta:
-              span:
-                start:
-                  row: 43
-                  col: 7
-                end:
-                  row: 43
-                  col: 100
-              text: "                                                                                             "
-            error: EOL
-            tokens: []
-            highlights:
-              - - start:
-                    row: 43
-                    col: 7
-                  end:
-                    row: 43
                     col: 100
                 - Normal
