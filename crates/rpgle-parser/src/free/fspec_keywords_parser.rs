@@ -2,8 +2,7 @@ use super::core::{
     ch, cut_into_metas, is_identifier_char, peek_n, read_all, read_char, read_identifier,
     read_spaces_or_tabs, Lexer, LexerState, MetaChar,
 };
-use crate::field::{FKeywordsField, FieldResult, RawKeywordsField};
-use crate::line::{FSpecLine, FSpecLineContinuation};
+use crate::field::{FieldResult, RawKeywordsField};
 use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
@@ -124,72 +123,6 @@ fn next_token(lexer: &Lexer) -> Option<FToken> {
     let metas = cut_into_metas(mchars);
     let tok = FToken { kind, metas };
     Some(tok)
-}
-
-pub fn tokenize_fspec_kw(
-    line: &FSpecLine,
-    continuations: Vec<&FSpecLineContinuation>,
-) -> Vec<FToken> {
-    let tokens = match &line.keywords {
-        FieldResult::Ok(kw) => {
-            // line
-            let mut mchars: NonEmpty<MetaChar> = NonEmpty::from_vec(
-                kw.value
-                    .iter()
-                    .enumerate()
-                    .map(|(i, c)| MetaChar {
-                        value: *c,
-                        position: Position {
-                            row: kw.meta.span.start.row,
-                            col: kw.meta.span.start.col + i,
-                        },
-                    })
-                    .collect::<Vec<MetaChar>>(),
-            )
-            .expect("kw.value is NonEmpty, so mchars is guaranteed to be nonempty too");
-            // continuations
-            for cont in continuations {
-                match &cont.keywords {
-                    FieldResult::Ok(kw) => {
-                        for (i, c) in kw.value.iter().enumerate() {
-                            let p = Position {
-                                row: kw.meta.span.start.row,
-                                col: kw.meta.span.start.col + i,
-                            };
-                            mchars.push(MetaChar {
-                                value: *c,
-                                position: p,
-                            });
-                        }
-                    }
-                    _ => continue,
-                }
-            }
-            // process
-            let state = LexerState {
-                position: kw.meta.span.start,
-                idx: 0,
-            };
-            let lexer = Lexer {
-                state: RefCell::new(state),
-                input: mchars,
-            };
-            let mut tokens = vec![];
-            loop {
-                match next_token(&lexer) {
-                    Some(token) => {
-                        tokens.push(token);
-                    }
-                    None => {
-                        break;
-                    }
-                }
-            }
-            tokens
-        }
-        _ => vec![],
-    };
-    tokens
 }
 
 pub fn legacy_tokenize_fspec_kw(

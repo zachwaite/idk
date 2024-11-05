@@ -2,7 +2,6 @@ mod ast;
 mod cst;
 mod field;
 mod free;
-mod line;
 mod meta;
 
 pub use ast::{parse_ast, Spec, AST};

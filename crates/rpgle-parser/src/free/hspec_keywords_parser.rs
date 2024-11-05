@@ -3,7 +3,6 @@ use super::lexer::{
     read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
 use crate::field::{FieldResult, RawKeywordsField};
-use crate::line::{HSpecLine, HSpecLineContinuation};
 use crate::meta::{Meta, PMixin, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -151,38 +150,6 @@ fn next_token(lexer: &Lexer) -> Option<HToken> {
     let meta = Meta::from((start, chars.as_slice()));
     let tok = HToken { kind, meta };
     Some(tok)
-}
-
-pub fn tokenize_hspec_kw(
-    line: &HSpecLine,
-    continuations: Vec<&HSpecLineContinuation>,
-) -> Vec<HToken> {
-    match &line.keywords {
-        FieldResult::Ok(kw) => {
-            let pos = kw.meta.span.start;
-            let state = LexerState {
-                origin: pos,
-                col: 0,
-            };
-            let lexer = Lexer {
-                state: RefCell::new(state),
-                input: kw.value.clone(), // TDE: use lifetime
-            };
-            let mut tokens = vec![];
-            loop {
-                match next_token(&lexer) {
-                    Some(token) => {
-                        tokens.push(token);
-                    }
-                    None => {
-                        break;
-                    }
-                }
-            }
-            tokens
-        }
-        _ => vec![],
-    }
 }
 
 pub fn legacy_tokenize_hspec_kw(kwfield: &FieldResult<RawKeywordsField>) -> Vec<HToken> {

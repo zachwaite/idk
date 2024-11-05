@@ -3,10 +3,6 @@ use super::lexer::{
     read_number, read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
 use crate::field::{FieldResult, RawCodeField, RawFactor2Field};
-use crate::line::{
-    ExtF2CSpecLine, ExtF2CSpecLineContinuation, FreeCSpecLine, FreeCSpecLineContinuation,
-    TraditionalCSpecLine,
-};
 use crate::meta::{Meta, PMixin, Position, Span};
 use nonempty::{nonempty, NonEmpty};
 use serde::{Deserialize, Serialize};
@@ -437,119 +433,6 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
     let meta = Meta::from((start, chars.as_slice()));
     let tok = Token { kind, meta };
     Some(tok)
-}
-// TDE: remove dupage
-pub fn tokenize_traditional_f2(line: &TraditionalCSpecLine) -> NonEmpty<Token> {
-    match &line.factor2 {
-        FieldResult::Ok(code) => {
-            let pos = code.meta.span.start;
-            let state = LexerState {
-                origin: pos,
-                col: 0,
-            };
-            let lexer = Lexer {
-                state: RefCell::new(state),
-                input: code.value.clone(), // TDE: lifetime
-            };
-            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
-            loop {
-                match next_token(&lexer) {
-                    Some(token) => {
-                        tokens.push(token);
-                    }
-                    None => {
-                        break;
-                    }
-                }
-            }
-            tokens
-        }
-        FieldResult::Idk(fld) => {
-            let tok = Token {
-                kind: TokenKind::Idk,
-                meta: fld.meta.clone(),
-            };
-            nonempty![tok].into()
-        }
-    }
-}
-
-// DEPRECATED
-pub fn tokenize_extf2(
-    line: &ExtF2CSpecLine,
-    continuations: Vec<&ExtF2CSpecLineContinuation>,
-) -> NonEmpty<Token> {
-    match &line.factor2 {
-        FieldResult::Ok(code) => {
-            let pos = code.meta.span.start;
-            let state = LexerState {
-                origin: pos,
-                col: 0,
-            };
-            let lexer = Lexer {
-                state: RefCell::new(state),
-                input: code.value.clone(), // TDE: lifetime
-            };
-            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
-            loop {
-                match next_token(&lexer) {
-                    Some(token) => {
-                        tokens.push(token);
-                    }
-                    None => {
-                        break;
-                    }
-                }
-            }
-            tokens
-        }
-        FieldResult::Idk(fld) => {
-            let tok = Token {
-                kind: TokenKind::Idk,
-                meta: fld.meta.clone(),
-            };
-            nonempty![tok].into()
-        }
-    }
-}
-
-// DEPRECATED
-pub fn tokenize(
-    line: &FreeCSpecLine,
-    continuations: Vec<&FreeCSpecLineContinuation>,
-) -> NonEmpty<Token> {
-    match &line.code {
-        FieldResult::Ok(code) => {
-            let pos = code.meta.span.start;
-            let state = LexerState {
-                origin: pos,
-                col: 0,
-            };
-            let lexer = Lexer {
-                state: RefCell::new(state),
-                input: code.value.clone(),
-            };
-            let mut tokens = nonempty![next_token(&lexer).expect("guaranteed at least 1 token")];
-            loop {
-                match next_token(&lexer) {
-                    Some(token) => {
-                        tokens.push(token);
-                    }
-                    None => {
-                        break;
-                    }
-                }
-            }
-            tokens.into()
-        }
-        FieldResult::Idk(fld) => {
-            let tok = Token {
-                kind: TokenKind::Idk,
-                meta: fld.meta.clone(),
-            };
-            nonempty![tok].into()
-        }
-    }
 }
 
 pub fn legacy_tokenize(

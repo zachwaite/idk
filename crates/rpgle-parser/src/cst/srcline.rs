@@ -9,7 +9,6 @@ use crate::field::{
     RecordAddressTypeField, RecordLengthField, ReservedField, ResultField, ResultLengthField,
     SequenceField,
 };
-use crate::line::{CSpecLine, SpecLine};
 use crate::meta::pluck_array3 as pluck;
 use crate::meta::Position;
 use serde::{Deserialize, Serialize};
@@ -300,104 +299,6 @@ impl Display for Srcline {
             Srcline::C(cline) => msg.push_str(&cline.to_string()),
         }
         write!(f, "{}", msg)
-    }
-}
-
-pub fn legacy_srcline(i: usize, chars: &[char; 100]) -> Srcline {
-    let specline = SpecLine::from((i, chars));
-    match specline {
-        SpecLine::Idk(line) => Srcline::Idk {
-            idk: line.idk.clone(),
-        },
-        SpecLine::Comment(line) => Srcline::Comment {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            comment: line.comment.clone(),
-        },
-        SpecLine::CompilerDirective(line) => Srcline::CompilerDirective {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            directive: line.directive.clone(),
-        },
-        SpecLine::HSpec(line) => Srcline::H {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            keywords: line.keywords.clone(),
-        },
-        SpecLine::FSpec(line) => Srcline::F {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            name: line.name.clone(),
-            filetype: line.filetype.clone(),
-            file_designation: line.file_designation.clone(),
-            endfile: line.endfile.clone(),
-            file_addition: line.file_addition.clone(),
-            file_sequence: line.file_sequence.clone(),
-            file_format: line.file_format.clone(),
-            record_length: line.record_length.clone(),
-            limits_processing: line.limits_processing.clone(),
-            keylength: line.keylength.clone(),
-            record_address_type: line.record_address_type.clone(),
-            file_organization: line.file_organization.clone(),
-            device: line.device.clone(),
-            reserved: line.reserved.clone(),
-            keywords: line.keywords.clone(),
-        },
-        SpecLine::FSpecContinuation(line) => Srcline::FCont {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            nothing: line.nothing.clone(),
-            keywords: line.keywords.clone(),
-        },
-        SpecLine::DSpec(line) => Srcline::D {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            name: line.name.clone(),
-            external_description: line.external_description.clone(),
-            datastructure_type: line.datastructure_type.clone(),
-            definition_type: line.definition_type.clone(),
-            from_position: line.from_position.clone(),
-            to_length: line.to_length.clone(),
-            datatype: line.datatype.clone(),
-            decimals: line.decimals.clone(),
-            reserved: line.reserved.clone(),
-            keywords: line.keywords.clone(),
-        },
-        SpecLine::DSpecContinuation(line) => Srcline::DCont {
-            sequence: line.sequence.clone(),
-            form_type: line.form_type.clone(),
-            nothing: line.nothing.clone(),
-            keywords: line.keywords.clone(),
-        },
-        SpecLine::CSpec(line) => match line {
-            CSpecLine::Traditional(line) => Srcline::C(CSrcline::Traditional {
-                nothing: line.nothing.clone(),
-                form_type: line.form_type.clone(),
-                control_level: line.control_level.clone(),
-                indicators: line.indicators.clone(),
-                factor1: line.factor1.clone(),
-                operation: line.operation.clone(),
-                factor2: line.factor2.clone(),
-                result: line.result.clone(),
-                result_length: line.result_length.clone(),
-                decimals: line.decimals.clone(),
-                resulting_indicators: line.resulting_indicators.clone(),
-                comments: line.comments.clone(),
-            }),
-            CSpecLine::ExtF2(line) => Srcline::C(CSrcline::ExtF2 {
-                nothing: line.nothing.clone(),
-                form_type: line.form_type.clone(),
-                control_level: line.control_level.clone(),
-                indicators: line.indicators.clone(),
-                factor1: line.factor1.clone(),
-                operation: line.operation.clone(),
-                factor2: line.factor2.clone(),
-            }),
-            CSpecLine::Free(line) => Srcline::C(CSrcline::Free {
-                nothing: line.nothing.clone(),
-                code: line.code.clone(),
-            }),
-        },
     }
 }
 

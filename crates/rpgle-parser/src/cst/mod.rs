@@ -1,5 +1,4 @@
 mod cst;
-mod legacy; // DEPRECATED
 mod nvim;
 mod srcline;
 
