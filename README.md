@@ -68,3 +68,41 @@ Handy for getting source code onto your system versus working with SEU.
 $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
 ```
 
+## Dependency Graph
+```mermaid
+flowchart LR
+    meta
+    field
+    cst.srcline
+    cst.nvim
+    cst
+    free
+    ast.spec
+    ast.nvim
+    ast
+
+    meta --> free
+    meta --> field
+    meta --> cst.srcline
+    meta --> cst.nvim
+    meta --> ast.nvim
+    meta --> ast.spec
+
+    field --> cst.srcline
+    field --> ast.spec
+
+    free --> ast.spec
+
+    cst.srcline --> cst.nvim
+    cst.nvim --> cst
+    cst.srcline --> cst
+
+    cst.srcline --> ast.spec
+    cst --> ast.spec
+
+    ast.spec --> ast
+    ast.nvim --> ast
+
+    cst --> idk-nvim
+    ast --> idk-nvim
+```
