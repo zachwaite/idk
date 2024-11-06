@@ -40,3 +40,26 @@ where
         }
     }
 }
+
+impl<T> FieldResult<T> {
+    pub fn is_ok(&self) -> bool {
+        match self {
+            Self::Ok(_) => true,
+            Self::Idk(_) => false,
+        }
+    }
+
+    pub fn is_err(&self) -> bool {
+        match self {
+            Self::Ok(_) => false,
+            Self::Idk(_) => true,
+        }
+    }
+
+    pub fn try_as(&self) -> Option<&T> {
+        match self {
+            Self::Ok(x) => Some(x),
+            Self::Idk(_) => None,
+        }
+    }
+}

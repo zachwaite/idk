@@ -1,6 +1,5 @@
 use super::ast::AST;
 use super::spec::Spec;
-use crate::field::FieldResult;
 use crate::free::Op;
 use crate::meta::{PMixin, Span};
 
@@ -109,12 +108,12 @@ pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
             ..
         } = spec
         {
-            if let FieldResult::Ok(namefield) = name {
+            if let Some(namefield) = name.try_as() {
                 if namefield.value.to_uppercase() == pattern.to_uppercase() {
                     return Some(namefield.meta.span);
                 }
             }
-            if let FieldResult::Ok(kwfield) = keywords {
+            if let Some(kwfield) = keywords.try_as() {
                 for t in kwfield.tokens.iter() {
                     for m in t.metas.iter() {
                         if m.text.to_uppercase().contains(&pattern.to_uppercase()) {
@@ -126,7 +125,7 @@ pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
         }
 
         if let Spec::C { code } = spec {
-            if let FieldResult::Ok(codefield) = code {
+            if let Some(codefield) = code.try_as() {
                 if let Op::Begsr { name, .. } = &codefield.op {
                     if name.trim().to_uppercase() == pattern.trim().to_uppercase() {
                         return Some(codefield.op.span());
