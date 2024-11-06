@@ -323,15 +323,21 @@ fn spec(input: &[Srcline]) -> Result<(Spec, &[Srcline]), ParseError> {
     let parse_fspec = || try_fspec(input);
     let parse_dspec = || try_dspec(input);
     let parse_cspec_free = || try_cspec_free(input);
-    let parse_cspec_extf2 = || try_cspec_extf2(input); // Not Implemented
     let parse_cspec_traditional = || try_cspec_traditional(input);
+    let print_unhandled = || {
+        if input.len() > 0 {
+            let _ = std::fs::write("/tmp/unhandled", format!("{:?}", &input[0]));
+        } else {
+            let _ = std::fs::write("/tmp/unhandled", "None");
+        }
+        ParseError::Unhandled
+    };
     parse_hspec()
         .or_else(parse_fspec)
         .or_else(parse_dspec)
         .or_else(parse_cspec_traditional)
-        .or_else(parse_cspec_extf2)
         .or_else(parse_cspec_free)
-        .ok_or(ParseError::Unhandled)
+        .ok_or_else(print_unhandled)
 }
 
 pub fn ast(input: &mut [Srcline]) -> Result<(Vec<Spec>, &[Srcline]), ParseError> {
@@ -349,7 +355,9 @@ pub fn ast(input: &mut [Srcline]) -> Result<(Vec<Spec>, &[Srcline]), ParseError>
         Srcline::FCont { .. } => true,
         Srcline::D { .. } => true,
         Srcline::DCont { .. } => true,
-        Srcline::C(_) => true,
+        Srcline::C(CSrcline::Free { .. }) => true,
+        Srcline::C(CSrcline::Traditional { .. }) => true,
+        Srcline::C(CSrcline::ExtF2 { .. }) => false,
     });
     let mut _input = keep;
     let mut outs: Vec<Spec> = vec![];

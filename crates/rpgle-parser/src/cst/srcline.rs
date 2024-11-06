@@ -504,6 +504,14 @@ fn try_cline_traditional(row: usize, chars: &[char; 100]) -> Option<Srcline> {
     if has_extf2_optoken(chars) {
         return None;
     }
+    // guard: blank in op, but not blank in f2 = extf2 continuation
+    let unique_opchars = chars[25..35].iter().collect::<HashSet<&char>>();
+    if unique_opchars.len() == 1 && unique_opchars.contains(&' ') {
+        let unique_chars = chars[35..=65].iter().collect::<HashSet<&char>>();
+        if unique_chars.len() > 1 {
+            return None;
+        }
+    }
     let line = Srcline::C(CSrcline::Traditional {
         nothing: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 5, 95>(chars))),
         form_type: FieldResult::from((Position::from((row, 5)), pluck::<100, 5, 1, 94>(chars))),
@@ -537,15 +545,23 @@ fn try_cline_free(row: usize, chars: &[char; 100]) -> Option<Srcline> {
     if chars[5..=6] != [' ', ' '] {
         return None;
     }
-    // guard: not blank line
-    let unique_chars = chars.iter().collect::<HashSet<&char>>();
-    if unique_chars.len() == 1 && unique_chars.contains(&' ') {
-        return None;
-    }
     let line = Srcline::C(CSrcline::Free {
         nothing: FieldResult::from((Position::from((row, 0)), pluck::<100, 0, 7, 93>(chars))),
         code: FieldResult::from((Position::from((row, 7)), pluck::<100, 7, 93, 0>(chars))),
     });
+    Some(line)
+}
+
+fn try_blank_line(row: usize, chars: &[char; 100]) -> Option<Srcline> {
+    // guard: not blank line
+    let unique_chars = chars.iter().collect::<HashSet<&char>>();
+    if unique_chars.len() > 1 {
+        return None;
+    }
+    let start = Position::from((row, 0));
+    let line = Srcline::Idk {
+        idk: FieldResult::from((start, chars.as_slice())),
+    };
     Some(line)
 }
 
@@ -558,6 +574,7 @@ fn try_idk(row: usize, chars: &[char; 100]) -> Option<Srcline> {
 }
 
 pub fn srcline(row: usize, chars: &[char; 100]) -> Result<Srcline, ParseError> {
+    let parse_blank_line = || try_blank_line(row, chars);
     let parse_comment = || try_comment(row, chars);
     let parse_compiler_directive = || try_compiler_directive(row, chars);
     let parse_hline = || try_hline(row, chars);
@@ -569,7 +586,8 @@ pub fn srcline(row: usize, chars: &[char; 100]) -> Result<Srcline, ParseError> {
     let parse_cline_extf2 = || try_cline_extf2(row, chars);
     let parse_cline_free = || try_cline_free(row, chars);
     let parse_idk = || try_idk(row, chars);
-    parse_comment()
+    parse_blank_line()
+        .or_else(parse_comment)
         .or_else(parse_compiler_directive)
         .or_else(parse_hline)
         .or_else(parse_fline)
