@@ -1,6 +1,5 @@
 use super::ast::AST;
 use super::spec::Spec;
-use crate::free::Op;
 use crate::meta::{PMixin, Span};
 
 type SpanShape = ((usize, usize), (usize, usize));
@@ -126,7 +125,7 @@ pub fn query_definition(ast: &AST, pattern: &str) -> Option<Span> {
 
         if let Spec::C { code } = spec {
             if let Some(codefield) = code.try_as() {
-                if let Op::Begsr { name, .. } = &codefield.op {
+                if let Some((name,)) = &codefield.op.try_as_args_begsr() {
                     if name.trim().to_uppercase() == pattern.trim().to_uppercase() {
                         return Some(codefield.op.span());
                     }

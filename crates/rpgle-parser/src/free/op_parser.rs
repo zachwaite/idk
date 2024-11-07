@@ -141,6 +141,7 @@ impl Display for Op {
     }
 }
 impl Op {
+    // DEPRECATED - try_as_X is just better
     pub fn kind(&self) -> String {
         let s = match self {
             Op::Begsr { .. } => "BEGSR",
@@ -150,6 +151,14 @@ impl Op {
             Op::Idk { .. } => "IDK",
         };
         s.to_string()
+    }
+    // return an Option of tuple of significant args
+    pub fn try_as_args_begsr(&self) -> Option<(&str,)> {
+        if let Self::Begsr { name, .. } = self {
+            let args = (name.as_str(),);
+            return Some(args);
+        }
+        None
     }
     pub fn span(&self) -> Span {
         match self {
