@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use super::result::FieldResult;
-use crate::meta::{Meta, PMixin, Position, Span};
+use super::result::{FieldBehavior, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -52,7 +52,7 @@ impl From<(Position, &[char; 1])> for FieldResult<ReservedField> {
     }
 }
 
-impl PMixin for ReservedField {
+impl FieldBehavior for ReservedField {
     fn span(&self) -> Span {
         self.meta.span
     }

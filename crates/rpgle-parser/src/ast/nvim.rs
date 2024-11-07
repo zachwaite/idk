@@ -1,6 +1,7 @@
 use super::ast::AST;
 use super::spec::Spec;
-use crate::meta::{PMixin, Span};
+use crate::field::FieldBehavior;
+use crate::meta::Span;
 
 type SpanShape = ((usize, usize), (usize, usize));
 pub fn highlight_ast(ast: &AST) -> Vec<(SpanShape, String)> {

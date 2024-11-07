@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use super::IdkField;
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -18,7 +18,7 @@ impl Display for CommentField {
     }
 }
 
-impl PMixin for CommentField {
+impl FieldBehavior for CommentField {
     fn span(&self) -> Span {
         self.meta.span
     }

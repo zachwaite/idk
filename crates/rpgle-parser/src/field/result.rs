@@ -1,8 +1,13 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use crate::meta::{PMixin, Span};
+use crate::meta::Span;
 use serde::{Deserialize, Serialize};
+
+pub trait FieldBehavior {
+    fn highlight(&self) -> Vec<(Span, String)>;
+    fn span(&self) -> Span;
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum FieldResult<T> {
@@ -22,9 +27,9 @@ where
     }
 }
 
-impl<T> PMixin for FieldResult<T>
+impl<T> FieldBehavior for FieldResult<T>
 where
-    T: PMixin,
+    T: FieldBehavior,
 {
     fn highlight(&self) -> Vec<(Span, String)> {
         match self {

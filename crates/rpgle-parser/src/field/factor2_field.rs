@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use crate::free::Token;
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 
@@ -41,7 +41,7 @@ impl From<(Position, &[char; 65])> for FieldResult<RawFactor2Field> {
     }
 }
 
-impl PMixin for RawFactor2Field {
+impl FieldBehavior for RawFactor2Field {
     fn span(&self) -> Span {
         self.meta.span
     }
@@ -66,7 +66,7 @@ impl Display for Factor2Field {
         write!(f, "{}", out)
     }
 }
-impl PMixin for Factor2Field {
+impl FieldBehavior for Factor2Field {
     fn span(&self) -> Span {
         if self.tokens.len() == 0 {
             todo!()

@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use crate::free::Op;
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 
@@ -18,7 +18,7 @@ impl Display for RawCodeField {
         write!(f, "{}", self.meta.text)
     }
 }
-impl PMixin for RawCodeField {
+impl FieldBehavior for RawCodeField {
     fn span(&self) -> Span {
         self.meta.span
     }
@@ -49,7 +49,7 @@ impl Display for CodeField {
         write!(f, "{}", self.op.to_string())
     }
 }
-impl PMixin for CodeField {
+impl FieldBehavior for CodeField {
     fn span(&self) -> Span {
         self.op.span()
     }

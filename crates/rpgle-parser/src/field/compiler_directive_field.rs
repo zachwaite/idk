@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use crate::free::{tokenize_directive, DirectiveToken};
-use crate::meta::{PMixin, Position, Span};
+use crate::meta::{Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -19,7 +19,7 @@ impl Display for CompilerDirectiveField {
         write!(f, "{}", out)
     }
 }
-impl PMixin for CompilerDirectiveField {
+impl FieldBehavior for CompilerDirectiveField {
     fn span(&self) -> Span {
         if self.tokens.len() == 0 {
             todo!()

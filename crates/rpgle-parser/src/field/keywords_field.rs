@@ -1,9 +1,9 @@
 use nonempty::NonEmpty;
 use std::fmt::Display;
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use crate::free::{DToken, FToken, HToken};
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 // raw
@@ -17,7 +17,7 @@ impl Display for RawKeywordsField {
         write!(f, "{}", self.meta.text)
     }
 }
-impl PMixin for RawKeywordsField {
+impl FieldBehavior for RawKeywordsField {
     fn span(&self) -> Span {
         self.meta.span
     }
@@ -62,7 +62,7 @@ impl Display for HKeywordsField {
         write!(f, "{}", out)
     }
 }
-impl PMixin for HKeywordsField {
+impl FieldBehavior for HKeywordsField {
     fn span(&self) -> Span {
         if self.tokens.len() == 0 {
             todo!()
@@ -88,7 +88,7 @@ impl PMixin for HKeywordsField {
 pub struct FKeywordsField {
     pub tokens: Vec<FToken>,
 }
-impl PMixin for FKeywordsField {
+impl FieldBehavior for FKeywordsField {
     fn span(&self) -> Span {
         todo!()
     }
@@ -106,7 +106,7 @@ impl PMixin for FKeywordsField {
 pub struct DKeywordsField {
     pub tokens: Vec<DToken>,
 }
-impl PMixin for DKeywordsField {
+impl FieldBehavior for DKeywordsField {
     fn span(&self) -> Span {
         todo!()
     }

@@ -1,8 +1,8 @@
 use std::fmt::Display;
 
 use super::idk_field::IdkField;
-use super::result::FieldResult;
-use crate::meta::{Meta, PMixin, Position, Span};
+use super::result::{FieldBehavior, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
@@ -65,7 +65,7 @@ impl From<(Position, &[char; 7])> for FieldResult<DeviceField> {
     }
 }
 
-impl PMixin for DeviceField {
+impl FieldBehavior for DeviceField {
     fn span(&self) -> Span {
         self.meta.span
     }

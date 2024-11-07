@@ -1,8 +1,8 @@
 use std::{collections::HashSet, fmt::Display};
 
-use super::result::FieldResult;
+use super::result::{FieldBehavior, FieldResult};
 use super::IdkField;
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -65,7 +65,7 @@ impl From<(Position, &[char; 7])> for FieldResult<NothingField> {
     }
 }
 
-impl PMixin for NothingField {
+impl FieldBehavior for NothingField {
     fn span(&self) -> Span {
         self.meta.span
     }

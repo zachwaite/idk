@@ -1,20 +1,8 @@
 use std::fmt::Display;
 
-use super::result::FieldResult;
-use crate::meta::{Meta, PMixin, Position, Span};
+use super::result::{FieldBehavior, FieldResult};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Clone, Serialize, Deserialize)]
-// pub enum TraditionalOpcode {}
-//
-// #[derive(Debug, Clone, Serialize, Deserialize)]
-// pub enum Extf2Opcode {}
-//
-// #[derive(Debug, Clone, Serialize, Deserialize)]
-// pub enum Opcode {
-//     Traditional(TraditionalOpcode),
-//     Extf2(Extf2Opcode)
-// }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct OperationField {
@@ -75,7 +63,7 @@ pub fn has_extf2_optoken(chars: &[char; 100]) -> bool {
     }
 }
 
-impl PMixin for OperationField {
+impl FieldBehavior for OperationField {
     fn span(&self) -> Span {
         self.meta.span
     }

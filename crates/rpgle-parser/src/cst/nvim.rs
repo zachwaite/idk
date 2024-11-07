@@ -1,6 +1,6 @@
 use super::cst::CST;
 use super::srcline::{CSrcline, Srcline};
-use crate::meta::PMixin; // DEPRECATED
+use crate::field::FieldBehavior;
 use crate::meta::Span;
 use std::usize;
 

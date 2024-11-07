@@ -67,7 +67,7 @@ pub use position_field::{POSField, POS};
 pub use record_address_type_field::{RecordAddressType, RecordAddressTypeField};
 pub use record_length_field::RecordLengthField;
 pub use reserved_field::{Reserved, ReservedField};
-pub use result::FieldResult; // used by each field type
+pub use result::{FieldBehavior, FieldResult}; // used by each field type
 pub use result_field::ResultField;
 pub use result_length_field::{ResultLength, ResultLengthField};
 pub use sequence_field::SequenceField;
