@@ -1,5 +1,5 @@
 use crate::field::{Factor1Field, FieldResult, OperationField, RawCodeField, RawFactor2Field};
-use crate::meta::{Meta, PMixin, Span};
+use crate::meta::{Meta, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;

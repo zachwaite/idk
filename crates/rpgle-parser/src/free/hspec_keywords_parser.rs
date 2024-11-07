@@ -3,7 +3,7 @@ use super::lexer::{
     read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
 use crate::field::{FieldResult, RawKeywordsField};
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::fmt;
@@ -34,8 +34,8 @@ impl Display for HToken {
     }
 }
 
-impl PMixin for HToken {
-    fn highlight(&self) -> Vec<(Span, String)> {
+impl HToken {
+    pub fn highlight(&self) -> Vec<(Span, String)> {
         let hlgroup = match self.kind {
             HTokenKind::Idk => "Normal",
             HTokenKind::Whitespace => "Normal",
@@ -49,7 +49,7 @@ impl PMixin for HToken {
         vec![(self.span(), hlgroup.to_string())]
     }
 
-    fn span(&self) -> crate::Span {
+    pub fn span(&self) -> crate::Span {
         self.meta.span
     }
 }

@@ -3,7 +3,7 @@ use super::lexer::{
     read_number, read_spaces_or_tabs, read_string_literal, Lexer, LexerState,
 };
 use crate::field::{FieldResult, RawCodeField, RawFactor2Field};
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use nonempty::{nonempty, NonEmpty};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -81,8 +81,8 @@ impl Display for Token {
     }
 }
 
-impl PMixin for Token {
-    fn highlight(&self) -> Vec<(Span, String)> {
+impl Token {
+    pub fn highlight(&self) -> Vec<(Span, String)> {
         let hlgroup = match self.kind {
             TokenKind::Idk => "Normal",
             TokenKind::Whitespace => "Normal",
@@ -142,7 +142,7 @@ impl PMixin for Token {
         vec![(self.span(), hlgroup.to_string())]
     }
 
-    fn span(&self) -> crate::Span {
+    pub fn span(&self) -> crate::Span {
         self.meta.span
     }
 }

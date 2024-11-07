@@ -1,7 +1,7 @@
 use super::lexer::{
     ch, is_identifier_char, peek_n, read_all, read_char, read_identifier, Lexer, LexerState,
 };
-use crate::meta::{Meta, PMixin, Position, Span};
+use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -42,8 +42,8 @@ impl Display for DirectiveToken {
     }
 }
 
-impl PMixin for DirectiveToken {
-    fn highlight(&self) -> Vec<(Span, String)> {
+impl DirectiveToken {
+    pub fn highlight(&self) -> Vec<(Span, String)> {
         let hlgroup = match self.kind {
             DirectiveTokenKind::Idk => "WarningMsg",
             DirectiveTokenKind::Title => "@keyword.directive.define",
@@ -66,7 +66,7 @@ impl PMixin for DirectiveToken {
         vec![(self.span(), hlgroup.to_string())]
     }
 
-    fn span(&self) -> crate::Span {
+    pub fn span(&self) -> crate::Span {
         self.meta.span
     }
 }
