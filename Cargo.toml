@@ -15,7 +15,6 @@ license = "MIT"
 authors = ["Zach Waite<zach@waiteperspectives.com>"]
 
 [workspace.dependencies]
-clap = { version = "4.5.3", features = ["derive"] }
 nvim-oxi = {version="0.5.1", features=["neovim-0-10"]}
 insta = { version = "1.38.0", features = ["yaml"] }
 serde = { version = "1.0.206", features = ["derive"] }
