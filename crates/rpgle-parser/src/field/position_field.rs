@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum POS {
     Empty,
-    Value(u32), // TODO: constrain value to 1-2000
+    Value(u32), // TDE: constrain value to 1-2000
 }
 
 impl Display for POS {

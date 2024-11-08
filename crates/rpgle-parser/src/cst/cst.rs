@@ -74,7 +74,7 @@ pub fn parse_cst(input: &str) -> Result<CST, ParseError> {
         if let Ok(line) = srcline(input.0, input.1) {
             lines.push(line);
         } else {
-            // TODO: map error better
+            // TDE: map error better
             return Err(ParseError::Unhandled);
         }
     }

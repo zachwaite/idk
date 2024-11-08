@@ -8,7 +8,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum KeyLength {
     Empty,
-    Value(u32), // TODO: constrain value to 1-2000
+    Value(u32), // TDE: constrain value to 1-2000. We parse 5 characters,
+                // so we have a max size, yet the parse result doesn't preserve
+                // that max size. Information is lost here. Parse results should
+                // reflect as much information as you can know about the value.
 }
 
 impl Display for KeyLength {

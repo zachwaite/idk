@@ -1,3 +1,4 @@
+#![allow(dead_code)] // TDE: decide what to do with these extra helpers
 use crate::meta::{Meta, Position, Span};
 use nonempty::NonEmpty;
 use serde::{Deserialize, Serialize};

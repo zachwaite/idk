@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum ResultLength {
     Empty,
-    Value(u32), // TODO: constrain value
+    Value(u32), // TDE: constrain value
 }
 
 impl Display for ResultLength {

@@ -435,9 +435,10 @@ fn next_token(lexer: &Lexer) -> Option<Token> {
     Some(tok)
 }
 
+// TDE: handle continuations
 pub fn legacy_tokenize(
     codefield: &FieldResult<RawCodeField>,
-    continuations: &[&FieldResult<RawCodeField>],
+    _continuations: &[&FieldResult<RawCodeField>],
 ) -> NonEmpty<Token> {
     match codefield {
         FieldResult::Ok(code) => {
@@ -473,9 +474,10 @@ pub fn legacy_tokenize(
     }
 }
 
+// TDE: handle continuations
 pub fn legacy_tokenize_extf2(
     factor2: &FieldResult<RawFactor2Field>,
-    continuations: &[&FieldResult<RawFactor2Field>],
+    _continuations: &[&FieldResult<RawFactor2Field>],
 ) -> NonEmpty<Token> {
     match factor2 {
         FieldResult::Ok(code) => {

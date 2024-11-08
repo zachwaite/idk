@@ -1,3 +1,4 @@
+#![allow(dead_code)] // TDE: decide what to do with extra helpers
 use crate::meta::Position;
 use nonempty::NonEmpty;
 use std::cell::RefCell;

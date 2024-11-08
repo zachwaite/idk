@@ -219,12 +219,6 @@ impl Call {
             Call::ExtPgm(call) => call.to_string(),
         }
     }
-    pub fn kind(&self) -> NodeKind {
-        match self {
-            Call::Subroutine(_) => NodeKind::Subroutine,
-            Call::ExtPgm(_) => NodeKind::Extpgm,
-        }
-    }
 }
 
 #[derive(Debug)]

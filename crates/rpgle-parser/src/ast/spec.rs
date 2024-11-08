@@ -250,9 +250,9 @@ fn try_cspec_free(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
         Srcline::C(CSrcline::Free {
             code: codefield, ..
         }) => {
-            // TODO: collect continuations
+            // TDE: collect continuations
             let conts = vec![];
-            // TODO: Op parser uses legacy style parser
+            // TDE: Op parser uses legacy style parser
             let op = Op::from((codefield, conts.as_slice()));
             let fld = CodeField { op };
             let code = FieldResult::Ok(fld);
@@ -276,7 +276,9 @@ fn try_cspec_free(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
     }
 }
 
-fn try_cspec_extf2(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
+// TODO: implement extended factor2 parser
+#[allow(dead_code)]
+fn try_cspec_extf2(_input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
     None
 }
 
@@ -288,9 +290,9 @@ fn try_cspec_traditional(input: &[Srcline]) -> Option<(Spec, &[Srcline])> {
         Srcline::C(CSrcline::Traditional {
             factor1, operation, ..
         }) => {
-            // TODO: collect continuations
+            // TDE: collect continuations
             let conts = vec![];
-            // TODO: Op parser uses legacy style parser
+            // TDE: Op parser uses legacy style parser
             let op = Op::from(((operation, factor1), conts.as_slice()));
             let fld = CodeField { op };
             let code = FieldResult::Ok(fld);
