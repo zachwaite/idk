@@ -105,13 +105,6 @@ pub fn highlight_cst(cst: &CST) -> Vec<((usize, usize), (usize, usize), String)>
         .collect::<Vec<_>>()
 }
 
-// #[derive(Debug, Serialize, Deserialize)]
-// pub struct AST {
-//     pub record_format: RecordFormat,
-//     pub fields: Vec<PFField>,
-//     pub keys: Vec<PFKey>,
-// }
-
 #[cfg(test)]
 mod tests {
     use super::*;

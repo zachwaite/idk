@@ -1,3 +1,4 @@
+#![allow(dead_code)] // TDE: decide what to do with these helpers
 use crate::meta::{Meta, Position, Span};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
