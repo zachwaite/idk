@@ -41,7 +41,15 @@ Not yet supported:
 
 ###### Syntax Highlighting
 
-![screenshot-syntax](./assets/readme-syntax.png)
+The RPG highlighter is 2-phase. It first uses the concrete syntax tree to
+perform "naive" highlights which have no semantic knowledge of surrounding
+fields or other lines. The second phase uses the abstract syntax tree to apply
+semantic highlights. An example would be [line
+continuations](https://www.ibm.com/docs/en/i/7.4?topic=entries-continuation-rules).
+In the screenshot below, the constant string literal value is highlighted in
+the second pass, because the d-spec is split across multiple lines.
+
+![syntax](./assets/readme-syntax.png)
 
 ###### JSON serialization
 
