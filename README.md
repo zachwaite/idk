@@ -16,6 +16,8 @@ IBM i development tools, for Neovim and the command line.
 - `dds-parser` - a parser for DDS files. Similar status to the rpg parser.
 - `idk-graph` - a source graph generator that outputs dot files to be
   rendered with graphviz.
+- `idkpy` - Python bindings to the rpgle-parser. Exposes the `parse_ast` function to
+  Python.
 
 ## idk-nvim
 
@@ -67,6 +69,59 @@ Handy for getting source code onto your system versus working with SEU.
 ```sh
 $ DSN=AS400 idk-get "ZWAITE/QRPGLESRC(ZEVT)" | idk-fmt RPG
 ```
+
+## idkpy
+
+I mostly use this for testing, but can also be used to work with the AST from Python.
+Python bindings are created using [maturin](https://github.com/PyO3/maturin)
+
+Example:
+
+```python
+import json
+import sys
+import unittest
+from pathlib import Path
+
+import idkpy
+from snapshottest import TestCase
+
+WD = Path(__file__).parent
+DATA = WD / Path("data")
+
+
+class TestAST(TestCase):
+    def test_parse_test(self):
+        fpath = str(DATA / Path("test.rpgle"))
+        with open(fpath, "r") as f:
+            raw = idkpy.parse_rpgle(f.read())
+            parsed = json.loads(raw)
+            self.assertMatchSnapshot(parsed)
+
+    def test_parse_hr323(self):
+        fpath = str(DATA / Path("HR323.rpgle"))
+        with open(fpath, "r") as f:
+            raw = idkpy.parse_rpgle(f.read())
+            parsed = json.loads(raw)
+            self.assertMatchSnapshot(parsed)
+
+    def test_parse_hr111h(self):
+        fpath = str(DATA / Path("HR111H.rpgle"))
+        with open(fpath, "r") as f:
+            raw = idkpy.parse_rpgle(f.read())
+            parsed = json.loads(raw)
+            self.assertMatchSnapshot(parsed)
+
+
+def main():
+    sys.argv = sys.argv[:1]
+    unittest.main(__name__)
+
+
+if __name__ == "__main__":
+    main()
+```
+
 
 ## Dependency Graph
 ```mermaid
