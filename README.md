@@ -4,18 +4,18 @@ IBM i development tools, for Neovim and the command line.
 
 #### Components:
 
-- `idk.nvim` (WIP) - a Neovim plugin that works like a language server,
+- `idk.nvim` - a Neovim plugin that works like a language server,
   without the server
-- `idk-get` (READY) - download source files from an IBM i server via ODBC
-- `idk-fmt` (READY) - format source files to the proper column width based on
+- `idk-get` - download source files from an IBM i server via ODBC
+- `idk-fmt` - format source files to the proper column width based on
   language
-- `rpgle-parser` (WIP) - a parser for different flavors of RPG. Designed to
+- `rpgle-parser` - a parser for different flavors of RPG. Designed to
   handle programs with `/free` and tradition syntax mixed together without
-  mercy.
-- `dds-parser` (WIP) - a parser for DDS files
-- `idk-graph` (WIP) - a source graph generator that outputs dot files to be
-  rendered with graphviz
-- `idk-lint` (TODO) - someday there will be a linter
+  mercy. Still a work in progress, but good enough to power "jump to definition"
+  on most of the /free and traditional fixed format programs I encounter.
+- `dds-parser` - a parser for DDS files. Similar status to the rpg parser.
+- `idk-graph` - a source graph generator that outputs dot files to be
+  rendered with graphviz.
 
 ## idk-nvim
 
@@ -106,3 +106,4 @@ flowchart LR
     cst --> idk-nvim
     ast --> idk-nvim
 ```
+
