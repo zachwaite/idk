@@ -1,7 +1,7 @@
 mod graph;
 mod highlight;
 use dds_parser;
-use highlight::{highlight_pfdds, highlight_rpgle, HighlightMeta};
+use highlight::{HighlightMeta, highlight_pfdds, highlight_rpgle};
 use nvim_oxi::{self as oxi};
 use rpgle_parser;
 use std::path::PathBuf;
@@ -10,7 +10,7 @@ use std::{env, fs};
 use graph::{IRenderable, IdkGraph};
 use nvim_oxi::conversion::{Error as ConversionError, ToObject};
 use nvim_oxi::serde::Serializer;
-use nvim_oxi::{lua, Object};
+use nvim_oxi::{Object, lua};
 use serde::{Deserialize, Serialize};
 use serde_json;
 
@@ -25,16 +25,18 @@ impl Highlighter {
         let opts = oxi::api::opts::GetExtmarksOpts::builder()
             .details(true)
             .build();
-        let current_marks = self.buf.get_extmarks(
-            self.namespace_id,
-            oxi::api::types::ExtmarkPosition::ByTuple((meta.start_row, meta.start_col)),
-            oxi::api::types::ExtmarkPosition::ByTuple((meta.end_row, meta.end_col)),
-            &opts,
-        );
-        if let Ok(cm) = current_marks {
-            for mark in cm {
-                self.buf.del_extmark(self.namespace_id, mark.0)?;
-            }
+        let current_mark_ids = self
+            .buf
+            .get_extmarks(
+                self.namespace_id,
+                oxi::api::types::ExtmarkPosition::ByTuple((meta.start_row, meta.start_col)),
+                oxi::api::types::ExtmarkPosition::ByTuple((meta.end_row, meta.end_col)),
+                &opts,
+            )?
+            .map(|t| t.0)
+            .collect::<Vec<_>>();
+        for mark in current_mark_ids {
+            self.buf.del_extmark(self.namespace_id, mark)?;
         }
         // add new mark
         // line length can be shorter than the end_col if formatting hasn't happened
@@ -133,10 +135,12 @@ impl ToObject for TagItem {
     }
 }
 impl lua::Pushable for TagItem {
-    unsafe fn push(self, lstate: *mut lua::ffi::lua_State) -> Result<std::ffi::c_int, lua::Error> {
-        self.to_object()
-            .map_err(lua::Error::push_error_from_err::<Self, _>)?
-            .push(lstate)
+    unsafe fn push(self, lstate: *mut lua::ffi::State) -> Result<std::ffi::c_int, lua::Error> {
+        unsafe {
+            self.to_object()
+                .map_err(lua::Error::push_error_from_err::<Self, _>)?
+                .push(lstate)
+        }
     }
 }
 
@@ -236,10 +240,12 @@ impl ToObject for DumpOutcome {
     }
 }
 impl lua::Pushable for DumpOutcome {
-    unsafe fn push(self, lstate: *mut lua::ffi::lua_State) -> Result<std::ffi::c_int, lua::Error> {
-        self.to_object()
-            .map_err(lua::Error::push_error_from_err::<Self, _>)?
-            .push(lstate)
+    unsafe fn push(self, lstate: *mut lua::ffi::State) -> Result<std::ffi::c_int, lua::Error> {
+        unsafe {
+            self.to_object()
+                .map_err(lua::Error::push_error_from_err::<Self, _>)?
+                .push(lstate)
+        }
     }
 }
 
