@@ -16,14 +16,5 @@ debug-idk-nvim:
   cargo build --package idk-nvim
   cp ./target/debug/libidk_nvim.so ./idk.nvim/lua/libidk.so
 
-debug-idkpy:
-  #! /usr/bin/env bash
-  # idkpy
-  cd ./crates/idkpy/ \
-    && source ./venv/bin/activate \
-    && maturin build \
-    && cd ../../ \
-    && cp ./target/wheels/*.whl ../test-idk/
-
-debug: debug-idk-nvim debug-idkpy deploy-idk-get
+debug: debug-idk-nvim deploy-idk-get
 
