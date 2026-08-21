@@ -47,12 +47,12 @@ pub fn parse_cst(input: &str) -> Result<CST, ParseError> {
     // return early if not all meet this condition
     let mut padded_lines: Vec<[char; 100]> = vec![];
     for line in input.split("\n") {
-        if line.len() == 100 {
+        if line.chars().count() == 100 {
             let rs: [char; 100] = line.chars().collect::<Vec<char>>().try_into().unwrap();
             padded_lines.push(rs);
-        } else if line.len() == 0 {
+        } else if line.chars().count() == 0 {
             continue;
-        } else if line.len() < 100 {
+        } else if line.chars().count() < 100 {
             let mut rs: [char; 100] = std::iter::repeat(' ')
                 .take(100)
                 .collect::<Vec<char>>()
@@ -159,5 +159,20 @@ mod tests {
             let _ = std::fs::write("/tmp/cst.txt", format!("{:#?}", &cst));
         }
         assert_eq!(observed, expected);
+    }
+
+    fn nonascii_fixture() -> String {
+        r#"
+     D FOOOO           S              4    Inz('****')                                              
+     D RNDchar         C                   '"`~`!@#¢()+=|\{}¬¦?'                                    
+       *inlr = *on;                                                                                 "#
+            [1..].to_string()
+    }
+
+    #[test]
+    fn test_nonascii_cst_snapshot() {
+        let input = nonascii_fixture();
+        let cst = parse_cst(input.as_str()).unwrap();
+        insta::assert_yaml_snapshot!(cst);
     }
 }

@@ -1,0 +1,529 @@
+---
+source: crates/rpgle-parser/src/cst/cst.rs
+expression: cst
+---
+lines:
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 0
+                col: 0
+              end:
+                row: 0
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 0
+                col: 5
+              end:
+                row: 0
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: FOOOO
+          meta:
+            span:
+              start:
+                row: 0
+                col: 6
+              end:
+                row: 0
+                col: 21
+            text: " FOOOO         "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 21
+              end:
+                row: 0
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 22
+              end:
+                row: 0
+                col: 23
+            text: " "
+      definition_type:
+        Idk:
+          value: "S "
+          meta:
+            span:
+              start:
+                row: 0
+                col: 23
+              end:
+                row: 0
+                col: 25
+            text: "S "
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 25
+              end:
+                row: 0
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value:
+            Value: 4
+          meta:
+            span:
+              start:
+                row: 0
+                col: 32
+              end:
+                row: 0
+                col: 39
+            text: "      4"
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 39
+              end:
+                row: 0
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 40
+              end:
+                row: 0
+                col: 42
+            text: "  "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 0
+                col: 42
+              end:
+                row: 0
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          value:
+            - I
+            - n
+            - z
+            - (
+            - "'"
+            - "*"
+            - "*"
+            - "*"
+            - "*"
+            - "'"
+            - )
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+          meta:
+            span:
+              start:
+                row: 0
+                col: 43
+              end:
+                row: 0
+                col: 100
+            text: "Inz('****')                                              "
+  - D:
+      sequence:
+        Ok:
+          value: "     "
+          meta:
+            span:
+              start:
+                row: 1
+                col: 0
+              end:
+                row: 1
+                col: 5
+            text: "     "
+      form_type:
+        Ok:
+          value: D
+          meta:
+            span:
+              start:
+                row: 1
+                col: 5
+              end:
+                row: 1
+                col: 6
+            text: D
+      name:
+        Ok:
+          value: RNDchar
+          meta:
+            span:
+              start:
+                row: 1
+                col: 6
+              end:
+                row: 1
+                col: 21
+            text: " RNDchar       "
+      external_description:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 21
+              end:
+                row: 1
+                col: 22
+            text: " "
+      datastructure_type:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 22
+              end:
+                row: 1
+                col: 23
+            text: " "
+      definition_type:
+        Ok:
+          value: C
+          meta:
+            span:
+              start:
+                row: 1
+                col: 23
+              end:
+                row: 1
+                col: 25
+            text: "C "
+      from_position:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 25
+              end:
+                row: 1
+                col: 32
+            text: "       "
+      to_length:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 32
+              end:
+                row: 1
+                col: 39
+            text: "       "
+      datatype:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 39
+              end:
+                row: 1
+                col: 40
+            text: " "
+      decimals:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 40
+              end:
+                row: 1
+                col: 42
+            text: "  "
+      reserved:
+        Ok:
+          value: Empty
+          meta:
+            span:
+              start:
+                row: 1
+                col: 42
+              end:
+                row: 1
+                col: 43
+            text: " "
+      keywords:
+        Ok:
+          value:
+            - "'"
+            - "\""
+            - "`"
+            - "~"
+            - "`"
+            - "!"
+            - "@"
+            - "#"
+            - ¢
+            - (
+            - )
+            - +
+            - "="
+            - "|"
+            - "\\"
+            - "{"
+            - "}"
+            - ¬
+            - ¦
+            - "?"
+            - "'"
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+            - " "
+          meta:
+            span:
+              start:
+                row: 1
+                col: 43
+              end:
+                row: 1
+                col: 100
+            text: "'\"`~`!@#¢()+=|\\{}¬¦?'                                    "
+  - C:
+      Free:
+        nothing:
+          Ok:
+            value: "       "
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 0
+                end:
+                  row: 2
+                  col: 7
+              text: "       "
+        code:
+          Ok:
+            value:
+              - "*"
+              - i
+              - n
+              - l
+              - r
+              - " "
+              - "="
+              - " "
+              - "*"
+              - o
+              - n
+              - ;
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+              - " "
+            meta:
+              span:
+                start:
+                  row: 2
+                  col: 7
+                end:
+                  row: 2
+                  col: 100
+              text: "*inlr = *on;                                                                                 "
