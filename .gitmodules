@@ -1,0 +1,3 @@
+[submodule "nvim-oxi"]
+	path = nvim-oxi
+	url = git@github.com:zachwaite/nvim-oxi.git
